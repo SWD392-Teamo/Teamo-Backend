@@ -11,13 +11,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Dtos\" />
-    <Folder Include="Helpers\" />
-    <Folder Include="Middleware\" />
-    <Folder Include="Errors\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Teamo.Infrastructure\Teamo.Infrastructure.csproj" />
   </ItemGroup>
 

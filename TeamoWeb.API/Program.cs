@@ -1,4 +1,5 @@
 using TeamoWeb.API.Extensions;
+using TeamoWeb.API.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +23,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+// Configure the HTTP request pipeline.
+app.UseMiddleware<ExceptionMiddleware>();
+
 app.UseCors("CorsPolicy");
 
 app.UseAuthentication();
