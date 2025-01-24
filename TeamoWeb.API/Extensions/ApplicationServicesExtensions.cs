@@ -10,7 +10,6 @@ namespace TeamoWeb.API.Extensions
 
             // Register services with the DI container
 
-
             // Register Auto Mapper
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
@@ -18,7 +17,7 @@ namespace TeamoWeb.API.Extensions
             {
                 opt.AddPolicy("CorsPolicy", policy =>
                 {
-                    policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:4200");
+                    policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:3000");
                 });
             });
 
