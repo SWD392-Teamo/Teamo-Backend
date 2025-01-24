@@ -71,14 +71,13 @@ namespace Teamo.Core.Specifications
             Includes.Add(includeExpression);
         }
 
-
         /// <summary>
         /// Add Include and ThenInclude expression to the ThenIncludes list
         /// </summary>
         /// <param name="customIncludeExpression"></param>
-        protected void AddCustomInclude(Func<IQueryable<T>, IIncludableQueryable<T, object>> customIncludeExpression)
+        protected void AddThenInclude(Func<IQueryable<T>, IIncludableQueryable<T, object>> thenIncludeExpression)
         {
-            ThenIncludes.Add(customIncludeExpression);
+            ThenIncludes.Add(thenIncludeExpression);
         }
 
         /// <summary>
