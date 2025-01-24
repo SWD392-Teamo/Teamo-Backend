@@ -1,4 +1,6 @@
 ﻿
+using TeamoWeb.API.Middleware;
+
 namespace TeamoWeb.API.Extensions
 {
     public static class ApplicationServicesExtensions
@@ -9,9 +11,6 @@ namespace TeamoWeb.API.Extensions
             // Registers the database context with the DI container
 
             // Register services with the DI container
-
-            // Register Auto Mapper
-            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             services.AddCors(opt =>
             {
