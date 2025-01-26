@@ -12,7 +12,7 @@ namespace Teamo.Core.Entities.Identity
         public string LastName { get; set; }
         public string Email {  get; set; }
         public string HashPassword { get; set; }
-        public string Gender { get; set; }
+        public Gender Gender { get; set; }
         public DateOnly Dob { get; set; }
         public string Phone { get; set; }
         public string? ImgUrl { get; set; }
