@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations.Schema;
+using Teamo.Core.Entities.Identity;
 using Teamo.Core.Enums;
 
 namespace Teamo.Core.Entities
@@ -8,9 +9,11 @@ namespace Teamo.Core.Entities
         public required int GroupId { get; set; }
         public Group Group { get; set; }
         [Column(TypeName = "nvarchar(450)")]
-        public required string DestStudentId { get; set; }
+        public required int DestStudentId { get; set; }
+        public User DestStudent { get; set; }
         [Column(TypeName = "nvarchar(450)")]
-        public required string SrcStudentId { get; set; }
+        public required int SrcStudentId { get; set; }
+        public User SrcStudent { get; set; }
         public required DateTime RequestTime { get; set; } = DateTime.Now;
         [Column(TypeName = "nvarchar(1000)")]
         public required string RequestContent { get; set; }

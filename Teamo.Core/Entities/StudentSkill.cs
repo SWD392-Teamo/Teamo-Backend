@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations.Schema;
+using Teamo.Core.Entities.Identity;
 using Teamo.Core.Enums;
 
 namespace Teamo.Core.Entities
@@ -7,9 +8,8 @@ namespace Teamo.Core.Entities
     {
         public required int SkillId { get; set; }
         public Skill Skill { get; set; }
-        [Column(TypeName = "nvarchar(450)")]
-        public required string StudentId { get; set; }
-        [Column(TypeName = "varchar(50)")]
+        public required int StudentId { get; set; }
+        public User Student { get; set; }
         public required StudentSkillLevel Level { get; set; }
     }
 }

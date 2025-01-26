@@ -1,14 +1,13 @@
 using System.ComponentModel.DataAnnotations.Schema;
+using Teamo.Core.Entities.Identity;
 
 namespace Teamo.Core.Entities
 {
     public class Link : BaseEntity
     {
-        [Column(TypeName = "nvarchar(100)")]
         public required string Name { get; set; }
-        [Column(TypeName = "nvarchar(1000)")]
         public required string Url { get; set; }
-        [Column(TypeName = "nvarchar(450)")]
-        public required string StudentId { get; set; }
+        public required int StudentId { get; set; }
+        public User Student { get; set; }
     }
 }

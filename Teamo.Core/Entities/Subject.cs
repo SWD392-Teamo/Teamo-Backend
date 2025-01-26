@@ -4,13 +4,11 @@ namespace Teamo.Core.Entities
 {
     public class Subject : BaseEntity
     {
-        [Column(TypeName = "varchar(20)")]
         public required string Code { get; set; }
-        [Column(TypeName = "nvarchar(100)")]
         public required string Name { get; set; }
-        [Column(TypeName = "nvarchar(1000)")]
-        public string? Description { get; set; }
-        [Column(TypeName = "Date")]
+        public string Description { get; set; }
         public required DateOnly CreatedDate { get; set; } = DateOnly.FromDateTime(DateTime.Now);
+        public List<Field> Fields { get; set; }
+        public List<SubjectField> SubjectFields { get; set;}
     }
 }

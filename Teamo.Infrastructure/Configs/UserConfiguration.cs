@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Teamo.Core.Entities;
 using Teamo.Core.Entities.Identity;
 using Teamo.Core.Enums;
 
@@ -10,39 +11,15 @@ namespace Teamo.Infrastructure.Configs
     {
         public void Configure(EntityTypeBuilder<User> builder)
         {
-            builder.Property(u => u.UserName)
-                      .HasColumnType("varchar(50)")
-                      .IsRequired();
-
-            builder.Property(u => u.Phone)
-                      .HasColumnType("varchar(20)")
-                      .IsRequired();
-
-            builder.Property(u => u.Email)
-                      .HasColumnType("varchar(100)")
-                      .IsRequired();
-
-            builder.Property(u => u.Code)
-                      .HasColumnType("varchar(20)")
-                      .IsRequired();
-
-            builder.Property(u => u.Gender)
-                      .HasColumnType("varchar(20)")
-                      .IsRequired();
-
-            builder.Property(u => u.FirstName)
-                      .HasColumnType("varchar(100)")
-                      .IsRequired();
-
-            builder.Property(u => u.LastName)
-                      .HasColumnType("varchar(100)")
-                      .IsRequired();
-
-            builder.Property(u => u.ImgUrl)
-                      .HasColumnType("varchar(500)");
-
-            builder.Property(u => u.Description)
-                      .HasColumnType("varchar(1000)");
+            builder.Property(u => u.UserName).HasColumnType("varchar(50)");
+            builder.Property(u => u.Phone).HasColumnType("varchar(20)");
+            builder.Property(u => u.Email).HasColumnType("varchar(100)");
+            builder.Property(u => u.Code).HasColumnType("varchar(20)");
+            builder.Property(u => u.Gender).HasColumnType("varchar(20)");
+            builder.Property(u => u.FirstName) .HasColumnType("varchar(100)");
+            builder.Property(u => u.LastName).HasColumnType("varchar(100)");
+            builder.Property(u => u.ImgUrl).HasColumnType("varchar(200)");
+            builder.Property(u => u.Description).HasColumnType("varchar(1000)");
 
             builder.Property(c => c.Status)
                 .HasConversion(
@@ -54,12 +31,14 @@ namespace Teamo.Infrastructure.Configs
                 .HasConversion(
                 s => s.ToString(),
                 s => (Gender)Enum.Parse(typeof(Gender), s))
-                .HasColumnType("varchar(50)");
+                .HasColumnType("varchar(20)");
 
             builder.HasOne(u => u.Major)
                       .WithMany()
                       .HasForeignKey(r => r.MajorID)
                       .OnDelete(DeleteBehavior.Restrict);
+            
+            builder.HasMany(u => u.Skills).WithMany().UsingEntity<StudentSkill>();
         }
     }
 }
