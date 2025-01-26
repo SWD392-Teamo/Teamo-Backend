@@ -1,10 +1,12 @@
 ﻿
+using Infrastructure.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Teamo.Core.Entities.Identity;
+using Teamo.Core.Interfaces;
 using Teamo.Infrastructure.Data;
 using TeamoWeb.API.Middleware;
 
