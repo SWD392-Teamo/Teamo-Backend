@@ -1,4 +1,8 @@
 ﻿
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Teamo.Core.Entities.Identity;
+using Teamo.Infrastructure.Data;
 using TeamoWeb.API.Middleware;
 
 namespace TeamoWeb.API.Extensions
@@ -9,6 +13,26 @@ namespace TeamoWeb.API.Extensions
             IConfiguration config)
         {
             // Registers the database context with the DI container
+            services.AddDbContext<ApplicationDbContext>(opt =>
+            {
+                opt.UseSqlServer(config.GetConnectionString("DefaultConnection"));
+            });
+            services.AddDataProtection();
+
+            services.AddIdentityCore<User>(opt =>
+            {
+                //Set you account options here (e.g., Password, Email)
+                opt.SignIn.RequireConfirmedAccount = false;
+                opt.Password.RequireDigit = false;
+                opt.Password.RequiredLength = 8;
+                opt.Password.RequireLowercase = true;
+                opt.Password.RequireNonAlphanumeric = false;
+                opt.Password.RequireUppercase = false;
+            })
+            .AddRoles<IdentityRole<int>>()
+            .AddEntityFrameworkStores<ApplicationDbContext>()
+            .AddSignInManager<SignInManager<User>>()
+            .AddDefaultTokenProviders();
 
             // Register services with the DI container
 

@@ -11,14 +11,14 @@ namespace Teamo.Infrastructure.Data
     /// </summary>
     public class UnitOfWork : IUnitOfWork
     {
-        private readonly DatabaseContext _context;
+        private readonly ApplicationDbContext _context;
         private ConcurrentDictionary<string, object> _repositories;
 
         /// <summary>
         /// Injects a DbContext instance to be used by all repositories.
         /// </summary>
         /// <param name="context"></param>
-        public UnitOfWork(DatabaseContext context)
+        public UnitOfWork(ApplicationDbContext context)
         {
             _context = context;
         }

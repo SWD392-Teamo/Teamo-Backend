@@ -10,15 +10,13 @@ namespace Teamo.Core.Entities.Identity
         public string Code { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public string Username { get; set; }
         public string Email {  get; set; }
         public string HashPassword { get; set; }
         public string Gender { get; set; }
-        public string Dob { get; set; }
+        public DateOnly Dob { get; set; }
         public string Phone { get; set; }
-        public string ImgUrl { get; set; }
+        public string? ImgUrl { get; set; }
         public UserStatus Status { get; set; }
-        public string Description { get; set; }
-        public string Role {  get; set; }
+        public string? Description { get; set; }
     }   
 }

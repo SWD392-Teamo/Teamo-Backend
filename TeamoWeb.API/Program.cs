@@ -12,6 +12,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddApplicationServices(builder.Configuration);
+builder.Services.AddSingleton(TimeProvider.System);
 
 var app = builder.Build();
 
