@@ -5,11 +5,13 @@ using Microsoft.EntityFrameworkCore;
 using System.Reflection.Emit;
 using System.Reflection;
 using Teamo.Core.Entities.Identity;
+using Teamo.Core.Entities;
 
 namespace Teamo.Infrastructure.Data
 {
     public class ApplicationDbContext : IdentityDbContext<User, IdentityRole<int>, int>
     {
+        public DbSet<Major> Majors;
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
 
