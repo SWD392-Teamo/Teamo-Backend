@@ -33,6 +33,10 @@ namespace Teamo.Infrastructure.Data
                       .HasColumnType("varchar(100)")
                       .IsRequired();
 
+                entity.Property(u => u.Code)
+                      .HasColumnType("varchar(20)")
+                      .IsRequired();
+
                 entity.Property(u => u.Gender)
                       .HasColumnType("varchar(20)")
                       .IsRequired();
@@ -47,6 +51,14 @@ namespace Teamo.Infrastructure.Data
 
                 entity.Property(u => u.ImgUrl)
                       .HasColumnType("varchar(500)");
+
+                entity.Property(u => u.Description)
+                      .HasColumnType("varchar(1000)");
+
+                entity.HasOne(u => u.Major)
+                      .WithMany()
+                      .HasForeignKey(r => r.MajorID)
+                      .OnDelete(DeleteBehavior.Restrict);
             });
 
             builder.Entity<IdentityRole<int>>(entity =>
