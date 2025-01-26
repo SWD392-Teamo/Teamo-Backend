@@ -3,9 +3,9 @@ using Teamo.Core.Entities;
 
 namespace Teamo.Infrastructure.Data
 {
-    public class DatabaseContext : DbContext
+    public class AppDbContext : DbContext
     {
-        public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options)
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
         }
 

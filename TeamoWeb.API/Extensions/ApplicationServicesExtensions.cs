@@ -1,5 +1,7 @@
 ﻿
+using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using Teamo.Core.Interfaces;
 using Teamo.Infrastructure.Data;
 using TeamoWeb.API.Middleware;
 
@@ -11,12 +13,14 @@ namespace TeamoWeb.API.Extensions
             IConfiguration config)
         {
             // Registers the database context with the DI container
-            services.AddDbContext<DatabaseContext>(opt => 
+            services.AddDbContext<AppDbContext>(opt => 
             {
                 opt.UseSqlServer(config.GetConnectionString("DefaultConnection"));
             });
 
             // Register services with the DI container
+            services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             services.AddCors(opt =>
             {
