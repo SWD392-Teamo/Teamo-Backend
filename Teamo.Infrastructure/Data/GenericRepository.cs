@@ -13,13 +13,13 @@ namespace Infrastructure.Data
     /// <typeparam name="T"></typeparam>
     public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
     {
-        private readonly AppDbContext _context;
+        private readonly ApplicationDbContext _context;
 
         /// <summary>
         /// Injects a DbContext instance.
         /// </summary>
         /// <param name="context"></param>
-        public GenericRepository(AppDbContext context)
+        public GenericRepository(ApplicationDbContext context)
         {
             _context = context;
         }
