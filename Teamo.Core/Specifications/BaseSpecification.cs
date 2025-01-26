@@ -60,7 +60,7 @@ namespace Teamo.Core.Specifications
         /// <summary>
         /// The list of custom include queries for nested include entities
         /// </summary>
-        public List<Func<IQueryable<T>, IIncludableQueryable<T, object>>> CustomIncludes { get; } = new List<Func<IQueryable<T>, IIncludableQueryable<T, object>>>();
+        public List<Func<IQueryable<T>, IIncludableQueryable<T, object>>> ThenIncludes { get; } = new List<Func<IQueryable<T>, IIncludableQueryable<T, object>>>();
 
         /// <summary>
         /// Adds Include expression to the Includes list
@@ -71,14 +71,13 @@ namespace Teamo.Core.Specifications
             Includes.Add(includeExpression);
         }
 
-
         /// <summary>
-        /// Add custom include queries to the CustomIncludes list
+        /// Add Include and ThenInclude expression to the ThenIncludes list
         /// </summary>
         /// <param name="customIncludeExpression"></param>
-        protected void AddCustomInclude(Func<IQueryable<T>, IIncludableQueryable<T, object>> customIncludeExpression)
+        protected void AddThenInclude(Func<IQueryable<T>, IIncludableQueryable<T, object>> thenIncludeExpression)
         {
-            CustomIncludes.Add(customIncludeExpression);
+            ThenIncludes.Add(thenIncludeExpression);
         }
 
         /// <summary>

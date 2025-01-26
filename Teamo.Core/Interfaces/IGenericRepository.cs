@@ -17,6 +17,7 @@ namespace Teamo.Core.Interfaces
         void Add(T entity);
         void Update(T entity);
         void Delete(T entity);
+        bool Exists(int id);
         Task<bool> SaveAllAsync ();
     }
 }
