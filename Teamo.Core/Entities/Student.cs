@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations.Schema;
+using Teamo.Core.Enums;
 
 namespace Teamo.Core.Entities
 {
@@ -17,12 +18,11 @@ namespace Teamo.Core.Entities
         [Column(TypeName = "nvarchar(100)")]
         public required string Email { get; set; }
         [Column(TypeName = "varchar(50)")]
-        public required string Gender { get; set; } 
+        public Gender Gender { get; set; } 
         [Column(TypeName = "varchar(20)")]
         public string? Phone { get; set; }
         [Column(TypeName = "nvarchar(1000)")]
         public string? ImgUrl { get; set; }
         public required int MajorId { get; set; }
-        public Major Major { get; set; }
     }
 }

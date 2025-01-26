@@ -1,5 +1,5 @@
 using System.ComponentModel.DataAnnotations.Schema;
-using Teamo.Core.Attributes;
+using Teamo.Core.Enums;
 
 namespace Teamo.Core.Entities
 {
@@ -18,7 +18,7 @@ namespace Teamo.Core.Entities
 		public required string CreatedById { get; set; }
 		public required int MaxMember { get; set; }
 		[Column(TypeName = "varchar(50)")]
-		public required string Status { get; set; } = GroupStatus.Recruiting.ToString();
+		public required GroupStatus Status { get; set; }
 		public required int FieldId { get; set; }
 		public Field Field { get; set; }
 		public required int SubjectId { get; set; }

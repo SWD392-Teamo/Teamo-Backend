@@ -1,5 +1,5 @@
 using System.ComponentModel.DataAnnotations.Schema;
-using Teamo.Core.Attributes;
+using Teamo.Core.Enums;
 
 namespace Teamo.Core.Entities
 {
@@ -17,6 +17,6 @@ namespace Teamo.Core.Entities
         public required int GroupPositionId { get; set; }
         public GroupPosition GroupPosition { get; set; }
         [Column(TypeName = "varchar(50)")]
-        public required string Status { get; set; } = ApplicationStatus.Requested.ToString();
+        public required ApplicationStatus Status { get; set; }
     }
 }

@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Teamo.Core.Entities.Identity;
+using Teamo.Core.Enums;
+
 
 namespace Teamo.Infrastructure.Configs
 {

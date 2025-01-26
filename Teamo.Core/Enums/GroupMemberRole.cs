@@ -1,6 +1,4 @@
-using System.Runtime.Serialization;
-
-namespace Teamo.Core.Entities
+namespace Teamo.Core.Enums
 {
     public enum GroupMemberRole
     {

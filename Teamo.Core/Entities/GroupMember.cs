@@ -1,5 +1,5 @@
 using System.ComponentModel.DataAnnotations.Schema;
-using Teamo.Core.Attributes;
+using Teamo.Core.Enums;
 
 namespace Teamo.Core.Entities
 {
@@ -12,6 +12,6 @@ namespace Teamo.Core.Entities
         public required string GroupPositionId { get; set; }
         public GroupPosition GroupPosition { get; set; }
         [Column(TypeName = "nvarchar(50)")]
-        public required string Role { get; set; } = GroupMemberRole.Member.ToString();
+        public required GroupMemberRole Role { get; set; } 
     }
 }
