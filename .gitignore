@@ -480,5 +480,5 @@ $RECYCLE.BIN/
 *.yml
 
 /publish
-TeamoWeb.API/appsettings.json
+/TeamoWeb.API/appsettings.json
 .vscode
