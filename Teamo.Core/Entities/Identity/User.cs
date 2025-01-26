@@ -18,5 +18,21 @@ namespace Teamo.Core.Entities.Identity
         public string? Description { get; set; }
         public int MajorID { get; set; }
         public Major Major {  get; set; }
-    }   
+    }
+
+    public enum Gender
+    {
+        [EnumMember(Value = "Male")]
+        Male,
+
+        [EnumMember(Value = "Female")]
+        Female
+    }
+    public enum UserStatus
+    {
+        [EnumMember(Value = "Active")]
+        Active,
+        [EnumMember(Value = "Inactive")]
+        Inactive,
+    }
 }

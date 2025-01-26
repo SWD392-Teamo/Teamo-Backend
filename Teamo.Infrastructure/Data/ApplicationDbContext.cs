@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.Emit;
+using System.Reflection;
 using Teamo.Core.Entities.Identity;
 
 namespace Teamo.Infrastructure.Data
@@ -14,58 +16,8 @@ namespace Teamo.Infrastructure.Data
         }
         protected override void OnModelCreating(ModelBuilder builder)
         {
-
             base.OnModelCreating(builder);
-
-            builder.Entity<User>(entity =>
-            {
-                entity.ToTable(name: "User");
-
-                entity.Property(u => u.UserName)
-                      .HasColumnType("varchar(50)")
-                      .IsRequired();
-
-                entity.Property(u => u.Phone)
-                      .HasColumnType("varchar(20)")
-                      .IsRequired();
-
-                entity.Property(u => u.Email)
-                      .HasColumnType("varchar(100)")
-                      .IsRequired();
-
-                entity.Property(u => u.Code)
-                      .HasColumnType("varchar(20)")
-                      .IsRequired();
-
-                entity.Property(u => u.Gender)
-                      .HasColumnType("varchar(20)")
-                      .IsRequired();
-
-                entity.Property(u => u.FirstName)
-                      .HasColumnType("varchar(100)")
-                      .IsRequired();
-
-                entity.Property(u => u.LastName)
-                      .HasColumnType("varchar(100)")
-                      .IsRequired();
-
-                entity.Property(u => u.ImgUrl)
-                      .HasColumnType("varchar(500)");
-
-                entity.Property(u => u.Description)
-                      .HasColumnType("varchar(1000)");
-
-                entity.HasOne(u => u.Major)
-                      .WithMany()
-                      .HasForeignKey(r => r.MajorID)
-                      .OnDelete(DeleteBehavior.Restrict);
-            });
-
-            builder.Entity<IdentityRole<int>>(entity =>
-            {
-                entity.ToTable(name: "Role");
-                entity.Property(r => r.Name).HasColumnType("varchar(50)").IsRequired();
-            });
+            builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         }
     }
 }
