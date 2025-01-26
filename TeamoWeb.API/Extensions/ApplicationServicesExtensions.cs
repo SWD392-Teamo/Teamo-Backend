@@ -1,4 +1,6 @@
 ﻿
+using Microsoft.EntityFrameworkCore;
+using Teamo.Infrastructure.Data;
 using TeamoWeb.API.Middleware;
 
 namespace TeamoWeb.API.Extensions
@@ -9,6 +11,10 @@ namespace TeamoWeb.API.Extensions
             IConfiguration config)
         {
             // Registers the database context with the DI container
+            services.AddDbContext<DatabaseContext>(opt => 
+            {
+                opt.UseSqlServer(config.GetConnectionString("DefaultConnection"));
+            });
 
             // Register services with the DI container
 
