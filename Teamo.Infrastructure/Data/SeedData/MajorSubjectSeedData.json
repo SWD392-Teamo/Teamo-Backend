@@ -1,0 +1,182 @@
+[
+    {
+        "MajorId": 1,
+        "SubjectId": 1
+    },
+    {
+        "MajorId": 2,
+        "SubjectId": 1
+    },
+    {
+        "MajorId": 3,
+        "SubjectId": 1
+    },
+    {
+        "MajorId": 4,
+        "SubjectId": 1
+    },
+    {
+        "MajorId": 5,
+        "SubjectId": 1
+    },
+    {
+        "MajorId": 6,
+        "SubjectId": 1
+    },
+    {
+        "MajorId": 7,
+        "SubjectId": 1
+    },
+    {
+        "MajorId": 8,
+        "SubjectId": 1
+    },
+    {
+        "MajorId": 1,
+        "SubjectId": 2
+    },
+    {
+        "MajorId": 2,
+        "SubjectId": 2
+    },
+    {
+        "MajorId": 3,
+        "SubjectId": 2
+    },
+    {
+        "MajorId": 4,
+        "SubjectId": 2
+    },
+    {
+        "MajorId": 5,
+        "SubjectId": 2
+    },
+    {
+        "MajorId": 6,
+        "SubjectId": 2
+    },
+    {
+        "MajorId": 7,
+        "SubjectId": 2
+    },
+    {
+        "MajorId": 8,
+        "SubjectId": 2
+    },
+    {
+        "MajorId": 1,
+        "SubjectId": 3
+    },
+    {
+        "MajorId": 2,
+        "SubjectId": 3
+    },
+    {
+        "MajorId": 3,
+        "SubjectId": 3
+    },
+    {
+        "MajorId": 4,
+        "SubjectId": 3
+    },
+    {
+        "MajorId": 5,
+        "SubjectId": 3
+    },
+    {
+        "MajorId": 6,
+        "SubjectId": 3
+    },
+    {
+        "MajorId": 7,
+        "SubjectId": 3
+    },
+    {
+        "MajorId": 8,
+        "SubjectId": 3
+    },
+    {
+        "MajorId": 1,
+        "SubjectId": 4
+    },
+    {
+        "MajorId": 1,
+        "SubjectId": 5
+    },
+    {
+        "MajorId": 1,
+        "SubjectId": 6
+    },
+    {
+        "MajorId": 2,
+        "SubjectId": 6
+    },
+    {
+        "MajorId": 6,
+        "SubjectId": 7
+    },
+    {
+        "MajorId": 8,
+        "SubjectId": 7
+    },
+    {
+        "MajorId": 5,
+        "SubjectId": 8
+    },
+    {
+        "MajorId": 5,
+        "SubjectId": 9
+    },
+    {
+        "MajorId": 7,
+        "SubjectId": 10
+    },
+    {
+        "MajorId": 6,
+        "SubjectId": 11
+    },
+    {
+        "MajorId": 7,
+        "SubjectId": 11
+    },
+    {
+        "MajorId": 7,
+        "SubjectId": 12
+    },
+    {
+        "MajorId": 5,
+        "SubjectId": 12
+    },
+    {
+        "MajorId": 8,
+        "SubjectId": 13
+    },
+    {
+        "MajorId": 6,
+        "SubjectId": 14
+    },
+    {
+        "MajorId": 6,
+        "SubjectId": 15
+    },
+    {
+        "MajorId": 6,
+        "SubjectId": 16
+    },
+    {
+        "MajorId": 4,
+        "SubjectId": 17
+    },
+    {
+        "MajorId": 4,
+        "SubjectId": 18
+    },
+    {
+        "MajorId": 4,
+        "SubjectId": 19
+    },
+    {
+        "MajorId": 6,
+        "SubjectId": 20
+    }
+]

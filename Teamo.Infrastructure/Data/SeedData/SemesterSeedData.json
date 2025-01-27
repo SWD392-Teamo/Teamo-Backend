@@ -1,0 +1,20 @@
+[
+    {
+        "Name": "Summer 2024",
+        "Code": "SU24",
+        "StartDate": "2024-05-06",
+        "EndDate": "2024-08-26"
+    },
+    {
+        "Name": "Fall 2024",
+        "Code": "FA24",
+        "StartDate": "2024-09-04",
+        "EndDate": "2024-12-16"
+    },
+    {
+        "Name": "Spring 2025",
+        "Code": "SP25",
+        "StartDate": "2025-01-06",
+        "EndDate": "2025-04-05"
+    }
+]
