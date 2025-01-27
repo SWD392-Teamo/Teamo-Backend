@@ -1,12 +1,9 @@
-﻿
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Infrastructure.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
 using Teamo.Core.Entities.Identity;
+using Teamo.Core.Interfaces;
 using Teamo.Infrastructure.Data;
-using TeamoWeb.API.Middleware;
 
 namespace TeamoWeb.API.Extensions
 {
@@ -39,6 +36,9 @@ namespace TeamoWeb.API.Extensions
             .AddEntityFrameworkStores<ApplicationDbContext>();
 
             // Register services with the DI container
+            services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+
             services.AddCors(opt =>
             {
                 opt.AddPolicy("CorsPolicy", policy =>
