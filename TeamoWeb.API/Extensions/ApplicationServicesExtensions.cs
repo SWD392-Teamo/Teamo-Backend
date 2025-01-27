@@ -1,12 +1,9 @@
-﻿
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Infrastructure.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
 using Teamo.Core.Entities.Identity;
+using Teamo.Core.Interfaces;
 using Teamo.Infrastructure.Data;
-using TeamoWeb.API.Middleware;
 
 namespace TeamoWeb.API.Extensions
 {
@@ -22,7 +19,9 @@ namespace TeamoWeb.API.Extensions
             });
             services.AddDataProtection();
 
-            services.AddIdentityCore<User>(opt =>
+            // Set up aspnet identity
+            services.AddAuthorization();
+            services.AddIdentityApiEndpoints<User>(opt =>
             {
                 //Set you account options here (e.g., Password, Email)
                 opt.SignIn.RequireConfirmedAccount = false;
@@ -33,24 +32,12 @@ namespace TeamoWeb.API.Extensions
                 opt.Password.RequireUppercase = false;
             })
             .AddRoles<IdentityRole<int>>()
-            .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddSignInManager<SignInManager<User>>()
-            .AddDefaultTokenProviders();
-
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(options => {
-                    options.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuerSigningKey = true,
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Token:Key"])),
-                        ValidIssuer = config["Token:Issuer"],
-                        ValidateIssuer = true,
-                        ValidateAudience = false
-                    };
-                });
-            services.AddAuthorization();
+            .AddEntityFrameworkStores<ApplicationDbContext>();
 
             // Register services with the DI container
+            services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             services.AddCors(opt =>
             {
