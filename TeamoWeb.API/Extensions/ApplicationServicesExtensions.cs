@@ -22,7 +22,9 @@ namespace TeamoWeb.API.Extensions
             });
             services.AddDataProtection();
 
-            services.AddIdentityCore<User>(opt =>
+            // Set up aspnet identity
+            services.AddAuthorization();
+            services.AddIdentityApiEndpoints<User>(opt =>
             {
                 //Set you account options here (e.g., Password, Email)
                 opt.SignIn.RequireConfirmedAccount = false;
@@ -33,25 +35,10 @@ namespace TeamoWeb.API.Extensions
                 opt.Password.RequireUppercase = false;
             })
             .AddRoles<IdentityRole<int>>()
-            .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddSignInManager<SignInManager<User>>()
-            .AddDefaultTokenProviders();
-
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(options => {
-                    options.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuerSigningKey = true,
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Token:Key"])),
-                        ValidIssuer = config["Token:Issuer"],
-                        ValidateIssuer = true,
-                        ValidateAudience = false
-                    };
-                });
-            services.AddAuthorization();
+            .AddEntityFrameworkStores<ApplicationDbContext>();
 
             // Register services with the DI container
-
             services.AddCors(opt =>
             {
                 opt.AddPolicy("CorsPolicy", policy =>

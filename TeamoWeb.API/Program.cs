@@ -40,6 +40,8 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+app.MapGroup("api").MapIdentityApi<User>();
+
 // Create a scope and call the service manually
 using var scope = app.Services.CreateScope();
 var services = scope.ServiceProvider;
