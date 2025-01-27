@@ -11,15 +11,18 @@ namespace Teamo.Infrastructure.Configs
         {
             builder.HasOne(o => o.Group)
                 .WithMany(g => g.GroupMembers)
-                .HasForeignKey(o => o.GroupId);
+                .HasForeignKey(o => o.GroupId)
+                .OnDelete(DeleteBehavior.Restrict); 
             
             builder.HasOne(o => o.Student)
                 .WithMany()
-                .HasForeignKey(o => o.StudentId);
+                .HasForeignKey(o => o.StudentId)
+                .OnDelete(DeleteBehavior.Restrict); 
 
             builder.HasOne(o => o.GroupPosition)
                 .WithMany()
-                .HasForeignKey(o => o.GroupPositionId);
+                .HasForeignKey(o => o.GroupPositionId)
+                .OnDelete(DeleteBehavior.Restrict); 
 
             builder.Property(o => o.Role)
                 .HasConversion(

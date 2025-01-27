@@ -23,15 +23,18 @@ namespace Teamo.Infrastructure.Configs
             
             builder.HasOne(o => o.DestStudent)
                 .WithMany()
-                .HasForeignKey(o => o.DestStudentId);
+                .HasForeignKey(o => o.DestStudentId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasOne(o => o.SrcStudent)
                 .WithMany()
-                .HasForeignKey(o => o.SrcStudentId);
+                .HasForeignKey(o => o.SrcStudentId)
+                .OnDelete(DeleteBehavior.Restrict);;
 
             builder.HasOne(o => o.GroupPosition)
                 .WithMany()
-                .HasForeignKey(o => o.GroupPositionId);    
+                .HasForeignKey(o => o.GroupPositionId)
+                .OnDelete(DeleteBehavior.Restrict);   
         }
     }
 }
