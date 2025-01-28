@@ -1,5 +1,4 @@
 ﻿using Infrastructure.Data;
-using System.Collections;
 using System.Collections.Concurrent;
 using Teamo.Core.Entities;
 using Teamo.Core.Interfaces;
@@ -12,7 +11,7 @@ namespace Teamo.Infrastructure.Data
     public class UnitOfWork : IUnitOfWork
     {
         private readonly ApplicationDbContext _context;
-        private ConcurrentDictionary<string, object> _repositories;
+        private ConcurrentDictionary<string, object> _repositories = new();
 
         /// <summary>
         /// Injects a DbContext instance to be used by all repositories.

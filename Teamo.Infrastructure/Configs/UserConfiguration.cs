@@ -12,7 +12,7 @@ namespace Teamo.Infrastructure.Configs
         public void Configure(EntityTypeBuilder<User> builder)
         {
             builder.Property(u => u.UserName).HasColumnType("varchar(50)");
-            builder.Property(u => u.Phone).HasColumnType("varchar(20)");
+            builder.Property(u => u.PhoneNumber).HasColumnType("varchar(20)");
             builder.Property(u => u.Email).HasColumnType("varchar(100)");
             builder.Property(u => u.Code).HasColumnType("varchar(20)");
             builder.Property(u => u.Gender).HasColumnType("varchar(20)");
