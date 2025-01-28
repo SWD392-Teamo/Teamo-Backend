@@ -60,7 +60,7 @@ namespace Teamo.Infrastructure.Data
                         Code = "SE183448",
                         Description = "I have experienced in ASPNET development",
                         Email = "my@test.com",
-                        UserName = "mylt",
+                        UserName = "my@test.com",
                         Gender = Gender.Female,
                         Dob = new DateOnly(2000, 2, 1),
                         ImgUrl = "https://firebasestorage.googleapis.com/v0/b/gemify-d7e93.appspot.com/o/images%2Fusers%2Ffemale-user.png",
@@ -74,7 +74,7 @@ namespace Teamo.Infrastructure.Data
                         Code = "SE181509",
                         Description = "I have experienced in React development",
                         Email = "khanhcnp@test.com",
-                        UserName = "khanhcnp",
+                        UserName = "khanhcnp@test.com",
                         Gender = Gender.Female,
                         Dob = new DateOnly(2000, 2, 1),
                         ImgUrl = "https://firebasestorage.googleapis.com/v0/b/gemify-d7e93.appspot.com/o/images%2Fusers%2Ffemale-user.png",
@@ -83,7 +83,7 @@ namespace Teamo.Infrastructure.Data
                     },"khanh123456","Student"),
                     (new User
                     {
-                        UserName = "admin",
+                        UserName = "admin@test.com",
                         Email = "admin@test.com"
                     }, "admin123456", "Admin")
                 };
