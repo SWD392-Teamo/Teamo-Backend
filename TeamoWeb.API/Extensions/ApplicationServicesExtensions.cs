@@ -3,7 +3,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Teamo.Core.Entities.Identity;
 using Teamo.Core.Interfaces;
+using Teamo.Core.Interfaces.Services;
 using Teamo.Infrastructure.Data;
+using Teamo.Infrastructure.Services;
 
 namespace TeamoWeb.API.Extensions
 {
@@ -17,6 +19,9 @@ namespace TeamoWeb.API.Extensions
             {
                 opt.UseSqlServer(config.GetConnectionString("DefaultConnection"));
             });
+            services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IUserService, UserService>();
             services.AddDataProtection();
 
             // Set up aspnet identity
