@@ -12,7 +12,7 @@ using Teamo.Infrastructure.Data;
 namespace Teamo.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250127151501_InitialCreate")]
+    [Migration("20250128083640_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -405,7 +405,7 @@ namespace Teamo.Infrastructure.Migrations
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<int>("MajorID")
+                    b.Property<int?>("MajorID")
                         .HasColumnType("int");
 
                     b.Property<string>("NormalizedEmail")
@@ -419,11 +419,8 @@ namespace Teamo.Infrastructure.Migrations
                     b.Property<string>("PasswordHash")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Phone")
-                        .HasColumnType("varchar(20)");
-
                     b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(20)");
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
@@ -869,8 +866,7 @@ namespace Teamo.Infrastructure.Migrations
                     b.HasOne("Teamo.Core.Entities.Major", "Major")
                         .WithMany()
                         .HasForeignKey("MajorID")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Major");
                 });
