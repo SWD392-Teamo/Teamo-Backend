@@ -10,11 +10,6 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
-
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
 builder.Services.AddApplicationServices(builder.Configuration);
 builder.Services.AddSingleton(TimeProvider.System);
 
@@ -52,7 +47,11 @@ var logger = services.GetRequiredService<ILogger<Program>>();
 
 try
 {
+    // Migrate changes to the database
     await applicationDbContext.Database.MigrateAsync();
+
+    // Seed the database with data
+    await ApplicationDbContextSeed.SeedAsync(applicationDbContext, userManager, roleManager);
 }
 catch (Exception ex)
 {
