@@ -5,7 +5,8 @@ namespace TeamoWeb.API.Extensions
 {
     public static class SubjectMappingExtension
     {
-        public static SubjectDto? ToDto(this Subject subject)
+        //Display subject
+        public static SubjectDto? ToDto(this Subject? subject)
         {
             if (subject == null) return null;
 
