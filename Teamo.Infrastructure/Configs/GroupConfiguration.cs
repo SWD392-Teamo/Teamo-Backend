@@ -27,7 +27,7 @@ namespace Teamo.Infrastructure.Configs
                 .HasForeignKey(o => o.FieldId);
 
             builder.HasOne(o => o.Subject)
-                .WithMany()
+                .WithMany(o => o.Groups)
                 .HasForeignKey(o => o.SubjectId);
 
             builder.Property(o => o.Status)

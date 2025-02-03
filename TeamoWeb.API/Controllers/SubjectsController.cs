@@ -18,12 +18,22 @@ namespace TeamoWeb.API.Controllers
 
         [HttpGet]
         [Authorize]
-        public async Task<ActionResult<IReadOnlyList<SubjectDto>>> GetSubjectsByMajorId([FromQuery] SubjectParams specParams)
+        public async Task<ActionResult<IReadOnlyList<SubjectDto>>> GetSubjects([FromQuery] SubjectParams specParams)
         {
             var spec = new SubjectSpecification(specParams);
             var subjects = await CreatePagedResult(_subjectsRepository, spec, specParams.PageIndex, 
                 specParams.PageSize, s => s.ToDto());
             return Ok(subjects);
+        }
+        [HttpGet("{id}")]
+        [Authorize]
+        public async Task<ActionResult<SubjectDto>> GetSubjectById(int id)
+        {
+            var spec = new SubjectSpecification(id);
+            var subject = await _subjectsRepository.GetEntityWithSpec(spec);
+            if (subject == null) 
+                return NotFound();
+            return subject.ToDto();
         }
     }
 }

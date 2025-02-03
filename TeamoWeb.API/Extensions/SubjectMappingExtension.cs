@@ -15,7 +15,8 @@ namespace TeamoWeb.API.Extensions
                 Code = subject.Code,
                 Name = subject.Name,
                 Description = subject.Description,
-                CreatedDate = subject.CreatedDate
+                CreatedDate = subject.CreatedDate,
+                Groups = subject.Groups,
             };
         }
     }

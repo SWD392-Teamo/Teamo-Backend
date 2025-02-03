@@ -12,7 +12,7 @@ using Teamo.Infrastructure.Data;
 namespace Teamo.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250203145949_InitialDb")]
+    [Migration("20250203160108_InitialDb")]
     partial class InitialDb
     {
         /// <inheritdoc />
@@ -790,7 +790,7 @@ namespace Teamo.Infrastructure.Migrations
                         .IsRequired();
 
                     b.HasOne("Teamo.Core.Entities.Subject", "Subject")
-                        .WithMany()
+                        .WithMany("Groups")
                         .HasForeignKey("SubjectId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -967,6 +967,8 @@ namespace Teamo.Infrastructure.Migrations
 
             modelBuilder.Entity("Teamo.Core.Entities.Subject", b =>
                 {
+                    b.Navigation("Groups");
+
                     b.Navigation("MajorSubjects");
 
                     b.Navigation("SubjectFields");

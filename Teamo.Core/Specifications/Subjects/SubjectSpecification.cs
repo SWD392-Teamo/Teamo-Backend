@@ -12,6 +12,7 @@ namespace Teamo.Core.Specifications.Subjects
             )
         {    
             AddInclude(x => x.MajorSubjects);
+            AddInclude(x => x.Groups);
             ApplyPaging(subjectParams.PageSize * (subjectParams.PageIndex - 1),
                 subjectParams.PageSize);
         }
@@ -19,6 +20,7 @@ namespace Teamo.Core.Specifications.Subjects
             : base(x => x.Id == id)
         {
             AddInclude(x => x.MajorSubjects);
+            AddInclude(x => x.Groups);
         }
     }
 }
