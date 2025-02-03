@@ -19,15 +19,5 @@ namespace TeamoWeb.API.Extensions
                     major.Subjects.Select(subject => subject.ToDto()).ToList() : null
             };
         }
-        //Create major
-    //     public static ExampleEntity? ToEntity(this ExampleEntityCreateDto? exampleEntity)
-    //     {
-    //         if (exampleEntity == null) return null;
-    //         return new ExampleEntity
-    //         {
-    //             Name = exampleEntity.Name,
-    //             Age = exampleEntity.Age,
-    //             GenderId = exampleEntity.GenderId,
-    //         };
     }
 }
