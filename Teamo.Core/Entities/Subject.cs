@@ -1,8 +1,9 @@
 using System.ComponentModel.DataAnnotations.Schema;
+using Teamo.Core.Interfaces;
 
 namespace Teamo.Core.Entities
 {
-    public class Subject : BaseEntity
+    public class Subject : BaseEntity, IDtoConvertible
     {
         public required string Code { get; set; }
         public required string Name { get; set; }
