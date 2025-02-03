@@ -7,7 +7,8 @@ namespace Teamo.Core.Specifications.Subjects
         public SubjectSpecification(SubjectParams subjectParams)
             : base(x => (string.IsNullOrEmpty(subjectParams.Search)
             || x.Name.ToLower().Contains(subjectParams.Search)
-            || x.Code.ToLower().Contains(subjectParams.Search))
+            || x.Code.ToLower().Contains(subjectParams.Search)) &&
+            (!subjectParams.majorId.HasValue || x.MajorSubjects.Any(ms => ms.MajorId == subjectParams.majorId))
             )
         {    
             AddInclude(x => x.MajorSubjects);
