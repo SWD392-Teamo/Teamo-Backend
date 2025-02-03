@@ -22,8 +22,4 @@
     <ProjectReference Include="..\Teamo.Infrastructure\Teamo.Infrastructure.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Dtos\" />
-  </ItemGroup>
-
 </Project>
