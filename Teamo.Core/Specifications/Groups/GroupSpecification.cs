@@ -14,6 +14,10 @@ namespace Teamo.Core.Specifications.Groups
             AddInclude(x => x.GroupPositions);
             AddInclude(x => x.GroupMembers);
             AddInclude(x => x.Applications);
+            AddInclude(x => x.Semester);
+            AddInclude(x => x.CreatedByUser);
+            AddInclude(x => x.Subject);
+            AddInclude(x => x.Field);
             ApplyPaging(groupParams.PageSize * (groupParams.PageIndex - 1),
                 groupParams.PageSize);
         }
@@ -23,6 +27,8 @@ namespace Teamo.Core.Specifications.Groups
             AddInclude(x => x.GroupPositions);
             AddInclude(x => x.GroupMembers);
             AddInclude(x => x.Applications);
+            AddInclude(x => x.Semester);
+            AddInclude(x => x.CreatedByUser);
         }
     }
 }
