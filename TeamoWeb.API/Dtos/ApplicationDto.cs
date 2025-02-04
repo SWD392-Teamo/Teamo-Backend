@@ -9,7 +9,7 @@ namespace TeamoWeb.API.Dtos
         public string ImgUrl { get; set; }
         public DateTime RequestTime { get; set; } = DateTime.Now;
         public string RequestContent { get; set; }
-        public GroupPositionDto GroupPosition { get; set; }
+        public string GroupPositionName { get; set; }
         public ApplicationStatus Status { get; set; }
     }
 }
