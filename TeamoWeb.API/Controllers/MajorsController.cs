@@ -9,11 +9,11 @@ using TeamoWeb.API.Extensions;
 
 namespace TeamoWeb.API.Controllers
 {
-    public class MajorController : BaseApiController
+    public class MajorsController : BaseApiController
     {
         private readonly IGenericRepository<Major> _majorRepo;
 
-        public MajorController(IGenericRepository<Major> majorRepo)
+        public MajorsController(IGenericRepository<Major> majorRepo)
         {
             _majorRepo = majorRepo;
         }
@@ -31,7 +31,7 @@ namespace TeamoWeb.API.Controllers
         //Get major by Id
         [HttpGet("{id}")]
         [Authorize(Roles = "Admin,Student")]
-        public async Task<ActionResult<MajorDto>> GetMajorById(int id)
+        public async Task<ActionResult<MajorDto?>> GetMajorById(int id)
         {
             var majorSpec = new MajorSpecification(id);
             var major = await _majorRepo.GetEntityWithSpec(majorSpec);

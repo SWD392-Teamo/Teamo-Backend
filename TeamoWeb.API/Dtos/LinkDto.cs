@@ -1,8 +1,8 @@
 namespace TeamoWeb.API.Dtos
 {
-    public class SkillDto
+    public class LinkDto
     {
         public string? Name { get; set; }
-        public string? Type { get; set; }
+        public string? Url { get; set; }
     }
 }

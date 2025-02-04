@@ -1,9 +1,10 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Teamo.Core.Enums;
+using Teamo.Core.Interfaces;
 
 namespace Teamo.Core.Entities.Identity
 {
-    public class User : IdentityUser<int>
+    public class User : IdentityUser<int>, IDtoConvertible
     {
         public string Code { get; set; }
         public string FirstName { get; set; }
