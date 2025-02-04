@@ -10,7 +10,6 @@ namespace TeamoWeb.API.Extensions
             if(skill == null) return null;
             return new SkillDto
             {
-                Id = skill.Id,
                 Name = skill.Name,
                 Type = skill.Type
             };
