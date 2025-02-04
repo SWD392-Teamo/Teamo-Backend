@@ -17,5 +17,7 @@ namespace TeamoWeb.API.Dtos
         public string FieldName { get; set; }
         public string SubjectCode { get; set; }
         public List<GroupMemberDto> GroupMembers { get; set; }
+        public List<GroupPositionDto> GroupPositions { get; set; }
+        public List<ApplicationDto> Applications { get; set; }
     }
 }
