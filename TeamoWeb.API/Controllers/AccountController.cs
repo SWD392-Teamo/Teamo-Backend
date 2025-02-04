@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Teamo.Core.Entities.Identity;
 using Teamo.Core.Interfaces.Services;
-using Teamo.Core.Specifications;
+using Teamo.Core.Specifications.Users;
 using TeamoWeb.API.Extensions;
 
 namespace TeamoWeb.API.Controllers

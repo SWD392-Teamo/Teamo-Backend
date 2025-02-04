@@ -27,7 +27,7 @@ namespace TeamoWeb.API.Controllers
         }
         [HttpGet("{id}")]
         [Authorize]
-        public async Task<ActionResult<SubjectDto>> GetSubjectById(int id)
+        public async Task<ActionResult<SubjectDto?>> GetSubjectById(int id)
         {
             var spec = new SubjectSpecification(id);
             var subject = await _subjectsRepository.GetEntityWithSpec(spec);
