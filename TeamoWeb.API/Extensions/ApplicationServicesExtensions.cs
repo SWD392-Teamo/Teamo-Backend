@@ -22,6 +22,7 @@ namespace TeamoWeb.API.Extensions
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IGroupService, GroupService>();
             services.AddDataProtection();
 
             // Set up aspnet identity
