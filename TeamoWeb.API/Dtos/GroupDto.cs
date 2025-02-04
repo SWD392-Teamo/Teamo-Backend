@@ -16,5 +16,6 @@ namespace TeamoWeb.API.Dtos
         public required GroupStatus Status { get; set; }
         public string FieldName { get; set; }
         public string SubjectCode { get; set; }
+        public List<GroupMemberDto> GroupMembers { get; set; }
     }
 }
