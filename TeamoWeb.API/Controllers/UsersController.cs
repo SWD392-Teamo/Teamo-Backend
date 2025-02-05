@@ -35,13 +35,13 @@ namespace TeamoWeb.API.Controllers
 
         //Get user by id
         [HttpGet("{id}")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,Student")]
         public async Task<ActionResult<ProfileDto?>> GetUserById (int id)
         {
             var userSpec = new UserSpecification(id);
             var user = await _userService.GetUserWithSpec(userSpec);
             if (user == null) return NotFound();
-            return user.ToProfileDto();
+            return Ok(user.ToProfileDto());
         }
 
         //Ban user

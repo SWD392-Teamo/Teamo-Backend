@@ -51,12 +51,13 @@ namespace TeamoWeb.API.Extensions
                 Applications = group.Applications?
                 .Select(a => new ApplicationDto
                 {
+                    Id = a.Id,
                     StudentName = a.SrcStudent.FirstName + " " + a.SrcStudent.LastName,
                     StudentEmail = a.SrcStudent.Email,
                     ImgUrl= a.SrcStudent.ImgUrl,
                     RequestTime = a.RequestTime,
                     RequestContent = a.RequestContent,
-                    Status = a.Status,
+                    Status = a.Status.ToString(),
                     GroupPositionName = a.GroupPosition.Name,
                 }).ToList() ?? new List<ApplicationDto>(),
             };
