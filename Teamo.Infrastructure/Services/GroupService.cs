@@ -14,6 +14,11 @@ namespace Teamo.Infrastructure.Services
             _unitOfWork = unitOfWork;
         }
 
+        public async Task<Group> GetGroupByIdAsync(ISpecification<Group> spec)
+        {
+            return await _unitOfWork.Repository<Group>().GetEntityWithSpec(spec);
+        }
+
         public async Task<IReadOnlyList<Group>> GetGroupsAsync(ISpecification<Group> spec)
         {
             return await _unitOfWork.Repository<Group>().ListAsync(spec);

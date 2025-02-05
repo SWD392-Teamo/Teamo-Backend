@@ -29,6 +29,8 @@ namespace Teamo.Core.Specifications.Groups
             AddInclude(x => x.Applications);
             AddInclude(x => x.Semester);
             AddInclude(x => x.CreatedByUser);
+            AddInclude(x => x.Subject);
+            AddInclude(x => x.Field);
         }
     }
 }
