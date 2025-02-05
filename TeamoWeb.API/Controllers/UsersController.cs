@@ -23,31 +23,31 @@ namespace TeamoWeb.API.Controllers
         //Get all users with spec
         [HttpGet]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<IReadOnlyList<UserDto>>> GetUsers([FromQuery] UserSpecParams userSpecParams)
+        public async Task<ActionResult<IReadOnlyList<ProfileDto>>> GetUsers([FromQuery] UserSpecParams userSpecParams)
         {
             var userSpec = new UserSpecification(userSpecParams);
             var users = await _userService.ListUsersAsync(userSpec);
             var count = await _userService.CountAsync(userSpec);
-            var usersToDto = users.Select(u => u.ToDto()).ToList();
-            var pagination = new Pagination<UserDto>(userSpecParams.PageIndex,userSpecParams.PageSize,count,usersToDto);
+            var usersToProfileDto = users.Select(u => u.ToProfileDto()).ToList();
+            var pagination = new Pagination<ProfileDto>(userSpecParams.PageIndex,userSpecParams.PageSize,count,usersToProfileDto);
             return Ok(pagination);
         }
 
         //Get user by id
         [HttpGet("{id}")]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<UserDto?>> GetUserById (int id)
+        public async Task<ActionResult<ProfileDto?>> GetUserById (int id)
         {
             var userSpec = new UserSpecification(id);
             var user = await _userService.GetUserWithSpec(userSpec);
             if (user == null) return NotFound();
-            return user.ToDto();
+            return user.ToProfileDto();
         }
 
         //Ban user
         [HttpDelete("{id}")]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<UserDto>> BanUser (int id)
+        public async Task<ActionResult<ProfileDto>> BanUser (int id)
         {
             var userSpec = new UserSpecification(id);
             var user = await _userService.GetUserWithSpec(userSpec);
