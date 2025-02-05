@@ -42,6 +42,7 @@ namespace TeamoWeb.API.Extensions
                     Skills = gp.Skills?
                     .Select(s => new SkillDto
                     {
+                        Id = s.Id,
                         Name = s.Name,
                         Type = s.Type
                     }).ToList() ?? new List<SkillDto>(),

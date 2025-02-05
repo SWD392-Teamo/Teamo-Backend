@@ -56,23 +56,18 @@ namespace TeamoWeb.API.Controllers
 
         [Authorize]
         [HttpGet("user-info")]
-        public async Task<ActionResult> GetUserInfo()
+        public async Task<ActionResult<UserDto>> GetUserInfo()
         {
-            if (User.Identity?.IsAuthenticated == false) return NoContent();
+            if (User.Identity?.IsAuthenticated == false) return Unauthorized();
 
             var spec = new UserSpecification(User.GetEmail());
             var user = await _userService.GetUserWithSpec(spec);
 
-            return Ok(new
-            {
-                user.FirstName,
-                user.LastName,
-                user.Email,
-                user.Major,
-                user.Links,
-                user.Skills,
-                Roles = User.GetRole(),
-            });
+            var userDto = user.ToDto();
+            if (userDto == null) return Unauthorized();
+            
+            userDto.Role = User.GetRole();
+            return Ok(userDto);
         }
 
         [HttpGet("auth-status")]
