@@ -25,12 +25,13 @@ namespace TeamoWeb.API.Extensions
             return role;
         }
 
-        //Display user in admin view
+        //Display user profile
         public static UserDto? ToDto(this User? user)
         {
             if(user == null) return null;
             return new UserDto
             {
+                Id = user.Id,
                 Code = user.Code,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
@@ -41,8 +42,10 @@ namespace TeamoWeb.API.Extensions
                 Status = user.Status.ToString(),
                 Description = user.Description ?? null,
                 MajorCode = user.Major.Code,
-                Links = (user.Links != null) ? user.Links.Select(l => l.ToDto()).ToList() : null,
-                Skills = (user.Skills != null) ? user.Skills.Select(s => s.ToDto()).ToList() : null
+                Links = (user.Links != null) ? 
+                    user.Links.Select(l => l.ToDto()).ToList() : new List<LinkDto?>(),
+                StudentSkills = (user.StudentSkills != null) ? 
+                    user.StudentSkills.Select(s => s.ToDto()).ToList() : new List<StudentSkillDto?>()
             };
         }
     }
