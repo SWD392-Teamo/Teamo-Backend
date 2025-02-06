@@ -477,7 +477,7 @@ $RECYCLE.BIN/
 *.lnk
 
 #yml files
-*.yml
+docker-compose.yml
 
 /publish
 /TeamoWeb.API/appsettings.json

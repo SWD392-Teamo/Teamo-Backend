@@ -8,14 +8,25 @@ using TeamoWeb.API.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
 builder.Services.AddControllers();
+builder.Services.AddSwaggerGen();
+
+// Add services to the container.
 builder.Services.AddApplicationServices(builder.Configuration);
 builder.Services.AddIdentityServices(builder.Configuration);
 builder.Services.AddSingleton(TimeProvider.System);
 
 var app = builder.Build();
+
+// Use Swagger API Documentation
+app.UseSwagger();
+
+// Set Swagger UI as the root path
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Teamo API V1");
+    c.RoutePrefix = string.Empty; // Serve Swagger UI at the app's root ("/")
+});
 
 app.UseHttpsRedirection();
 
