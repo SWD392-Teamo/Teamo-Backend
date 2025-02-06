@@ -1,0 +1,38 @@
+[
+  {
+    "GroupId": 1,
+    "StudentId": 1,
+    "GroupPositionId": 1,
+    "Role": "Leader"
+  },
+  {
+    "GroupId": 1,
+    "StudentId": 2,
+    "GroupPositionId": 2,
+    "Role": "Member"
+  },
+  {
+    "GroupId": 2,
+    "StudentId": 1,
+    "GroupPositionId": 5,
+    "Role": "Member"
+  },
+  {
+    "GroupId": 2,
+    "StudentId": 2,
+    "GroupPositionId": 6,
+    "Role": "Leader"
+  },
+  {
+    "GroupId": 3,
+    "StudentId": 1,
+    "GroupPositionId": 8,
+    "Role": "Leader"
+  },
+  {
+    "GroupId": 3,
+    "StudentId": 2,
+    "GroupPositionId": 7,
+    "Role": "Member"
+  }
+]

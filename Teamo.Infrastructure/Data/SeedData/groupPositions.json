@@ -1,0 +1,56 @@
+[
+  {
+    "GroupId": 1,
+    "Name": "Backend developer",
+    "Count": 2,
+    "Status": "Open"
+  },
+  {
+    "GroupId": 1,
+    "Name": "Frontend developer",
+    "Count": 2,
+    "Status": "Open"
+  },
+  {
+    "GroupId": 1,
+    "Name": "Maketing",
+    "Count": 1,
+    "Status": "Open"
+  },
+  {
+    "GroupId": 1,
+    "Name": "Business",
+    "Count": 1,
+    "Status": "Open"
+  },
+  {
+    "GroupId": 2,
+    "Name": "Backend developer",
+    "Count": 3,
+    "Status": "Closed"
+  },
+  {
+    "GroupId": 2,
+    "Name": "Frontend developer",
+    "Count": 2,
+    "Status": "Closed"
+  },
+  {
+    "GroupId": 3,
+    "Name": "Backend developer",
+    "Count": 2,
+    "Status": "Open"
+  },
+  {
+    "GroupId": 3,
+    "Name": "Frontend developer",
+    "Count": 2,
+    "Status": "Open"
+  },
+  {
+    "GroupId": 3,
+    "Name": "Mobile developer",
+    "Count": 2,
+    "Status": "Open"
+  }
+]
