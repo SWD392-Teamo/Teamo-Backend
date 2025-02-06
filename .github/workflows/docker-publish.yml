@@ -24,6 +24,11 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
       # Step 3: Build the Docker image
+      - name: Show current directory
+        run: |
+          ls -a
+
+      # Step 3: Build the Docker image
       - name: Build and tag Docker image
         run: |
           docker build -t ${{ vars.DOCKERHUB_USERNAME }}/${{ vars.DOCKERHUB_REPONAME }}:latest -f TeamoWeb.API/Dockerfile .
