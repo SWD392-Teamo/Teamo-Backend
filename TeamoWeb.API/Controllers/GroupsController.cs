@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Identity.Client;
 using Teamo.Core.Entities;
 using Teamo.Core.Interfaces.Services;
 using Teamo.Core.Specifications;
@@ -30,6 +31,16 @@ namespace TeamoWeb.API.Controllers
             var groupDtos = groups.Any() ? groups.Select(g => g.ToDto()).ToList() : new List<GroupDto?>();
             var pagination = new Pagination<GroupDto>(groupParams.PageIndex, groupParams.PageSize, groups.Count(), groupDtos);
             return Ok(pagination);
+        }
+
+        [HttpGet("{id}")]
+        [Authorize]
+        public async Task<ActionResult<GroupDto>> GetGroupByIdAsync(int id)
+        {
+            var spec = new GroupSpecification(id);  
+            var group = await _groupService.GetGroupByIdAsync(spec);
+            if (group == null) return NotFound();
+            return Ok(group.ToDto());
         }
     }
 }

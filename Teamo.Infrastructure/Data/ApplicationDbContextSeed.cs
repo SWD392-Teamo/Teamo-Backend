@@ -186,6 +186,54 @@ namespace Teamo.Infrastructure.Data
 
                 await context.SaveChangesAsync();
             }
+
+            // Seed Group 
+            if (!context.Groups.Any())
+            {
+                var groupData = await File
+                    .ReadAllTextAsync(path + @"/Data/SeedData/groups.json");
+
+                var groups = JsonSerializer.Deserialize<List<Group>>(groupData);
+
+
+                if (groups == null) return;
+
+                context.Groups.AddRange(groups);
+
+                await context.SaveChangesAsync();
+            }
+            // Seed Group Position
+            if (!context.GroupPositions.Any())
+            {
+                var groupPositionData = await File
+                    .ReadAllTextAsync(path + @"/Data/SeedData/groupPositions.json");
+
+                var groupPositions = JsonSerializer.Deserialize<List<GroupPosition>>(groupPositionData);
+
+
+                if (groupPositions == null) return;
+
+                context.GroupPositions.AddRange(groupPositions);
+
+                await context.SaveChangesAsync();
+            }
+
+            // Seed Group Member
+            if (!context.GroupMembers.Any())
+            {
+                var groupMemberData = await File
+                    .ReadAllTextAsync(path + @"/Data/SeedData/groupMembers.json");
+
+                var groupMembers = JsonSerializer.Deserialize<List<GroupMember>>(groupMemberData);
+
+
+                if (groupMembers == null) return;
+
+                context.GroupMembers.AddRange(groupMembers);
+
+                await context.SaveChangesAsync();
+            }
+
         }
     }
 }
