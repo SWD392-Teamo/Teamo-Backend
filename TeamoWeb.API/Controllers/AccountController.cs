@@ -42,12 +42,16 @@ namespace TeamoWeb.API.Controllers
 
             var userRole = await _userService.GetUserRoleAsync(user);
 
+            // Generate token and get expiry
+            var (token, expires) = _tokenService.GenerateToken(user, userRole);
+
             return Ok(new 
             {
                 Id = user.Id,
                 Email = User.GetEmail(),
                 Role = userRole,
-                Token = _tokenService.GenerateToken(user, userRole)
+                Token = token,
+                Expires = expires
             });
         }
 

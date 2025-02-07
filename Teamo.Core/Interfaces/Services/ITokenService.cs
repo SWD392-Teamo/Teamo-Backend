@@ -4,6 +4,6 @@ namespace Teamo.Core.Interfaces.Services
 {
     public interface ITokenService
     {
-        string GenerateToken(User user, string userRole);
+        (string token, DateTime expires) GenerateToken(User user, string userRole);
     }
 }
