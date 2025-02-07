@@ -19,7 +19,7 @@ namespace Teamo.Infrastructure.Services
             _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Token:Key"]));
         }
 
-        public string GenerateToken(User user, string userRole)
+        public (string token, DateTime expires) GenerateToken(User user, string userRole)
         {
             // Added claims to the token
             var claims = new List<Claim>
@@ -31,11 +31,14 @@ namespace Teamo.Infrastructure.Services
             // Sign the token
             var creds = new SigningCredentials(_key, SecurityAlgorithms.HmacSha512Signature);
 
+            // Set expiration time
+            var expiration = DateTime.Now.AddDays(1);
+
             // Create token descriptor
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.Now.AddDays(1),
+                Expires = expiration,
                 SigningCredentials = creds,
                 Issuer = _config["Token:Issuer"]
             };
@@ -45,7 +48,7 @@ namespace Teamo.Infrastructure.Services
             // Generate jwt access token
             var token = tokenHandler.CreateToken(tokenDescriptor);
 
-            return tokenHandler.WriteToken(token);
+            return (tokenHandler.WriteToken(token), expiration);
         }
     }
 }
