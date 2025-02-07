@@ -14,6 +14,7 @@ namespace Teamo.Core.Specifications.Applications
         {
             AddInclude(x => x.Group);
             AddInclude(x => x.SrcStudent);
+            AddInclude(x => x.DestStudent);
             AddInclude(x => x.GroupPosition);
 
             if(!string.IsNullOrEmpty(appParams.Sort))

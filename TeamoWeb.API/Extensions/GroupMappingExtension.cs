@@ -48,18 +48,8 @@ namespace TeamoWeb.API.Extensions
                     }).ToList() ?? new List<SkillDto>(),
                 }).ToList() ?? new List<GroupPositionDto>(),
 
-                Applications = group.Applications?
-                .Select(a => new ApplicationDto
-                {
-                    Id = a.Id,
-                    StudentName = a.SrcStudent.FirstName + " " + a.SrcStudent.LastName,
-                    StudentEmail = a.SrcStudent.Email,
-                    ImgUrl= a.SrcStudent.ImgUrl,
-                    RequestTime = a.RequestTime,
-                    RequestContent = a.RequestContent,
-                    Status = a.Status.ToString(),
-                    GroupPositionName = a.GroupPosition.Name,
-                }).ToList() ?? new List<ApplicationDto>(),
+                Applications = (group.Applications != null) ?
+                    group.Applications.Select(a => a.ToDto()).ToList() : new List<ApplicationDto?>()
             };
         }
     }

@@ -70,7 +70,8 @@ namespace TeamoWeb.API.Controllers
             if(!User.GetEmail().Equals(appReview.DestStudent.Email)) return BadRequest();
 
             var result = await _appService.ReviewApplicationAsync(appReview, appReviewDto.Status);
-            return BadRequest();
+            if(result) return Ok();
+            else return BadRequest();
         }
 
         //Create and send an application

@@ -290,13 +290,13 @@ namespace Teamo.Infrastructure.Data
                 await context.SaveChangesAsync();
             }
 
-            // Seed Applications
+            //Seed Applications
             if (!context.Applications.Any())
             {
                 var applicationData = await File
                     .ReadAllTextAsync(path + @"/Data/SeedData/applications.json");
 
-                var applications = JsonSerializer.Deserialize<List<Application>>(applicationData);
+                var applications = JsonSerializer.Deserialize<List<Application>>(applicationData, options);
 
 
                 if (applications == null) return;
@@ -312,12 +312,12 @@ namespace Teamo.Infrastructure.Data
                 var studentSkillsData = await File
                     .ReadAllTextAsync(path + @"/Data/SeedData/studentSkills.json");
 
-                var studentSkills = JsonSerializer.Deserialize<List<Application>>(studentSkillsData);
+                var studentSkills = JsonSerializer.Deserialize<List<StudentSkill>>(studentSkillsData, options);
 
 
                 if (studentSkills == null) return;
 
-                context.Applications.AddRange(studentSkills);
+                context.StudentSkills.AddRange(studentSkills);
 
                 await context.SaveChangesAsync();
             }
