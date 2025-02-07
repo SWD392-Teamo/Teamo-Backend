@@ -16,10 +16,10 @@ namespace Teamo.Infrastructure.Configs
             builder.Property(u => u.Email).HasColumnType("varchar(100)");
             builder.Property(u => u.Code).HasColumnType("varchar(20)");
             builder.Property(u => u.Gender).HasColumnType("varchar(20)");
-            builder.Property(u => u.FirstName) .HasColumnType("varchar(100)");
-            builder.Property(u => u.LastName).HasColumnType("varchar(100)");
+            builder.Property(u => u.FirstName) .HasColumnType("nvarchar(100)");
+            builder.Property(u => u.LastName).HasColumnType("nvarchar(100)");
             builder.Property(u => u.ImgUrl).HasColumnType("varchar(200)");
-            builder.Property(u => u.Description).HasColumnType("varchar(1000)");
+            builder.Property(u => u.Description).HasColumnType("nvarchar(1000)");
 
             builder.Property(c => c.Status)
                 .HasConversion(

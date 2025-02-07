@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Teamo.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialDb : Migration
+    public partial class NewMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -150,13 +150,13 @@ namespace Teamo.Infrastructure.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Code = table.Column<string>(type: "varchar(20)", nullable: true),
-                    FirstName = table.Column<string>(type: "varchar(100)", nullable: true),
-                    LastName = table.Column<string>(type: "varchar(100)", nullable: true),
+                    FirstName = table.Column<string>(type: "nvarchar(100)", nullable: true),
+                    LastName = table.Column<string>(type: "nvarchar(100)", nullable: true),
                     Gender = table.Column<string>(type: "varchar(20)", nullable: false),
                     Dob = table.Column<DateOnly>(type: "date", nullable: false),
                     ImgUrl = table.Column<string>(type: "varchar(200)", nullable: true),
                     Status = table.Column<string>(type: "varchar(50)", nullable: false),
-                    Description = table.Column<string>(type: "varchar(1000)", nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(1000)", nullable: true),
                     MajorID = table.Column<int>(type: "int", nullable: true),
                     UserName = table.Column<string>(type: "varchar(50)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
