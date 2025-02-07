@@ -52,7 +52,10 @@ namespace TeamoWeb.API.Controllers
             var userSpec = new UserSpecification(id);
             var user = await _userService.GetUserWithSpec(userSpec);
             if(user == null) return NotFound();
+
+            if(user.Status == UserStatus.Active) return BadRequest();
             user.Status = UserStatus.Inactive;
+            
             var result = await _userService.UpdateUserAsync(user);
             if (result.Succeeded) return Ok();
             else return BadRequest();
