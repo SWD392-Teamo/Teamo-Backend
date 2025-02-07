@@ -14,11 +14,14 @@ namespace TeamoWeb.API.Controllers
     {
         private readonly IUserService _userService;
         private readonly SignInManager<User> _signInManager;
+        private readonly ITokenService _tokenService;
 
-        public AccountController(IUserService userService, SignInManager<User> signInManager) 
+        public AccountController(IUserService userService, SignInManager<User> signInManager, 
+            ITokenService tokenService) 
         {
             _userService = userService;
             _signInManager = signInManager;
+            _tokenService = tokenService;
         }
 
         [HttpPost("login")]
@@ -37,12 +40,15 @@ namespace TeamoWeb.API.Controllers
 
             if (!result.Succeeded) return Unauthorized();
 
+            var userRole = await _userService.GetUserRoleAsync(user);
+
             return Ok(new 
             {
+                Id = user.Id,
                 Email = User.GetEmail(),
-                Role = User.GetRole(),
+                Role = userRole,
+                Token = _tokenService.GenerateToken(user, userRole)
             });
-            
         }
 
         [Authorize]
