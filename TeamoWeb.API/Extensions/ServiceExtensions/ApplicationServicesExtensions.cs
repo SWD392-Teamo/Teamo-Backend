@@ -22,6 +22,7 @@ namespace TeamoWeb.API.Extensions
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IGroupService, GroupService>();
             services.AddScoped<IProfileService, ProfileService>();
+            services.AddScoped<IApplicationService, ApplicationService>();
             services.AddDataProtection();
 
             // Register services with the DI container

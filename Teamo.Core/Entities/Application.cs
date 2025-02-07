@@ -1,10 +1,11 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using Teamo.Core.Entities.Identity;
 using Teamo.Core.Enums;
+using Teamo.Core.Interfaces;
 
 namespace Teamo.Core.Entities
 {
-    public class Application : BaseEntity
+    public class Application : BaseEntity, IDtoConvertible
     {
         public required int GroupId { get; set; }
         public Group Group { get; set; }

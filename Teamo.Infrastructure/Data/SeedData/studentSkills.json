@@ -1,0 +1,32 @@
+[
+    {
+        "SkillId": 1,
+        "StudentId": 1,
+        "Level": "Advanced"
+    },
+    {
+        "SkillId": 1,
+        "StudentId": 2,
+        "Level": "PreIntermediate"
+    },
+    {
+        "SkillId": 2,
+        "StudentId": 7,
+        "Level": "Intermediate"
+    },
+    {
+        "SkillId": 11,
+        "StudentId": 6,
+        "Level": "Advanced"
+    },
+    {
+        "SkillId": 5,
+        "StudentId": 4,
+        "Level": "Intermediate"
+    },
+    {
+        "SkillId": 7,
+        "StudentId": 4,
+        "Level": "Advanced"
+    }
+]

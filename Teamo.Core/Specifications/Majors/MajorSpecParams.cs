@@ -8,7 +8,5 @@ namespace Teamo.Core.Specifications.Majors
             get => _search;
             set => _search = value.ToLower();
         }
-
-        public int? MajorId { get; set; }
     }
 }
