@@ -52,5 +52,35 @@
     "Name": "Mobile developer",
     "Count": 2,
     "Status": "Open"
+  },
+  {
+    "GroupId": 4,
+    "Name": "Script writer",
+    "Count": 1,
+    "Status": "Closed"
+  },
+  {
+    "GroupId": 4,
+    "Name": "Sound production",
+    "Count": 2,
+    "Status": "Open"
+  },
+  {
+    "GroupId": 4,
+    "Name": "Video editor",
+    "Count": 2,
+    "Status": "Open"
+  },
+  {
+    "GroupId": 4,
+    "Name": "Costumes & props",
+    "Count": 3,
+    "Status": "Open"
+  },
+  {
+    "GroupId": 4,
+    "Name": "Director",
+    "Count": 2,
+    "Status": "Open"
   }
 ]

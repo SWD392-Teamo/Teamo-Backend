@@ -34,5 +34,17 @@
     "Status": "Full",
     "FieldId": 13,
     "SubjectId": 5
+  },
+  {
+    "Name": "Alice Dream's - BANANAHOUSE",
+    "Title": "Short film production",
+    "SemesterId": 3,
+    "Desciption": "Contestors of the annual FPTU Film Awards: Short Films Category",
+    "CreatedAt": "2025-01-06T00:00:00Z",
+    "CreatedById": 6,
+    "MaxMember": 10,
+    "Status": "Recruiting",
+    "FieldId": 18,
+    "SubjectId": 14
   }
 ]

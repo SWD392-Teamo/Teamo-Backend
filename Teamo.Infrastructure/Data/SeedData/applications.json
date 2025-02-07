@@ -1,0 +1,47 @@
+[
+    {
+        "GroupId": 1,
+        "DestStudentId": 1,
+        "SrcStudentId": 7,
+        "RequestTime": "2025-01-15T00:00:00Z",
+        "RequestContent": "Looking for EXE team.",
+        "GroupPositionId": 2,
+        "Status": "Requested"
+    },
+    {
+        "GroupId": 1,
+        "DestStudentId": 1,
+        "SrcStudentId": 4,
+        "RequestTime": "2025-01-23T00:00:00Z",
+        "RequestContent": "Looking for EXE team.",
+        "GroupPositionId": 2,
+        "Status": "Requested"
+    },
+    {
+        "GroupId": 1,
+        "DestStudentId": 1,
+        "SrcStudentId": 5,
+        "RequestTime": "2025-01-27T00:00:00Z",
+        "RequestContent": "Looking for EXE team.",
+        "GroupPositionId": 3,
+        "Status": "Requested"
+    },
+    {
+        "GroupId": 1,
+        "DestStudentId": 1,
+        "SrcStudentId": 6,
+        "RequestTime": "2025-02-07T00:00:00Z",
+        "RequestContent": "Please accept!!!",
+        "GroupPositionId": 3,
+        "Status": "Rejected"
+    },
+    {
+        "GroupId": 4,
+        "DestStudentId": 1,
+        "SrcStudentId": 5,
+        "RequestTime": "2025-02-07T00:00:00Z",
+        "RequestContent": "Looking for film crew.",
+        "GroupPositionId": 13,
+        "Status": "Requested"
+    }
+]
