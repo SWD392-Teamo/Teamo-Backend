@@ -19,22 +19,21 @@ namespace TeamoWeb.API.Extensions
             });
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IGroupService, GroupService>();
             services.AddScoped<IProfileService, ProfileService>();
             services.AddScoped<IApplicationService, ApplicationService>();
+            services.AddScoped<ISkillService, SkillService>();
             services.AddDataProtection();
 
             // Register services with the DI container
-            services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
-
             services.AddCors(opt =>
             {
                 opt.AddPolicy("CorsPolicy", policy =>
                 {
                     policy.AllowAnyHeader().AllowAnyMethod()
-                        .AllowCredentials().WithOrigins("http://localhost:3000");
+                        .WithOrigins(config["ClientApp"]);
                 });
             });
 

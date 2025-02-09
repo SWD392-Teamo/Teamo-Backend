@@ -15,5 +15,7 @@ namespace Teamo.Core.Interfaces.Services
         Task<IdentityResult> AddUserToRoleAsync(User user, string role);
         Task<IdentityResult> CreateUserAsync(User user, string password);
         Task<IdentityResult> UpdateUserAsync(User user);
+        Task<User> GetUserByClaims(ClaimsPrincipal principal);
+        Task<IList<Claim>> GetUserClaims(User user);
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 using Teamo.Core.Entities.Identity;
 using Teamo.Core.Interfaces.Services;
 using Teamo.Core.Specifications;
@@ -10,13 +11,11 @@ namespace Teamo.Infrastructure.Services
     public class UserService : IUserService
     {
         private readonly UserManager<User> _userManager;
-        private readonly RoleManager<IdentityRole<int>> _roleManager;
         private readonly string _studentRoleName = "Student";
 
-        public UserService(UserManager<User> userManager, RoleManager<IdentityRole<int>> roleManager)
+        public UserService(UserManager<User> userManager)
         {
             _userManager = userManager;
-            _roleManager = roleManager;
         }
 
         public async Task<IdentityResult> AddUserToRoleAsync(User user, string role)
@@ -51,6 +50,16 @@ namespace Teamo.Infrastructure.Services
             return await _userManager.Users.ToListAsync();
         }
 
+        public async Task<User> GetUserByClaims(ClaimsPrincipal principal)
+        {
+            return await _userManager.GetUserAsync(principal);
+        }
+
+        public async Task<IList<Claim>> GetUserClaims(User user)
+        {
+            return await _userManager.GetClaimsAsync(user);
+        }
+
         public async Task<IReadOnlyList<User>> ListUsersAsync(ISpecification<User> spec)
         {
             var query = _userManager.Users.AsQueryable();
@@ -76,7 +85,5 @@ namespace Teamo.Infrastructure.Services
         {
             return UserSpecificationEvaluator.GetQuery(query, spec);
         }
-
-
     }
 }
