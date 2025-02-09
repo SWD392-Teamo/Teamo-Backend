@@ -24,12 +24,10 @@ namespace TeamoWeb.API.Extensions
             services.AddScoped<IGroupService, GroupService>();
             services.AddScoped<IProfileService, ProfileService>();
             services.AddScoped<IApplicationService, ApplicationService>();
+            services.AddScoped<ISkillService, SkillService>();
             services.AddDataProtection();
 
             // Register services with the DI container
-            services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
-
             services.AddCors(opt =>
             {
                 opt.AddPolicy("CorsPolicy", policy =>
