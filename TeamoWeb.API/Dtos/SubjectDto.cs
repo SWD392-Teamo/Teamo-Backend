@@ -9,6 +9,5 @@ namespace TeamoWeb.API.Dtos
         public string? Name { get; set; }
         public string? Description { get; set; }
         public DateOnly CreatedDate { get; set; }
-        public List<Group>? Groups { get; set; }
     }
 }
