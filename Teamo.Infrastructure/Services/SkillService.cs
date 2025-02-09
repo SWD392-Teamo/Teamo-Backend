@@ -33,9 +33,13 @@ namespace Teamo.Infrastructure.Services
             var compareParams = new StudentSkillForCompareParams{ StudentId = skillParams.StudentId };
             var compareSpec = new StudentSkillForCompareSpecification(compareParams);
             var compareStudentSkills = await _unitOfWork.Repository<StudentSkill>().ListAsync(compareSpec);
-            
-            var compareSkills = (IReadOnlyList<Skill>) compareStudentSkills
-                .Select(async s => await _unitOfWork.Repository<Skill>().GetByIdAsync(s.SkillId)).ToList();
+
+            var compareSkills = new List<Skill>();
+            foreach (var s in compareStudentSkills) 
+            {
+                var skill = await _unitOfWork.Repository<Skill>().GetByIdAsync(s.SkillId);
+                compareSkills.Add(skill);
+            }
 
             skills = skills.Where(s => !compareSkills.Contains(s)).ToList();
 
