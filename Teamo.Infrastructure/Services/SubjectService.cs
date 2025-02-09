@@ -32,10 +32,6 @@ namespace Teamo.Infrastructure.Services
                 var spec = new MajorSubjectSpecification((int) subjectParams.MajorId);
                 var majorSubjects = await _unitOfWork.Repository<MajorSubject>().ListAsync(spec);
                 subjects = majorSubjects.Select(s => s.Subject).ToList();
-                
-                // var majorSpec = new MajorSpecification((int) subjectParams.MajorId);
-                // var major = await _unitOfWork.Repository<Major>().GetEntityWithSpec(majorSpec);
-                // subjects = major.Subjects;
             }  
 
             return subjects;          
