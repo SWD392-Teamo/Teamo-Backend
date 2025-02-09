@@ -1,5 +1,8 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using Teamo.Core.Entities.Identity;
 using Teamo.Infrastructure.Data;
 
@@ -10,18 +13,6 @@ namespace API.Extensions
         public static IServiceCollection AddIdentityServices(this IServiceCollection services, 
             IConfiguration config)
         {
-            services.ConfigureApplicationCookie(options =>
-            {
-                options.Cookie.SameSite = SameSiteMode.None;
-                options.SlidingExpiration = true;
-                options.ExpireTimeSpan = TimeSpan.FromDays(1);
-            });
-
-            // Set up aspnet identity
-            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                .AddCookie();
-
-            services.AddAuthorization();
             services.AddIdentityApiEndpoints<User>(opt =>
             {
                 //Set you account options here (e.g., Password, Email)
@@ -34,7 +25,23 @@ namespace API.Extensions
             })
             .AddRoles<IdentityRole<int>>()
             .AddSignInManager<SignInManager<User>>()
-            .AddEntityFrameworkStores<ApplicationDbContext>();
+            .AddEntityFrameworkStores<ApplicationDbContext>()
+            .AddDefaultTokenProviders();
+
+            // Add JWT Bearer Token Issuer
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options => {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Token:Key"])),
+                        ValidIssuer = config["Token:Issuer"],
+                        ValidateIssuer = true,
+                        ValidateAudience = false
+                    };
+                });
+
+            services.AddAuthorization();
 
             return services;
         }

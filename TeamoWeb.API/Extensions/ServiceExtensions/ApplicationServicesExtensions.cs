@@ -19,6 +19,7 @@ namespace TeamoWeb.API.Extensions
             });
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IGroupService, GroupService>();
             services.AddScoped<IProfileService, ProfileService>();
@@ -32,7 +33,7 @@ namespace TeamoWeb.API.Extensions
                 opt.AddPolicy("CorsPolicy", policy =>
                 {
                     policy.AllowAnyHeader().AllowAnyMethod()
-                        .AllowCredentials().WithOrigins("http://localhost:3000");
+                        .WithOrigins(config["ClientApp"]);
                 });
             });
 
