@@ -36,33 +36,6 @@ namespace Teamo.Infrastructure.Migrations
                 table: "Applications",
                 newName: "IX_Applications_StudentId");
 
-            migrationBuilder.AlterColumn<string>(
-                name: "LastName",
-                table: "AspNetUsers",
-                type: "varchar(100)",
-                nullable: true,
-                oldClrType: typeof(string),
-                oldType: "nvarchar(100)",
-                oldNullable: true);
-
-            migrationBuilder.AlterColumn<string>(
-                name: "FirstName",
-                table: "AspNetUsers",
-                type: "varchar(100)",
-                nullable: true,
-                oldClrType: typeof(string),
-                oldType: "nvarchar(100)",
-                oldNullable: true);
-
-            migrationBuilder.AlterColumn<string>(
-                name: "Description",
-                table: "AspNetUsers",
-                type: "varchar(1000)",
-                nullable: true,
-                oldClrType: typeof(string),
-                oldType: "nvarchar(1000)",
-                oldNullable: true);
-
             migrationBuilder.AddForeignKey(
                 name: "FK_Applications_AspNetUsers_StudentId",
                 table: "Applications",
@@ -88,33 +61,6 @@ namespace Teamo.Infrastructure.Migrations
                 name: "IX_Applications_StudentId",
                 table: "Applications",
                 newName: "IX_Applications_SrcStudentId");
-
-            migrationBuilder.AlterColumn<string>(
-                name: "LastName",
-                table: "AspNetUsers",
-                type: "nvarchar(100)",
-                nullable: true,
-                oldClrType: typeof(string),
-                oldType: "varchar(100)",
-                oldNullable: true);
-
-            migrationBuilder.AlterColumn<string>(
-                name: "FirstName",
-                table: "AspNetUsers",
-                type: "nvarchar(100)",
-                nullable: true,
-                oldClrType: typeof(string),
-                oldType: "varchar(100)",
-                oldNullable: true);
-
-            migrationBuilder.AlterColumn<string>(
-                name: "Description",
-                table: "AspNetUsers",
-                type: "nvarchar(1000)",
-                nullable: true,
-                oldClrType: typeof(string),
-                oldType: "varchar(1000)",
-                oldNullable: true);
 
             migrationBuilder.AddColumn<int>(
                 name: "DestStudentId",

@@ -9,10 +9,11 @@ namespace Teamo.Core.Specifications.Skills
         }
 
         public SkillSpecification(SkillParams skillParams)
-            : base(x => string.IsNullOrEmpty(skillParams.Search)
+            : base(x => (string.IsNullOrEmpty(skillParams.Search)
                         || x.Name.ToLower().Contains(skillParams.Search)
-                        || x.Type.ToLower().Contains(skillParams.Search)
-                        || skillParams.StudentId.HasValue)
+                        || x.Type.ToLower().Contains(skillParams.Search))
+                        &&(skillParams.StudentId.HasValue 
+                        || !skillParams.StudentId.HasValue))
         {
             AddOrderBy(s => s.Name);
         }

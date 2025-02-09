@@ -12,7 +12,7 @@ using Teamo.Infrastructure.Data;
 namespace Teamo.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250209102955_NewMigrations")]
+    [Migration("20250209105844_NewMigrations")]
     partial class NewMigrations
     {
         /// <inheritdoc />
@@ -369,7 +369,7 @@ namespace Teamo.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Description")
-                        .HasColumnType("varchar(1000)");
+                        .HasColumnType("nvarchar(1000)");
 
                     b.Property<DateOnly>("Dob")
                         .HasColumnType("date");
@@ -382,7 +382,7 @@ namespace Teamo.Infrastructure.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("FirstName")
-                        .HasColumnType("varchar(100)");
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("Gender")
                         .IsRequired()
@@ -392,7 +392,7 @@ namespace Teamo.Infrastructure.Migrations
                         .HasColumnType("varchar(200)");
 
                     b.Property<string>("LastName")
-                        .HasColumnType("varchar(100)");
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
