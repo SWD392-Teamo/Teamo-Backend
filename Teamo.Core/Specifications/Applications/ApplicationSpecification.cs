@@ -7,20 +7,18 @@ namespace Teamo.Core.Specifications.Applications
         public ApplicationSpecification(int id) : base(x => x.Id == id)
         {
             AddInclude(x => x.Group);
-            AddInclude(x => x.SrcStudent);
-            AddInclude(x => x.DestStudent);
+            AddInclude(x => x.Student);
             AddInclude(x => x.GroupPosition);
         }
 
         //Spec to retrieve user's sent applications
         public ApplicationSpecification(ApplicationParams appParams)
-            : base(x => (x.SrcStudentId == appParams.SenderId)
+            : base(x => (x.StudentId == appParams.StudentId)
                         && (string.IsNullOrEmpty(appParams.Status)
                         || x.Status.ToString().ToLower().Equals(appParams.Status.ToLower())))
         {
             AddInclude(x => x.Group);
-            AddInclude(x => x.SrcStudent);
-            AddInclude(x => x.DestStudent);
+            AddInclude(x => x.Student);
             AddInclude(x => x.GroupPosition);
             
             if(!string.IsNullOrEmpty(appParams.Sort))
