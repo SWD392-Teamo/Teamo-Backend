@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore.Query.Internal;
 using Teamo.Core.Entities;
 using Teamo.Core.Interfaces;
 using Teamo.Core.Interfaces.Services;
@@ -31,7 +32,8 @@ namespace Teamo.Infrastructure.Services
             {
                 var spec = new MajorSubjectSpecification((int) subjectParams.MajorId);
                 var majorSubjects = await _unitOfWork.Repository<MajorSubject>().ListAsync(spec);
-                subjects = majorSubjects.Select(s => s.Subject).ToList();
+                var allMajorSubjects = majorSubjects.Select(s => s.Subject).ToList();
+                subjects = subjects.Where(allMajorSubjects.Contains).ToList();
             }  
 
             return subjects;          
@@ -44,8 +46,14 @@ namespace Teamo.Infrastructure.Services
 
             if(subjectParams.MajorId.HasValue)
             {
+                var subjects = await _unitOfWork.Repository<Subject>().ListAsync(subjectSpec);
+
                 var spec = new MajorSubjectSpecification((int) subjectParams.MajorId);
-                count = await _unitOfWork.Repository<MajorSubject>().CountAsync(spec);
+                var majorSubjects = await _unitOfWork.Repository<MajorSubject>().ListAsync(spec);
+                var allMajorSubjects = majorSubjects.Select(s => s.Subject).ToList();
+                subjects = subjects.Where(allMajorSubjects.Contains).ToList();
+
+                count = subjects.Count;
             }
 
             return count;
