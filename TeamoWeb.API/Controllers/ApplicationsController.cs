@@ -95,7 +95,7 @@ namespace TeamoWeb.API.Controllers
 
             var result = await _appService.CreateNewApplicationAsync(newApp);
             if(!result) return BadRequest();
-            return Ok(newApp.ToDto());
+            return Ok();
         }
     }
 }
