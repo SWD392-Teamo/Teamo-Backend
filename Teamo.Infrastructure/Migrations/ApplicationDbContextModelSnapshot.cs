@@ -163,9 +163,6 @@ namespace Teamo.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("DestStudentId")
-                        .HasColumnType("int");
-
                     b.Property<int>("GroupId")
                         .HasColumnType("int");
 
@@ -178,22 +175,20 @@ namespace Teamo.Infrastructure.Migrations
                     b.Property<DateTime>("RequestTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("SrcStudentId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("varchar(50)");
 
-                    b.HasKey("Id");
+                    b.Property<int>("StudentId")
+                        .HasColumnType("int");
 
-                    b.HasIndex("DestStudentId");
+                    b.HasKey("Id");
 
                     b.HasIndex("GroupId");
 
                     b.HasIndex("GroupPositionId");
 
-                    b.HasIndex("SrcStudentId");
+                    b.HasIndex("StudentId");
 
                     b.ToTable("Applications");
                 });
@@ -733,12 +728,6 @@ namespace Teamo.Infrastructure.Migrations
 
             modelBuilder.Entity("Teamo.Core.Entities.Application", b =>
                 {
-                    b.HasOne("Teamo.Core.Entities.Identity.User", "DestStudent")
-                        .WithMany()
-                        .HasForeignKey("DestStudentId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.HasOne("Teamo.Core.Entities.Group", "Group")
                         .WithMany("Applications")
                         .HasForeignKey("GroupId")
@@ -751,19 +740,17 @@ namespace Teamo.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Teamo.Core.Entities.Identity.User", "SrcStudent")
+                    b.HasOne("Teamo.Core.Entities.Identity.User", "Student")
                         .WithMany()
-                        .HasForeignKey("SrcStudentId")
+                        .HasForeignKey("StudentId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.Navigation("DestStudent");
 
                     b.Navigation("Group");
 
                     b.Navigation("GroupPosition");
 
-                    b.Navigation("SrcStudent");
+                    b.Navigation("Student");
                 });
 
             modelBuilder.Entity("Teamo.Core.Entities.Group", b =>
