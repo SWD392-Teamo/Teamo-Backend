@@ -10,7 +10,7 @@ namespace Teamo.Core.Interfaces.Services
         Task<IReadOnlyList<Application>> GetGroupApplicationsAsync(ApplicationGroupSpecification appSpec);
         Task<bool> ReviewApplicationAsync(Application app, string newStatus);
         Task<bool> CreateNewApplicationAsync(Application newAapp);
-        Task<int> GetDestStudentIdAsync(int groupId);
+        Task<string> GetGroupLeaderEmailAsync(int groupId);
         Task<bool> CheckValidToApply(int groupId, int studentId, int groupPositionId);
         Task<int> CountAsync(ApplicationSpecification appSpec);
         Task<int> CountAsync(ApplicationGroupSpecification appSpec);

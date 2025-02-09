@@ -20,15 +20,10 @@ namespace Teamo.Infrastructure.Configs
             builder.HasOne(o => o.Group)
                 .WithMany(g => g.Applications)
                 .HasForeignKey(o => o.GroupId);
-            
-            builder.HasOne(o => o.DestStudent)
-                .WithMany()
-                .HasForeignKey(o => o.DestStudentId)
-                .OnDelete(DeleteBehavior.Restrict);
 
-            builder.HasOne(o => o.SrcStudent)
+            builder.HasOne(o => o.Student)
                 .WithMany()
-                .HasForeignKey(o => o.SrcStudentId)
+                .HasForeignKey(o => o.StudentId)
                 .OnDelete(DeleteBehavior.Restrict);;
 
             builder.HasOne(o => o.GroupPosition)

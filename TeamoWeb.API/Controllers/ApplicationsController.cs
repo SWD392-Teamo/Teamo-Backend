@@ -67,7 +67,8 @@ namespace TeamoWeb.API.Controllers
                 return BadRequest();
         
             //Check if current user is the leader of corresponding group
-            if(!User.GetEmail().Equals(appReview.DestStudent.Email)) return BadRequest();
+            var groupLeaderEmail = await _appService.GetGroupLeaderEmailAsync(appReview.GroupId);
+            if(!User.GetEmail().Equals(groupLeaderEmail)) return BadRequest();
 
             var result = await _appService.ReviewApplicationAsync(appReview, appReviewDto.Status);
             if(result) return Ok();
@@ -82,15 +83,10 @@ namespace TeamoWeb.API.Controllers
             //Check for validity to apply
             var isValid = await _appService.CheckValidToApply(app.GroupId,app.StudentId,app.GroupPositionId);
             if(!isValid) return BadRequest();
-            
-            //Get DestStudentId of Application (group leader's id)
-            var destStudentId = await _appService.GetDestStudentIdAsync(app.GroupId);
-            if(destStudentId == 0) return BadRequest();
 
             var newApp = new Application(){
                 GroupId = app.GroupId,
-                DestStudentId = destStudentId,
-                SrcStudentId = app.StudentId,
+                StudentId = app.StudentId,
                 RequestTime = app.RequestTime,
                 RequestContent = app.RequestContent,
                 GroupPositionId = app.GroupPositionId,

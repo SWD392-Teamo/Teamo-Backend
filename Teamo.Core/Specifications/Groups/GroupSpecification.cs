@@ -14,7 +14,7 @@ namespace Teamo.Core.Specifications.Groups
         {
             AddInclude(x => x.GroupPositions);
             AddInclude(x => x.CreatedByUser);
-            AddThenInclude(q => q.Include(x => x.Applications).ThenInclude(a => a.SrcStudent));
+            AddThenInclude(q => q.Include(x => x.Applications).ThenInclude(a => a.Student));
             AddInclude(x => x.Semester);
             AddInclude(x => x.Subject);
             AddInclude(x => x.Field);
@@ -26,7 +26,7 @@ namespace Teamo.Core.Specifications.Groups
             : base(x => x.Id == id)
         {
             AddInclude(x => x.GroupPositions);
-            AddThenInclude(q => q.Include(x => x.Applications).ThenInclude(a => a.SrcStudent));
+            AddThenInclude(q => q.Include(x => x.Applications).ThenInclude(a => a.Student));
             AddInclude(x => x.Semester);
             AddInclude(x => x.CreatedByUser);
             AddInclude(x => x.Subject);

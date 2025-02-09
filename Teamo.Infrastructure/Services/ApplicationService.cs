@@ -50,7 +50,7 @@ namespace Teamo.Infrastructure.Services
             return await _unitOfWork.Complete();            
         }
 
-        public async Task<int> GetDestStudentIdAsync(int groupId)
+        public async Task<string> GetGroupLeaderEmailAsync(int groupId)
         {
             var groupSpec = new GroupSpecification(groupId);
             var group = await _unitOfWork.Repository<Group>().GetEntityWithSpec(groupSpec);
@@ -58,10 +58,7 @@ namespace Teamo.Infrastructure.Services
             var memberSpec = new GroupMemberSpecification(groupId, GroupMemberRole.Leader);
             var groupLeader = await _unitOfWork.Repository<GroupMember>().GetEntityWithSpec(memberSpec);
 
-            if(groupLeader == null || groupLeader.Student.Status == UserStatus.Inactive)
-                return 0;
-
-            return groupLeader.StudentId;
+            return groupLeader.Student.Email;
         }
 
         public async Task<bool> CheckValidToApply(int groupId, int studentId, int groupPositionId)
