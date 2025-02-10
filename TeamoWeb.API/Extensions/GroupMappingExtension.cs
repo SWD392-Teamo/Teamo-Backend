@@ -1,4 +1,5 @@
-﻿using Teamo.Core.Entities;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Conventions;
+using Teamo.Core.Entities;
 using TeamoWeb.API.Dtos;
 
 namespace TeamoWeb.API.Extensions
@@ -50,6 +51,21 @@ namespace TeamoWeb.API.Extensions
 
                 Applications = (group.Applications != null) ?
                     group.Applications.Select(a => a.ToDto()).ToList() : new List<ApplicationDto?>()
+            };
+        }
+
+        public static Group? ToEntity (this GroupToAddDto groupDto)
+        {
+            if (groupDto == null) return null;
+            return new Group
+            {
+                Name = groupDto.Name,
+                Title = groupDto.Title,
+                Description = groupDto.Description,
+                SemesterId = groupDto.SemesterId,
+                MaxMember = groupDto.MaxMember,
+                FieldId = groupDto.FieldId, 
+                SubjectId = groupDto.SubjectId,
             };
         }
     }
