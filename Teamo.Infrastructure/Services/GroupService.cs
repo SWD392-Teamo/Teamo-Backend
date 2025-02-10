@@ -1,5 +1,6 @@
 ﻿
 using Teamo.Core.Entities;
+using Teamo.Core.Entities.Identity;
 using Teamo.Core.Interfaces;
 using Teamo.Core.Interfaces.Services;
 using Teamo.Core.Specifications;

@@ -7,6 +7,7 @@ using Teamo.Core.Interfaces.Services;
 using Teamo.Core.Specifications;
 using Teamo.Core.Specifications.Groups;
 using TeamoWeb.API.Dtos;
+using TeamoWeb.API.Errors;
 using TeamoWeb.API.Extensions;
 using TeamoWeb.API.RequestHelpers;
 
@@ -17,11 +18,13 @@ namespace TeamoWeb.API.Controllers
     public class GroupsController : BaseApiController
     {
         private readonly IGroupService _groupService;
-        public GroupsController(IGroupService groupService)
+        private readonly IUserService _userService;
+        public GroupsController(IGroupService groupService, IUserService userService)
         {
             _groupService = groupService;
+            _userService = userService;
         }
-        
+
         [HttpGet]
         [Authorize]
         public async Task<ActionResult<IReadOnlyList<GroupDto>>> GetGroupsAsync([FromQuery] GroupParams groupParams)
@@ -41,6 +44,30 @@ namespace TeamoWeb.API.Controllers
             var group = await _groupService.GetGroupByIdAsync(spec);
             if (group == null) return NotFound();
             return Ok(group.ToDto());
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Student")]
+        public async Task<ActionResult<GroupDto>> CreateGroupAsync(GroupToAddDto groupDto)
+        {
+            var user = await _userService.GetUserByClaims(User);
+            if (user == null)
+                return Unauthorized(new ApiErrorResponse(401, "Unauthorize"));
+
+            var group = groupDto.ToEntity();
+            if(group == null)
+                return BadRequest(new ApiErrorResponse(400, "Fail to create a group!"));
+
+            group.CreatedById = user.Id;
+            try
+            {
+                await _groupService.CreateGroupAsync(group);
+                return Ok();
+            }
+            catch (Exception ex) 
+            {
+                return BadRequest(new ApiErrorResponse(400, "Fail to create a group!", ex.InnerException?.Message));
+            }
         }
     }
 }

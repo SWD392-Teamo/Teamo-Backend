@@ -15,7 +15,7 @@ namespace Teamo.Core.Entities
 		public int CreatedById { get; set; } 
 		public User CreatedByUser { get; set; }
 		public required int MaxMember { get; set; }
-		public GroupStatus Status { get; set; } = GroupStatus.Recruiting!;
+		public GroupStatus Status { get; set; } = GroupStatus.Recruiting;
 		public required int FieldId { get; set; }
 		public Field Field { get; set; }
 		public required int SubjectId { get; set; }
