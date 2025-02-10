@@ -34,5 +34,11 @@
     "StudentId": 2,
     "GroupPositionId": 7,
     "Role": "Member"
+  },
+  {
+    "GroupId": 4,
+    "StudentId": 6,
+    "GroupPositionId": 10,
+    "Role": "Leader"
   }
 ]

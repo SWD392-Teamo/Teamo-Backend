@@ -1,6 +1,6 @@
-namespace Teamo.Core.Specifications.Majors
+namespace Teamo.Core.Specifications.Skills
 {
-    public class MajorSpecParams : PagingParams
+    public class SkillParams
     {
         private string _search;
         public string Search
@@ -8,5 +8,7 @@ namespace Teamo.Core.Specifications.Majors
             get => _search;
             set => _search = value.ToLower();
         }
+
+        public int? StudentId { get; set; }
     }
 }

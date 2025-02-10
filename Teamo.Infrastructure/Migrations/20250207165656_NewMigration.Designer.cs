@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Teamo.Infrastructure.Data;
 
@@ -11,9 +12,11 @@ using Teamo.Infrastructure.Data;
 namespace Teamo.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250207165656_NewMigration")]
+    partial class NewMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -163,6 +166,9 @@ namespace Teamo.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("DestStudentId")
+                        .HasColumnType("int");
+
                     b.Property<int>("GroupId")
                         .HasColumnType("int");
 
@@ -175,20 +181,22 @@ namespace Teamo.Infrastructure.Migrations
                     b.Property<DateTime>("RequestTime")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("SrcStudentId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("varchar(50)");
 
-                    b.Property<int>("StudentId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
+
+                    b.HasIndex("DestStudentId");
 
                     b.HasIndex("GroupId");
 
                     b.HasIndex("GroupPositionId");
 
-                    b.HasIndex("StudentId");
+                    b.HasIndex("SrcStudentId");
 
                     b.ToTable("Applications");
                 });
@@ -728,6 +736,12 @@ namespace Teamo.Infrastructure.Migrations
 
             modelBuilder.Entity("Teamo.Core.Entities.Application", b =>
                 {
+                    b.HasOne("Teamo.Core.Entities.Identity.User", "DestStudent")
+                        .WithMany()
+                        .HasForeignKey("DestStudentId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("Teamo.Core.Entities.Group", "Group")
                         .WithMany("Applications")
                         .HasForeignKey("GroupId")
@@ -740,17 +754,19 @@ namespace Teamo.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Teamo.Core.Entities.Identity.User", "Student")
+                    b.HasOne("Teamo.Core.Entities.Identity.User", "SrcStudent")
                         .WithMany()
-                        .HasForeignKey("StudentId")
+                        .HasForeignKey("SrcStudentId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("DestStudent");
 
                     b.Navigation("Group");
 
                     b.Navigation("GroupPosition");
 
-                    b.Navigation("Student");
+                    b.Navigation("SrcStudent");
                 });
 
             modelBuilder.Entity("Teamo.Core.Entities.Group", b =>

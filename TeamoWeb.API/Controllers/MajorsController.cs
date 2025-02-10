@@ -36,7 +36,7 @@ namespace TeamoWeb.API.Controllers
             var majorSpec = new MajorSpecification(id);
             var major = await _majorRepo.GetEntityWithSpec(majorSpec);
             if (major == null) return NotFound();
-            return major.ToDto();
+            return Ok(major.ToDto());
         }
     }
 }

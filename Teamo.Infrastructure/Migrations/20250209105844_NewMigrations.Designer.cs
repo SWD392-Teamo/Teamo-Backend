@@ -12,8 +12,8 @@ using Teamo.Infrastructure.Data;
 namespace Teamo.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250203160108_InitialDb")]
-    partial class InitialDb
+    [Migration("20250209105844_NewMigrations")]
+    partial class NewMigrations
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -166,9 +166,6 @@ namespace Teamo.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("DestStudentId")
-                        .HasColumnType("int");
-
                     b.Property<int>("GroupId")
                         .HasColumnType("int");
 
@@ -181,22 +178,20 @@ namespace Teamo.Infrastructure.Migrations
                     b.Property<DateTime>("RequestTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("SrcStudentId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("varchar(50)");
 
-                    b.HasKey("Id");
+                    b.Property<int>("StudentId")
+                        .HasColumnType("int");
 
-                    b.HasIndex("DestStudentId");
+                    b.HasKey("Id");
 
                     b.HasIndex("GroupId");
 
                     b.HasIndex("GroupPositionId");
 
-                    b.HasIndex("SrcStudentId");
+                    b.HasIndex("StudentId");
 
                     b.ToTable("Applications");
                 });
@@ -374,7 +369,7 @@ namespace Teamo.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Description")
-                        .HasColumnType("varchar(1000)");
+                        .HasColumnType("nvarchar(1000)");
 
                     b.Property<DateOnly>("Dob")
                         .HasColumnType("date");
@@ -387,7 +382,7 @@ namespace Teamo.Infrastructure.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("FirstName")
-                        .HasColumnType("varchar(100)");
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("Gender")
                         .IsRequired()
@@ -397,7 +392,7 @@ namespace Teamo.Infrastructure.Migrations
                         .HasColumnType("varchar(200)");
 
                     b.Property<string>("LastName")
-                        .HasColumnType("varchar(100)");
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -736,12 +731,6 @@ namespace Teamo.Infrastructure.Migrations
 
             modelBuilder.Entity("Teamo.Core.Entities.Application", b =>
                 {
-                    b.HasOne("Teamo.Core.Entities.Identity.User", "DestStudent")
-                        .WithMany()
-                        .HasForeignKey("DestStudentId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.HasOne("Teamo.Core.Entities.Group", "Group")
                         .WithMany("Applications")
                         .HasForeignKey("GroupId")
@@ -754,19 +743,17 @@ namespace Teamo.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Teamo.Core.Entities.Identity.User", "SrcStudent")
+                    b.HasOne("Teamo.Core.Entities.Identity.User", "Student")
                         .WithMany()
-                        .HasForeignKey("SrcStudentId")
+                        .HasForeignKey("StudentId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.Navigation("DestStudent");
 
                     b.Navigation("Group");
 
                     b.Navigation("GroupPosition");
 
-                    b.Navigation("SrcStudent");
+                    b.Navigation("Student");
                 });
 
             modelBuilder.Entity("Teamo.Core.Entities.Group", b =>

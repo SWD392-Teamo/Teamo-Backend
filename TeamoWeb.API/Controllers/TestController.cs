@@ -42,13 +42,11 @@ namespace TeamoWeb.API.Controllers
         [HttpGet("student-info")]
         public IActionResult GetSecret()
         {
-            var name = User.FindFirst(ClaimTypes.Name)?.Value;
-            var id = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var email = User.FindFirst(ClaimTypes.Email)?.Value;
 
             return Ok(new
             {
-                id,
-                name
+                email
             });
         }
 
@@ -57,16 +55,14 @@ namespace TeamoWeb.API.Controllers
         [HttpGet("admin-info")]
         public IActionResult GetAdminSecret()
         {
-            var name = User.FindFirst(ClaimTypes.Name)?.Value;
-            var id = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var isAdmin = User.IsInRole("Admin");
+            var email = User.FindFirst(ClaimTypes.Email)?.Value;
             var roles = User.FindFirstValue(ClaimTypes.Role);
 
             return Ok(new
             {
-                name,
-                id,
                 isAdmin,
+                email,
                 roles
             });
         }

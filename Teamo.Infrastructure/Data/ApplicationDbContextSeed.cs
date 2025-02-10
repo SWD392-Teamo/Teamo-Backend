@@ -85,7 +85,63 @@ namespace Teamo.Infrastructure.Data
                     {
                         UserName = "admin@test.com",
                         Email = "admin@test.com"
-                    }, "admin123456", "Admin")
+                    }, "admin123456", "Admin"),
+                    (new User
+                    {
+                        FirstName = "Khánh",
+                        LastName = "Lê",
+                        Code = "SE182420",
+                        Description = "I am experienced with web app development. Languages: Java, C#, ReactJS, Angular",
+                        Email = "khanhlq@test.com",
+                        UserName = "khanhlq@test.com",
+                        Gender = Gender.Male,
+                        Dob = new DateOnly(2000, 2, 1),
+                        ImgUrl = "https://firebasestorage.googleapis.com/v0/b/gemify-d7e93.appspot.com/o/images%2Fusers%2Ffemale-user.png",
+                        PhoneNumber = "0034988493",
+                        MajorID = 1
+                    },"khanhle123456","Student"),
+                    (new User
+                    {
+                        FirstName = "Quốc Thành",
+                        LastName = "Chu",
+                        Code = "SS180001",
+                        Description = "Marketing student with exceptional PR and event organization skills!",
+                        Email = "thanhcq@test.com",
+                        UserName = "thanhcq@test.com",
+                        Gender = Gender.Male,
+                        Dob = new DateOnly(2000, 2, 1),
+                        ImgUrl = "https://firebasestorage.googleapis.com/v0/b/gemify-d7e93.appspot.com/o/images%2Fusers%2Ffemale-user.png",
+                        PhoneNumber = "0034988493",
+                        MajorID = 7
+                    },"thanh123456","Student"),
+                    (new User
+                    {
+                        FirstName = "Nguyên Hậu",
+                        LastName = "Đỗ Thị",
+                        Code = "SE180002",
+                        Description = "Specialize in event managements and video production.",
+                        Email = "haudtn@test.com",
+                        UserName = "haudtn@test.com",
+                        Gender = Gender.Female,
+                        Dob = new DateOnly(2000, 2, 1),
+                        ImgUrl = "https://firebasestorage.googleapis.com/v0/b/gemify-d7e93.appspot.com/o/images%2Fusers%2Ffemale-user.png",
+                        PhoneNumber = "0034988493",
+                        MajorID = 6
+                    },"hau123456","Student"),
+                    (new User
+                    {
+                        FirstName = "Ân",
+                        LastName = "Thiên",
+                        Code = "SE180003",
+                        Description = "Similar with web app and mobile app dev.",
+                        Email = "ant@test.com",
+                        UserName = "ant@test.com",
+                        Gender = Gender.Male,
+                        Dob = new DateOnly(2000, 2, 1),
+                        ImgUrl = "https://firebasestorage.googleapis.com/v0/b/gemify-d7e93.appspot.com/o/images%2Fusers%2Ffemale-user.png",
+                        PhoneNumber = "0034988493",
+                        MajorID = 1
+                    },"an123456","Student")
                 };
 
                 foreach (var account in userList)
@@ -234,6 +290,37 @@ namespace Teamo.Infrastructure.Data
                 await context.SaveChangesAsync();
             }
 
+            //Seed Applications
+            if (!context.Applications.Any())
+            {
+                var applicationData = await File
+                    .ReadAllTextAsync(path + @"/Data/SeedData/applications.json");
+
+                var applications = JsonSerializer.Deserialize<List<Application>>(applicationData, options);
+
+
+                if (applications == null) return;
+
+                context.Applications.AddRange(applications);
+
+                await context.SaveChangesAsync();
+            }
+
+            //Seed Student Skills
+            if (!context.StudentSkills.Any())
+            {
+                var studentSkillsData = await File
+                    .ReadAllTextAsync(path + @"/Data/SeedData/studentSkills.json");
+
+                var studentSkills = JsonSerializer.Deserialize<List<StudentSkill>>(studentSkillsData, options);
+
+
+                if (studentSkills == null) return;
+
+                context.StudentSkills.AddRange(studentSkills);
+
+                await context.SaveChangesAsync();
+            }
         }
     }
 }
