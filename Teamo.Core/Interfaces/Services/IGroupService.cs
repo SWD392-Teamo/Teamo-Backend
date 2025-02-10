@@ -8,5 +8,7 @@ namespace Teamo.Core.Interfaces.Services
     {
         Task<IReadOnlyList<Group>> GetGroupsAsync(ISpecification<Group> spec);
         Task<Group> GetGroupByIdAsync(ISpecification<Group> spec);
+        Task<Group> UpdateGroupAsync(Group group);  
+        Task<Group> CreateGroupAsync(Group group);
     }
 }
