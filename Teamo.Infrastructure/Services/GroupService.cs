@@ -4,6 +4,7 @@ using Teamo.Core.Entities.Identity;
 using Teamo.Core.Interfaces;
 using Teamo.Core.Interfaces.Services;
 using Teamo.Core.Specifications;
+using Teamo.Core.Specifications.Groups;
 
 namespace Teamo.Infrastructure.Services
 {
@@ -15,14 +16,16 @@ namespace Teamo.Infrastructure.Services
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<bool> CreateGroupAsync(Group group, int createdUserId)
+        public async Task CreateGroupAsync(Group group, int createdUserId)
         {
+            group.CreatedById = createdUserId;
             _unitOfWork.Repository<Group>().Add(group);
-            return await _unitOfWork.Repository<Group>().SaveAllAsync();
+            await _unitOfWork.Repository<Group>().SaveAllAsync();
         }
 
-        public async Task<Group> GetGroupByIdAsync(ISpecification<Group> spec)
+        public async Task<Group> GetGroupByIdAsync(int id)
         {
+            var spec = new GroupSpecification(id);
             return await _unitOfWork.Repository<Group>().GetEntityWithSpec(spec);
         }
 
@@ -31,10 +34,10 @@ namespace Teamo.Infrastructure.Services
             return await _unitOfWork.Repository<Group>().ListAsync(spec);
         }
 
-        public async Task<bool> UpdateGroupAsync(Group group)
+        public async Task UpdateGroupAsync(Group group)
         {
             _unitOfWork.Repository<Group>().Update(group);
-            return await _unitOfWork.Repository<Group>().SaveAllAsync();
+            await _unitOfWork.Repository<Group>().SaveAllAsync();
         }
     }
 }

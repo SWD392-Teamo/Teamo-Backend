@@ -40,50 +40,52 @@ namespace TeamoWeb.API.Controllers
         [Authorize]
         public async Task<ActionResult<GroupDto>> GetGroupByIdAsync(int id)
         {
-            var spec = new GroupSpecification(id);  
-            var group = await _groupService.GetGroupByIdAsync(spec);
+            var group = await _groupService.GetGroupByIdAsync(id);
             if (group == null) return NotFound();
             return Ok(group.ToDto());
         }
 
         [HttpPost]
         [Authorize(Roles = "Student")]
-        public async Task<ActionResult<GroupDto>> CreateGroupAsync(GroupToAddDto groupDto)
+        public async Task<ActionResult<GroupDto>> CreateGroupAsync(GroupToUpsertDto groupDto)
         {
-            var user = await _userService.GetUserByClaims(User);
+            var user = await _userService.GetUserByClaims(HttpContext.User);
             if (user == null)
                 return Unauthorized(new ApiErrorResponse(401, "Unauthorize"));
 
-            var group = groupDto.ToEntity();
-            if(group == null)
-                return BadRequest(new ApiErrorResponse(400, "Fail to create a group!"));
-
             try
             {
+                var group = groupDto.ToEntity();
                 await _groupService.CreateGroupAsync(group, user.Id);
-                return Ok();
+                var createdGroup = await _groupService.GetGroupByIdAsync(group.Id);
+                var createdGroupDto = createdGroup.ToDto();
+                return Ok(createdGroupDto);
             }
             catch (Exception ex) 
             {
-                return BadRequest(new ApiErrorResponse(400, "Fail to create a group!", ex.InnerException?.Message));
+                return BadRequest(new ApiErrorResponse(400, "Fail to create a group!", ex.Message));
             }
         }
 
-        [HttpPost("{id}")]
+        [HttpPut("{id}")]
         [Authorize(Roles = "Student")]
-        public async Task<ActionResult<GroupDto>> UpdateGroupAsync(GroupToAddDto groupDto)
+        public async Task<ActionResult<GroupDto>> UpdateGroupAsync(int id, GroupToUpsertDto groupDto)
         {
-            var group = groupDto.ToEntity();
+            var group = await _groupService.GetGroupByIdAsync(id);
             if (group == null)
-                return BadRequest(new ApiErrorResponse(400, "Fail to update a group!"));
+                return BadRequest(new ApiErrorResponse(404, "This group does not exist!"));
+
             try
             {
-                await _groupService.UpdateGroupAsync(group);
-                return Ok();
+                var updatedGroup = groupDto.ToEntity(group);
+                await _groupService.UpdateGroupAsync(updatedGroup);
+                updatedGroup = await _groupService.GetGroupByIdAsync(group.Id);
+                var updatedGroupDto = updatedGroup.ToDto();
+                return Ok(updatedGroupDto);
             }
             catch (Exception ex)
             {
-                return BadRequest(new ApiErrorResponse(400, "Fail to update a group!", ex.InnerException?.Message));
+                return BadRequest(new ApiErrorResponse(400, "Fail to update a group!", ex.Message));
             }
         }
     }

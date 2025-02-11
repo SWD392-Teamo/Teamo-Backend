@@ -54,19 +54,40 @@ namespace TeamoWeb.API.Extensions
             };
         }
 
-        public static Group? ToEntity (this GroupToAddDto groupDto)
+        public static Group ToEntity (this GroupToUpsertDto groupDto, Group? group = null)
         {
-            if (groupDto == null) return null;
-            return new Group
+            // for insert
+            if (group == null)
             {
-                Name = groupDto.Name,
-                Title = groupDto.Title,
-                Description = groupDto.Description,
-                SemesterId = groupDto.SemesterId,
-                MaxMember = groupDto.MaxMember,
-                FieldId = groupDto.FieldId, 
-                SubjectId = groupDto.SubjectId,
-            };
+                if (string.IsNullOrEmpty(groupDto.Name) || string.IsNullOrEmpty(groupDto.Title) ||
+                    groupDto.SemesterId == null || groupDto.MaxMember == null ||
+                    groupDto.FieldId == null || groupDto.SubjectId == null)
+                {
+                    throw new ArgumentException("All required fields must be provided when adding a new group.");
+                }
+
+                return new Group
+                {
+                    Name = groupDto.Name,
+                    Title = groupDto.Title,
+                    Description = groupDto.Description,
+                    SemesterId = groupDto.SemesterId.Value,
+                    MaxMember = groupDto.MaxMember.Value,
+                    FieldId = groupDto.FieldId.Value,
+                    SubjectId = groupDto.SubjectId.Value
+                };
+            }
+
+            //for update
+            group.Name = string.IsNullOrEmpty(groupDto.Name) ? group.Name : groupDto.Name;
+            group.Title = string.IsNullOrEmpty(groupDto.Title) ? group.Title : groupDto.Title;
+            group.Description = string.IsNullOrEmpty(groupDto.Description) ? group.Description : groupDto.Description;
+            group.SemesterId = groupDto.SemesterId ?? group.SemesterId;
+            group.MaxMember = groupDto.MaxMember ?? group.MaxMember;
+            group.FieldId = groupDto.FieldId ?? group.FieldId;
+            group.SubjectId = groupDto.SubjectId ?? group.SubjectId;
+
+            return group;
         }
     }
 }
