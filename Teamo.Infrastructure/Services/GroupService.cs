@@ -5,6 +5,7 @@ using Teamo.Core.Interfaces;
 using Teamo.Core.Interfaces.Services;
 using Teamo.Core.Specifications;
 using Teamo.Core.Specifications.Groups;
+using Teamo.Core.Enums;
 
 namespace Teamo.Infrastructure.Services
 {
@@ -20,6 +21,13 @@ namespace Teamo.Infrastructure.Services
         {
             group.CreatedById = createdUserId;
             _unitOfWork.Repository<Group>().Add(group);
+            await _unitOfWork.Repository<Group>().SaveAllAsync();
+        }
+
+        public async Task DeleteGroupAsync(Group group)
+        {
+            group.Status = GroupStatus.Archived;
+            _unitOfWork.Repository<Group>().Update(group);
             await _unitOfWork.Repository<Group>().SaveAllAsync();
         }
 

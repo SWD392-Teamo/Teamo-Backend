@@ -88,5 +88,24 @@ namespace TeamoWeb.API.Controllers
                 return BadRequest(new ApiErrorResponse(400, "Fail to update a group!", ex.Message));
             }
         }
+
+        [HttpPut("delete/{id}")]
+        [Authorize(Roles = "Student")]
+        public async Task<ActionResult<GroupDto>> DeleteGroupAsync(int id)
+        {
+            var group = await _groupService.GetGroupByIdAsync(id);
+            if (group == null)
+                return BadRequest(new ApiErrorResponse(404, "This group does not exist!"));
+
+            try
+            {
+                await _groupService.DeleteGroupAsync(group);
+                return Ok(new ApiErrorResponse(200, "Successfully deleted a group!"));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ApiErrorResponse(400, "Fail to delete a group!", ex.Message));
+            }
+        }
     }
 }

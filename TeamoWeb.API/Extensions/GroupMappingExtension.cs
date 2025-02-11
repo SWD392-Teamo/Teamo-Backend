@@ -59,6 +59,12 @@ namespace TeamoWeb.API.Extensions
             // for insert
             if (group == null)
             {
+                if (string.IsNullOrEmpty(groupDto.Name) || string.IsNullOrEmpty(groupDto.Title) ||
+                    groupDto.SemesterId == null || groupDto.MaxMember == null ||
+                    groupDto.FieldId == null || groupDto.SubjectId == null)
+                {
+                    throw new ArgumentException("All required fields must be provided when adding a new group.");
+                }
                 return new Group
                 {
                     Name = groupDto.Name,
