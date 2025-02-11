@@ -13,5 +13,6 @@ namespace TeamoWeb.API.Dtos
         public int? MaxMember { get; set; }
         public int? FieldId { get; set; }
         public int? SubjectId { get; set; }
+        public GroupStatus? Status { get; set; }    
     }
 }
