@@ -24,6 +24,8 @@ namespace Teamo.Infrastructure.Services
             // Added claims to the token
             var claims = new List<Claim>
             {
+                // Add identifier in Claim in order to retrieve user
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Email, user.Email),
                 new Claim(ClaimTypes.Role, userRole)
             };

@@ -55,7 +55,12 @@ namespace Teamo.Infrastructure.Services
             var groupSpec = new GroupSpecification(groupId);
             var group = await _unitOfWork.Repository<Group>().GetEntityWithSpec(groupSpec);
 
-            var memberSpec = new GroupMemberSpecification(groupId, GroupMemberRole.Leader);
+            var memberParams = new GroupMemberParams
+            {
+                GroupId = groupId,
+                Role = GroupMemberRole.Leader
+            };
+            var memberSpec = new GroupMemberSpecification(memberParams);
             var groupLeader = await _unitOfWork.Repository<GroupMember>().GetEntityWithSpec(memberSpec);
 
             return groupLeader.Student.Email;
@@ -75,7 +80,12 @@ namespace Teamo.Infrastructure.Services
             ) isValid = false;
 
             //Check if student is already a member of group
-            var memberSpec = new GroupMemberSpecification(groupId, studentId);
+            var memberParams = new GroupMemberParams
+            {
+                GroupId = groupId,
+                Studentd = studentId
+            };
+            var memberSpec = new GroupMemberSpecification(memberParams);
             var existMember = await _unitOfWork.Repository<GroupMember>().GetEntityWithSpec(memberSpec);
             if(existMember != null) isValid = false;
 

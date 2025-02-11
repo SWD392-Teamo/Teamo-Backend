@@ -9,7 +9,8 @@ namespace Teamo.Core.Specifications.Groups
         public GroupSpecification(GroupParams groupParams)
             : base(x => (string.IsNullOrEmpty(groupParams.Search)
             || x.GroupPositions.Any(gp => gp.Name.ToLower().Contains(groupParams.Search))) &&
-            (!groupParams.SubjectId.HasValue || x.SubjectId == groupParams.SubjectId)
+            (!groupParams.SubjectId.HasValue || x.SubjectId == groupParams.SubjectId) &&
+            (!groupParams.Status.HasValue  || groupParams.Status == x.Status)
             )
         {
             AddInclude(x => x.GroupPositions);

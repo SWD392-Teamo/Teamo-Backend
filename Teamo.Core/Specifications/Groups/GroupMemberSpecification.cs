@@ -5,14 +5,11 @@ namespace Teamo.Core.Specifications.Groups
 {
     public class GroupMemberSpecification : BaseSpecification<GroupMember>
     {
-        public GroupMemberSpecification(int groupId, GroupMemberRole role)
-            : base(x => x.GroupId == groupId && x.Role == role)
+        public GroupMemberSpecification(GroupMemberParams groupMemberParams)
+            : base(x => (!groupMemberParams.GroupId.HasValue || groupMemberParams.GroupId == x.GroupId) && 
+                        (!groupMemberParams.Role.HasValue || groupMemberParams.Role == x.Role) &&
+                        (!groupMemberParams.Studentd.HasValue || groupMemberParams.Studentd == x.StudentId))
         {
         }
-
-        public GroupMemberSpecification(int groupId, int studentId)
-            : base(x => x.GroupId == groupId && x.StudentId == studentId)
-            {
-            }
     }
 }
