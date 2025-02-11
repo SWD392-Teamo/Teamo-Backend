@@ -42,6 +42,18 @@ namespace Teamo.Infrastructure.Services
             return await _unitOfWork.Repository<Group>().ListAsync(spec);
         }
 
+        public async Task<IReadOnlyList<Group>> GetGroupsByMemberIdAsync(ISpecification<GroupMember> spec)
+        {
+            var studentGroups = await _unitOfWork.Repository<GroupMember>().ListAsync(spec);
+            var groups = new List<Group>(); 
+            foreach (var sg in studentGroups)
+            {
+                var group = await GetGroupByIdAsync(sg.Id);
+                groups.Add(group);
+            }
+            return groups;
+        }
+
         public async Task UpdateGroupAsync(Group group)
         {
             _unitOfWork.Repository<Group>().Update(group);

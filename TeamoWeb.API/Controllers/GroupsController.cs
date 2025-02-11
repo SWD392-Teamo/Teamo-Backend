@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Client;
+using System.Text.RegularExpressions;
 using Teamo.Core.Entities;
 using Teamo.Core.Interfaces.Services;
 using Teamo.Core.Specifications;
@@ -10,6 +11,7 @@ using TeamoWeb.API.Dtos;
 using TeamoWeb.API.Errors;
 using TeamoWeb.API.Extensions;
 using TeamoWeb.API.RequestHelpers;
+using Group = Teamo.Core.Entities.Group;
 
 namespace TeamoWeb.API.Controllers
 {
@@ -106,6 +108,25 @@ namespace TeamoWeb.API.Controllers
             {
                 return BadRequest(new ApiErrorResponse(400, "Fail to delete a group!", ex.Message));
             }
+        }
+
+        [HttpGet("me")]
+        [Authorize(Roles = "Student")]
+        public async Task<ActionResult<GroupDto>> GetGroupByMemberIdAsync()
+        {
+            var user = await _userService.GetUserByClaims(HttpContext.User);
+            if (user == null)
+                return Unauthorized(new ApiErrorResponse(401, "Unauthorize"));
+
+            var groupMemberParams = new GroupMemberParams
+            {
+                Studentd = user.Id
+            };
+            var spec = new GroupMemberSpecification(groupMemberParams);
+            var groups = await _groupService.GetGroupsByMemberIdAsync(spec);
+            var groupDtos = groups.Any() ? groups.Select(g => g.ToDto()).ToList() : new List<GroupDto?>();
+            var pagination = new Pagination<GroupDto>(groupMemberParams.PageIndex, groupMemberParams.PageSize, groups.Count(), groupDtos);
+            return Ok(pagination);
         }
     }
 }
