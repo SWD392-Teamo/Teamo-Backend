@@ -1,11 +1,14 @@
-﻿
+using System.ComponentModel.DataAnnotations.Schema;
+using Teamo.Core.Interfaces;
 
 namespace Teamo.Core.Entities
 {
-    public class Major : BaseEntity
-    {
-        public string Code { get; set; }
-        public string Name { get; set; }
-        public DateTime CreatedDate { get; set; } = DateTime.Now;
+	public class Major : BaseEntity, IDtoConvertible
+	{
+		public required string Code { get; set; }
+		public required string Name { get; set; }
+        public required DateOnly CreatedDate { get; set; } = DateOnly.FromDateTime(DateTime.Now);
+		public List<Subject> Subjects { get; set; }
+		public List<MajorSubject> MajorSubjects { get; set; }
     }
 }

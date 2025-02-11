@@ -1,3 +1,4 @@
+using API.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Teamo.Core.Entities.Identity;
@@ -7,25 +8,25 @@ using TeamoWeb.API.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
 builder.Services.AddControllers();
-
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// Add services to the container.
 builder.Services.AddApplicationServices(builder.Configuration);
+builder.Services.AddIdentityServices(builder.Configuration);
 builder.Services.AddSingleton(TimeProvider.System);
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+// Use Swagger API Documentation
+app.UseSwagger();
+
+// Set Swagger UI as the root path
+app.UseSwaggerUI(c =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Teamo API V1");
+    c.RoutePrefix = string.Empty; // Serve Swagger UI at the app's root ("/")
+});
 
 app.UseHttpsRedirection();
 
@@ -40,6 +41,8 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+app.MapGroup("api").MapIdentityApi<User>();
+
 // Create a scope and call the service manually
 using var scope = app.Services.CreateScope();
 var services = scope.ServiceProvider;
@@ -50,7 +53,11 @@ var logger = services.GetRequiredService<ILogger<Program>>();
 
 try
 {
+    // Migrate changes to the database
     await applicationDbContext.Database.MigrateAsync();
+
+    // Seed the database with data
+    await ApplicationDbContextSeed.SeedAsync(applicationDbContext, userManager, roleManager);
 }
 catch (Exception ex)
 {

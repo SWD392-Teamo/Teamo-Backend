@@ -1,0 +1,86 @@
+[
+    {   "Name": "Back-end", 
+        "Type": "Technical" 
+    },
+    {   "Name": "Front-end", 
+        "Type": "Technical" 
+    },
+    {   "Name": "Java", 
+        "Type": "Technical" 
+    },
+    {   "Name": ".NET", 
+        "Type": "Technical" 
+    },
+    {   "Name": "C/C#", 
+        "Type": "Technical" 
+    },
+    {   "Name": "WPF App Development", 
+        "Type": "Technical" 
+    },
+    {   "Name": "Angular", 
+        "Type": "Technical" 
+    },
+    {   "Name": "ReactJS", 
+        "Type": "Technical" 
+    },
+    {   "Name": "NodeJS", 
+        "Type": "Technical" 
+    },
+    {   "Name": "UI/UX", 
+        "Type": "Technical" 
+    },
+    {   "Name": "Video Editing", 
+        "Type": "Technical" 
+    },
+    {   "Name": "Cinematography", 
+        "Type": "Technical" 
+    },
+    {   "Name": "Photography", 
+        "Type": "Technical" 
+    },
+    {   "Name": "Photoshop", 
+        "Type": "Technical" 
+    },
+    {   "Name": "Graphic Design", 
+        "Type": "Technical" 
+    },
+    {   "Name": "Data Analysis", 
+        "Type": "Technical" 
+    },
+    {   "Name": "Academic Research", 
+        "Type": "Technical" 
+    },
+    {   "Name": "Web App Development", 
+        "Type": "Technical" 
+    },
+    {   "Name": "Mobile App Development", 
+        "Type": "Technical" 
+    },
+    {   "Name": "Game Development", 
+        "Type": "Technical" 
+    },
+    {   "Name": "Game Graphics", 
+        "Type": "Technical" 
+    },
+    {   "Name": "Event Management", 
+        "Type": "Organizational" 
+    },
+    {   "Name": "Project Management", 
+        "Type": "Organizational" 
+    },
+    {   "Name": "Event Organization", 
+        "Type": "Organizational" 
+    },
+    {   "Name": "Event Coordinator", 
+        "Type": "Organizational" 
+    },
+    {   "Name": "Public Affairs", 
+        "Type": "Organizational" 
+    },
+    {   "Name": "Charity Organization", 
+        "Type": "Organizational" 
+    },
+    {   "Name": "Public Speaking", 
+        "Type": "Interpersonal" 
+    }
+]

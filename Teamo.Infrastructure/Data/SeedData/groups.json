@@ -1,0 +1,50 @@
+[
+  {
+    "Name": "YACK",
+    "Title": "UpHub - Internship Connection",
+    "SemesterId": 3,
+    "Desciption": "",
+    "CreatedAt": "2025-01-06T00:00:00Z",
+    "CreatedById": 1,
+    "MaxMember": 6,
+    "Status": "Recruiting",
+    "FieldId": 13,
+    "SubjectId": 2
+  },
+  {
+    "Name": "Gemify",
+    "Title": "Jewelry Store Management",
+    "SemesterId": 2,
+    "Desciption": "",
+    "CreatedAt": "2024-08-01T00:00:00Z",
+    "CreatedById": 2,
+    "MaxMember": 5,
+    "Status": "Archived",
+    "FieldId": 22,
+    "SubjectId": 4
+  },
+  {
+    "Name": "Teamo",
+    "Title": "The Ultimate Platform for Building Teams ",
+    "SemesterId": 3,
+    "Desciption": "",
+    "CreatedAt": "2025-01-06T00:00:00Z",
+    "CreatedById": 2,
+    "MaxMember": 5,
+    "Status": "Full",
+    "FieldId": 13,
+    "SubjectId": 5
+  },
+  {
+    "Name": "Alice Dream's - BANANAHOUSE",
+    "Title": "Short film production",
+    "SemesterId": 3,
+    "Desciption": "Contestors of the annual FPTU Film Awards: Short Films Category",
+    "CreatedAt": "2025-01-06T00:00:00Z",
+    "CreatedById": 6,
+    "MaxMember": 10,
+    "Status": "Recruiting",
+    "FieldId": 18,
+    "SubjectId": 14
+  }
+]

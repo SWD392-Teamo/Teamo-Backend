@@ -1,0 +1,89 @@
+[
+    {   "Name": "IoT", 
+        "Description": "Internet of Things, connected devices, smart homes" 
+    },
+    {   "Name": "Blockchain", 
+        "Description": "Cryptocurrency, decentralized applications, NFTs" 
+    },
+    {   "Name": "Cybersecurity", 
+        "Description": "Data security, threat detection, cybersecurity solutions" 
+    },
+    {   "Name": "Artificial Intelligence", 
+        "Description": "AI research, machine learning, AI applications" 
+    },
+    {   "Name": "Renewable Energy", 
+        "Description": "Solar, wind, hydro, renewable energy technologies" 
+    },
+    {   "Name": "Telecommunications", 
+        "Description": "Mobile, internet, telephony services" 
+    },
+    {   "Name": "E-learning", 
+        "Description": "Online courses, MOOCs, educational platforms" 
+    },
+    {   "Name": "Healthcare Technology", 
+        "Description": "Telemedicine, wearable devices, medical imaging" 
+    },
+    {   "Name": "Agriculture", 
+        "Description": "Farming, agriculture technology, food production" 
+    },
+    {   "Name": "Retail", 
+        "Description": "Brick-and-mortar stores, online retail, retail technology" 
+    },
+    {   "Name": "Hospitality", 
+        "Description": "Hotels, restaurants, tourism, hospitality services" 
+    },
+    {   "Name": "Education", 
+        "Description": "Schools, universities, educational institutions" 
+    },
+    {   "Name": "EdTech", 
+        "Description": "Online learning, tutoring, educational resources" 
+    },
+    {   "Name": "Gallery", 
+        "Description": "Art exhibitions, museums, art galleries" 
+    },
+    {   "Name": "Charity Events", 
+        "Description": "Fundraisers, non-profit organizations, donations" 
+    },
+    {   "Name": "Fundraising", 
+        "Description": "Crowdfunding, charity drives, philanthropic initiatives" 
+    },
+    {   "Name": "Music Videos", 
+        "Description": "Music production, video creation, music streaming" 
+    },
+    {   "Name": "Short Films", 
+        "Description": "Filmmaking, independent cinema, short film festivals" 
+    },
+    {   "Name": "Non-profit", 
+        "Description": "Charitable organizations, NGOs, social impact" 
+    },
+    {   "Name": "Media & Entertainment", 
+        "Description": "News, publishing, film, music, television" 
+    },
+    {   "Name": "Sports", 
+        "Description": "Professional sports, amateur sports, sports leagues" 
+    },
+    {   "Name": "Fashion", 
+        "Description": "Clothing, apparel, fashion design, fashion retail" 
+    },
+    {   "Name": "Beauty", 
+        "Description": "Cosmetics, skincare, personal care products" 
+    },
+    {   "Name": "Food & Beverage", 
+        "Description": "Restaurants, cafes, food production, beverage industry" 
+    },
+    {   "Name": "Finance", 
+        "Description": "Banking, investments, insurance, financial services" 
+    },
+    {   "Name": "Food Delivery", 
+        "Description": "Services like Uber Eats, DoorDash, Grubhub" 
+    },
+    {   "Name": "Travel & Tourism", 
+        "Description": "Booking flights, hotels, tours, travel guides" 
+    },
+    {   "Name": "E-commerce", 
+        "Description": "Online shopping, retail, marketplaces" 
+    },
+    {   "Name": "Real Estate", 
+        "Description": "Property listings, rentals, buying, selling" 
+    }
+]

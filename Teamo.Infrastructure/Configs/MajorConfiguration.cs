@@ -8,12 +8,13 @@ namespace Teamo.Infrastructure.Configs
     {
         public void Configure(EntityTypeBuilder<Major> builder)
         {
-            builder.Property(u => u.Code)
-                      .HasColumnType("varchar(20)")
-                      .IsRequired();
-            builder.Property(u => u.Name)
-                      .HasColumnType("varchar(100)")
-                      .IsRequired();
+            builder.Property(m => m.Code).HasColumnType("varchar(20)");
+            builder.Property(m => m.Name).HasColumnType("varchar(100)");
+            builder.Property(m => m.CreatedDate).HasColumnType("date");
+
+            builder.HasMany(m => m.Subjects)
+                .WithMany()
+                .UsingEntity<MajorSubject>();
         }
     }
 }
