@@ -15,7 +15,7 @@ namespace Teamo.Infrastructure.Services
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<bool> CreateGroupAsync(Group group)
+        public async Task<bool> CreateGroupAsync(Group group, int createdUserId)
         {
             _unitOfWork.Repository<Group>().Add(group);
             return await _unitOfWork.Repository<Group>().SaveAllAsync();

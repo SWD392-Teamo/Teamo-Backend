@@ -58,15 +58,32 @@ namespace TeamoWeb.API.Controllers
             if(group == null)
                 return BadRequest(new ApiErrorResponse(400, "Fail to create a group!"));
 
-            group.CreatedById = user.Id;
             try
             {
-                await _groupService.CreateGroupAsync(group);
+                await _groupService.CreateGroupAsync(group, user.Id);
                 return Ok();
             }
             catch (Exception ex) 
             {
                 return BadRequest(new ApiErrorResponse(400, "Fail to create a group!", ex.InnerException?.Message));
+            }
+        }
+
+        [HttpPost("{id}")]
+        [Authorize(Roles = "Student")]
+        public async Task<ActionResult<GroupDto>> UpdateGroupAsync(GroupToAddDto groupDto)
+        {
+            var group = groupDto.ToEntity();
+            if (group == null)
+                return BadRequest(new ApiErrorResponse(400, "Fail to update a group!"));
+            try
+            {
+                await _groupService.UpdateGroupAsync(group);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ApiErrorResponse(400, "Fail to update a group!", ex.InnerException?.Message));
             }
         }
     }
