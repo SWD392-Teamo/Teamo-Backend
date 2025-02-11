@@ -128,5 +128,26 @@ namespace TeamoWeb.API.Controllers
             var pagination = new Pagination<GroupDto>(groupMemberParams.PageIndex, groupMemberParams.PageSize, groups.Count(), groupDtos);
             return Ok(pagination);
         }
+
+        [HttpPost("add-member")]
+        [Authorize(Roles = "Student")]
+        public async Task<IActionResult> AddMemberToGroup(GroupMember groupMember)
+        {
+            try
+            {
+                await _groupService.AddMemberToGroup(groupMember);
+                return Ok(new ApiErrorResponse(200, "Successfully add new member to group!"));
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new ApiErrorResponse(409, "An unexpected error occured.", ex.Message));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ApiErrorResponse(400, "Fail to add member to group!", ex.Message));
+            }
+            
+
+        }
     }
 }

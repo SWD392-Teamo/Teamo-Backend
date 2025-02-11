@@ -12,6 +12,6 @@ namespace Teamo.Core.Entities
         public User Student { get; set; }
         public required int GroupPositionId { get; set; }
         public GroupPosition GroupPosition { get; set; }
-        public required GroupMemberRole Role { get; set; } 
+        public GroupMemberRole Role { get; set; } 
     }
 }

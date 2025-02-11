@@ -12,5 +12,6 @@ namespace Teamo.Core.Interfaces.Services
         Task CreateGroupAsync(Group group, int createdUserId);
         Task DeleteGroupAsync(Group group);
         Task<IReadOnlyList<Group>> GetGroupsByMemberIdAsync(ISpecification<GroupMember> spec);
+        Task AddMemberToGroup(GroupMember groupMember);
     }
 }

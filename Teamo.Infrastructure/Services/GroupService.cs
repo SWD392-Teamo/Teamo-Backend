@@ -17,6 +17,35 @@ namespace Teamo.Infrastructure.Services
             _unitOfWork = unitOfWork;
         }
 
+        public async Task AddMemberToGroup(GroupMember groupMember)
+        {
+            var spec = new GroupMemberSpecification(new GroupMemberParams
+            {
+                Studentd = groupMember.StudentId,
+                GroupId = groupMember.GroupId
+            });
+            var existingMember = await _unitOfWork.Repository<GroupMember>().GetEntityWithSpec(spec);
+            if (existingMember != null)
+            {
+                throw new InvalidOperationException("This student already exists in this group!");
+            }
+
+            var groupPositionSpec = new GroupPositionSpecification(new GroupPositionParams
+            {
+                GroupId = groupMember.GroupId,
+                PositionId = groupMember.GroupPositionId
+            });
+            var groupPositon = await _unitOfWork.Repository<GroupPosition>().GetEntityWithSpec(groupPositionSpec);
+            if (groupPositon == null)
+            {
+                throw new InvalidOperationException("This group does not have this position");
+            }
+
+            groupMember.Role = GroupMemberRole.Member;
+            _unitOfWork.Repository<GroupMember>().Add(groupMember);
+            await _unitOfWork.Repository<GroupMember>().SaveAllAsync();
+        }
+
         public async Task CreateGroupAsync(Group group, int createdUserId)
         {
             group.CreatedById = createdUserId;
