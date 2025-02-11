@@ -12,6 +12,10 @@ on:
 jobs:
   build:
     runs-on: windows-latest
+
+    env:
+      STARTUP_PATH: ./TeamoWeb.API
+    
     permissions:
       contents: read #This is required for actions/checkout
 
@@ -24,7 +28,7 @@ jobs:
           dotnet-version: '8.x'
 
       - name: Build with dotnet
-        run: dotnet build --configuration Release
+        run: dotnet build {{env.STARTUP_PATH}} --configuration Release
 
       - name: dotnet publish
         run: dotnet publish -c Release -o "${{env.DOTNET_ROOT}}/myapp"
