@@ -28,8 +28,6 @@ app.UseSwaggerUI(c =>
     c.RoutePrefix = string.Empty; // Serve Swagger UI at the app's root ("/")
 });
 
-app.UseHttpsRedirection();
-
 // Configure the HTTP request pipeline.
 app.UseMiddleware<ExceptionMiddleware>();
 
