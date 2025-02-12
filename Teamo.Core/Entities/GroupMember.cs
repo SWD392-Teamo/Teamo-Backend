@@ -1,4 +1,4 @@
-using System.ComponentModel.DataAnnotations.Schema;
+ using System.ComponentModel.DataAnnotations.Schema;
 using Teamo.Core.Entities.Identity;
 using Teamo.Core.Enums;
 
