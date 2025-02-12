@@ -17,6 +17,41 @@ namespace Teamo.Infrastructure.Services
             _unitOfWork = unitOfWork;
         }
 
+        public async Task AddGroupPosition(GroupPosition groupPosition)
+        {
+            _unitOfWork.Repository<GroupPosition>().Add(groupPosition);
+            await _unitOfWork.Repository<GroupPosition>().SaveAllAsync();
+        }
+
+        public async Task AddMemberToGroup(GroupMember groupMember)
+        {
+            var spec = new GroupMemberSpecification(new GroupMemberParams
+            {
+                Studentd = groupMember.StudentId,
+                GroupId = groupMember.GroupId
+            });
+            var existingMember = await _unitOfWork.Repository<GroupMember>().GetEntityWithSpec(spec);
+            if (existingMember != null)
+            {
+                throw new InvalidOperationException("This student already exists in this group!");
+            }
+
+            var groupPositionSpec = new GroupPositionSpecification(new GroupPositionParams
+            {
+                GroupId = groupMember.GroupId,
+                PositionId = groupMember.GroupPositionId
+            });
+            var groupPositon = await _unitOfWork.Repository<GroupPosition>().GetEntityWithSpec(groupPositionSpec);
+            if (groupPositon == null)
+            {
+                throw new InvalidOperationException("This group does not have this position");
+            }
+
+            groupMember.Role = GroupMemberRole.Member;
+            _unitOfWork.Repository<GroupMember>().Add(groupMember);
+            await _unitOfWork.Repository<GroupMember>().SaveAllAsync();
+        }
+
         public async Task AddMemberToGroup(GroupMember groupMember)
         {
             var spec = new GroupMemberSpecification(new GroupMemberParams
@@ -78,6 +113,12 @@ namespace Teamo.Infrastructure.Services
             return await _unitOfWork.Repository<Group>().GetEntityWithSpec(spec);
         }
 
+        public async Task<GroupPosition> GetGroupPositionByIdAsync(int id)
+        {
+            var spec = new GroupPositionSpecification(id);
+            return await _unitOfWork.Repository<GroupPosition>().GetEntityWithSpec(spec);
+        }
+
         public async Task<IReadOnlyList<Group>> GetGroupsAsync(ISpecification<Group> spec)
         {
             return await _unitOfWork.Repository<Group>().ListAsync(spec);
@@ -99,6 +140,35 @@ namespace Teamo.Infrastructure.Services
         {
             _unitOfWork.Repository<Group>().Update(group);
             await _unitOfWork.Repository<Group>().SaveAllAsync();
+        }
+
+        public async Task UpdateGroupPositionAsync(GroupPosition groupPosition, IEnumerable<int> skillIds)
+        {
+            var existingSkills = await _unitOfWork.Repository<GroupPositionSkill>()
+                                                  .ListAsync(new GroupPositionSkillSpecification(groupPosition.Id));
+            var existingSkillIds = existingSkills.Select(s => s.SkillId).ToList();
+
+            var skillsToAdd = skillIds.Except(existingSkillIds)
+                              .Select(skillId => new GroupPositionSkill
+                              {
+                                  GroupPositionId = groupPosition.Id,
+                                  SkillId = skillId
+                              });
+            var skillsToRemove = existingSkills.Where(s => !skillIds.Contains(s.SkillId));
+
+
+            // update GroupPosition
+            _unitOfWork.Repository<GroupPosition>().Update(groupPosition);
+            await _unitOfWork.Repository<GroupPosition>().SaveAllAsync();
+
+            // add GroupPositionSkill
+            if (skillsToAdd.Count() > 0) 
+                _unitOfWork.Repository<GroupPositionSkill>().AddRange(skillsToAdd);
+            if(skillsToRemove.Count() > 0) 
+                _unitOfWork.Repository<GroupPositionSkill>().DeleteRange(skillsToRemove);
+
+            await _unitOfWork.Repository<GroupPositionSkill>().SaveAllAsync();
+
         }
     }
 }
