@@ -1,5 +1,6 @@
 ﻿using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 using Teamo.Core.Interfaces;
 using Teamo.Core.Interfaces.Services;
 using Teamo.Infrastructure.Data;
@@ -27,6 +28,38 @@ namespace TeamoWeb.API.Extensions
             services.AddScoped<ISkillService, SkillService>();
             services.AddScoped<ISubjectService, SubjectService>();
             services.AddDataProtection();
+
+            services.AddSwaggerGen(c =>
+{
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Teamo API", Version = "v1" });
+
+                // Add Bearer token support
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "bearer",
+                    BearerFormat = "JWT"
+                });
+
+                // Add security scheme in OpenAPI
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            }
+                        },
+                        new string[] {}
+                    }
+                });
+            });
 
             // Register services with the DI container
             services.AddCors(opt =>
