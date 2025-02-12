@@ -10,8 +10,8 @@ namespace Teamo.Core.Entities
         public Group Group { get; set; }
         public required int StudentId { get; set; }
         public User Student { get; set; }
-        public required int GroupPositionId { get; set; }
+        public int? GroupPositionId { get; set; }
         public GroupPosition GroupPosition { get; set; }
-        public required GroupMemberRole Role { get; set; } 
+        public GroupMemberRole Role { get; set; } 
     }
 }

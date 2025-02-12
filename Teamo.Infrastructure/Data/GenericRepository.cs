@@ -130,5 +130,13 @@ namespace Infrastructure.Data
         {
             return _context.Set<T>().Any(x => x.Id == id);
         }
+        /// <summary>
+        /// Adds a range of new items of type T to the database.
+        /// </summary>
+        /// <param name="entities">The collection of entities to add.</param>
+        public void AddRange(IEnumerable<T> entities)
+        {
+            _context.Set<T>().AddRange(entities);
+        }
     }
 }

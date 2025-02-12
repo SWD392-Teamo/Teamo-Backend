@@ -9,8 +9,9 @@ namespace Teamo.Core.Interfaces.Services
         Task<IReadOnlyList<Group>> GetGroupsAsync(ISpecification<Group> spec);
         Task<Group> GetGroupByIdAsync(int id);
         Task UpdateGroupAsync(Group group);  
-        Task CreateGroupAsync(Group group, int createdUserId);
+        Task CreateGroupAsync(Group group, int createdUserId, IEnumerable<GroupPosition> groupPositions);
         Task DeleteGroupAsync(Group group);
         Task<IReadOnlyList<Group>> GetGroupsByMemberIdAsync(ISpecification<GroupMember> spec);
+        Task AddMemberToGroup(GroupMember groupMember);
     }
 }

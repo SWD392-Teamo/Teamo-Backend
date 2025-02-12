@@ -58,14 +58,14 @@ namespace TeamoWeb.API.Controllers
             try
             {
                 var group = groupDto.ToEntity();
-                await _groupService.CreateGroupAsync(group, user.Id);
+                await _groupService.CreateGroupAsync(group, user.Id, group.GroupPositions);
                 var createdGroup = await _groupService.GetGroupByIdAsync(group.Id);
                 var createdGroupDto = createdGroup.ToDto();
                 return Ok(createdGroupDto);
             }
             catch (Exception ex) 
             {
-                return BadRequest(new ApiErrorResponse(400, "Fail to create a group!", ex.Message));
+                return BadRequest(new ApiErrorResponse(400, "Fail to create a group!", ex.InnerException?.Message));
             }
         }
 
@@ -127,6 +127,27 @@ namespace TeamoWeb.API.Controllers
             var groupDtos = groups.Any() ? groups.Select(g => g.ToDto()).ToList() : new List<GroupDto?>();
             var pagination = new Pagination<GroupDto>(groupMemberParams.PageIndex, groupMemberParams.PageSize, groups.Count(), groupDtos);
             return Ok(pagination);
+        }
+
+        [HttpPost("add-member")]
+        [Authorize(Roles = "Student")]
+        public async Task<IActionResult> AddMemberToGroup(GroupMember groupMember)
+        {
+            try
+            {
+                await _groupService.AddMemberToGroup(groupMember);
+                return Ok(new ApiErrorResponse(200, "Successfully add new member to group!"));
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new ApiErrorResponse(409, "An unexpected error occured.", ex.Message));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ApiErrorResponse(400, "Fail to add member to group!", ex.Message));
+            }
+            
+
         }
     }
 }
