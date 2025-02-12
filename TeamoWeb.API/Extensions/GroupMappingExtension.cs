@@ -29,7 +29,7 @@ namespace TeamoWeb.API.Extensions
                         MemberName = gm.Student.FirstName + " " + gm.Student.LastName,
                         MemberEmail = gm.Student.Email,
                         ImgUrl = gm.Student.ImgUrl,
-                        Position = gm.GroupPosition.Name,
+                        Position = gm.GroupPosition?.Name,
                         Role = gm.Role
                     }).ToList() ?? new List<GroupMemberDto>(),
 
@@ -73,8 +73,19 @@ namespace TeamoWeb.API.Extensions
                     SemesterId = groupDto.SemesterId.Value,
                     MaxMember = groupDto.MaxMember.Value,
                     FieldId = groupDto.FieldId.Value,
-                    SubjectId = groupDto.SubjectId.Value
-                };
+                    SubjectId = groupDto.SubjectId.Value,
+                    GroupPositions = groupDto.GroupPositions
+                    .Select(gp => new GroupPosition
+                    {
+                        Name = gp.Name,
+                        Count = gp.Count,
+                        GroupPositionSkills = gp.SkillIds
+                        .Select(skillId => new GroupPositionSkill
+                        {
+                            SkillId = skillId
+                        }).ToList()
+                    }).ToList()
+                }; 
             }
 
             //for update

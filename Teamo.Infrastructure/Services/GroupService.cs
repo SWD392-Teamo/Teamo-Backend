@@ -46,10 +46,22 @@ namespace Teamo.Infrastructure.Services
             await _unitOfWork.Repository<GroupMember>().SaveAllAsync();
         }
 
-        public async Task CreateGroupAsync(Group group, int createdUserId)
+        public async Task CreateGroupAsync(Group group, int createdUserId, IEnumerable<GroupPosition> groupPositions)
         {
+            // create group
             group.CreatedById = createdUserId;
             _unitOfWork.Repository<Group>().Add(group);
+            await _unitOfWork.Repository<Group>().SaveAllAsync();
+
+            // Add student to GroupMember with role Leader
+            var groupMember = new GroupMember
+            {
+                GroupId = group.Id,
+                StudentId = createdUserId,
+                Role = GroupMemberRole.Leader,  
+            };
+            _unitOfWork.Repository<GroupMember>().Add(groupMember);
+
             await _unitOfWork.Repository<Group>().SaveAllAsync();
         }
 

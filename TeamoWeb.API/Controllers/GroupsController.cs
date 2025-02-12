@@ -58,14 +58,14 @@ namespace TeamoWeb.API.Controllers
             try
             {
                 var group = groupDto.ToEntity();
-                await _groupService.CreateGroupAsync(group, user.Id);
+                await _groupService.CreateGroupAsync(group, user.Id, group.GroupPositions);
                 var createdGroup = await _groupService.GetGroupByIdAsync(group.Id);
                 var createdGroupDto = createdGroup.ToDto();
                 return Ok(createdGroupDto);
             }
             catch (Exception ex) 
             {
-                return BadRequest(new ApiErrorResponse(400, "Fail to create a group!", ex.Message));
+                return BadRequest(new ApiErrorResponse(400, "Fail to create a group!", ex.InnerException?.Message));
             }
         }
 

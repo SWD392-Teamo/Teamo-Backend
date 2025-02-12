@@ -1,6 +1,4 @@
-﻿using Teamo.Core.Entities.Identity;
-using Teamo.Core.Entities;
-using Teamo.Core.Enums;
+﻿using Teamo.Core.Enums;
 
 namespace TeamoWeb.API.Dtos
 {
@@ -14,5 +12,6 @@ namespace TeamoWeb.API.Dtos
         public int? FieldId { get; set; }
         public int? SubjectId { get; set; }
         public GroupStatus? Status { get; set; }    
+        public IEnumerable<GroupPositionToAddDto> GroupPositions { get; set; } = Enumerable.Empty<GroupPositionToAddDto>();
     }
 }
