@@ -47,7 +47,7 @@ namespace TeamoWeb.API.Controllers
 
             return Ok(new 
             {
-                Id = user.Id,
+                userId = user.Id,
                 Email = User.GetEmail(),
                 Role = userRole,
                 Token = token,
