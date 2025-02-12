@@ -12,8 +12,8 @@ using Teamo.Infrastructure.Data;
 namespace Teamo.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250209105844_NewMigrations")]
-    partial class NewMigrations
+    [Migration("20250212041405_NewMigration")]
+    partial class NewMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -278,7 +278,7 @@ namespace Teamo.Infrastructure.Migrations
                     b.Property<int>("GroupId")
                         .HasColumnType("int");
 
-                    b.Property<int>("GroupPositionId")
+                    b.Property<int?>("GroupPositionId")
                         .HasColumnType("int");
 
                     b.Property<string>("Role")
@@ -777,7 +777,7 @@ namespace Teamo.Infrastructure.Migrations
                         .IsRequired();
 
                     b.HasOne("Teamo.Core.Entities.Subject", "Subject")
-                        .WithMany("Groups")
+                        .WithMany()
                         .HasForeignKey("SubjectId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -802,8 +802,7 @@ namespace Teamo.Infrastructure.Migrations
                     b.HasOne("Teamo.Core.Entities.GroupPosition", "GroupPosition")
                         .WithMany()
                         .HasForeignKey("GroupPositionId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("Teamo.Core.Entities.Identity.User", "Student")
                         .WithMany()
@@ -878,7 +877,7 @@ namespace Teamo.Infrastructure.Migrations
                         .IsRequired();
 
                     b.HasOne("Teamo.Core.Entities.Subject", "Subject")
-                        .WithMany("MajorSubjects")
+                        .WithMany()
                         .HasForeignKey("SubjectId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -954,10 +953,6 @@ namespace Teamo.Infrastructure.Migrations
 
             modelBuilder.Entity("Teamo.Core.Entities.Subject", b =>
                 {
-                    b.Navigation("Groups");
-
-                    b.Navigation("MajorSubjects");
-
                     b.Navigation("SubjectFields");
                 });
 #pragma warning restore 612, 618

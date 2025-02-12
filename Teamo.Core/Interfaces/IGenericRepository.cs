@@ -19,5 +19,7 @@ namespace Teamo.Core.Interfaces
         void Delete(T entity);
         bool Exists(int id);
         Task<bool> SaveAllAsync ();
+        void AddRange(IEnumerable<T> entities);
+        void DeleteRange(IEnumerable<T> entities);
     }
 }

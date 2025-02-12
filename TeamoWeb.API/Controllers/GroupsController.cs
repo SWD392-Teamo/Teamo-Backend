@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Client;
 using System.Text.RegularExpressions;
@@ -58,24 +59,25 @@ namespace TeamoWeb.API.Controllers
             try
             {
                 var group = groupDto.ToEntity();
+
                 await _groupService.CreateGroupAsync(group, user.Id);
-                var createdGroup = await _groupService.GetGroupByIdAsync(group.Id);
-                var createdGroupDto = createdGroup.ToDto();
+                group = await _groupService.GetGroupByIdAsync(group.Id);
+                var createdGroupDto = group.ToDto();
                 return Ok(createdGroupDto);
             }
             catch (Exception ex) 
             {
-                return BadRequest(new ApiErrorResponse(400, "Fail to create a group!", ex.Message));
+                return BadRequest(new ApiErrorResponse(400, ex.Message, ex.InnerException?.Message));
             }
         }
 
-        [HttpPut("{id}")]
+        [HttpPatch("{id}")]
         [Authorize(Roles = "Student")]
         public async Task<ActionResult<GroupDto>> UpdateGroupAsync(int id, GroupToUpsertDto groupDto)
         {
             var group = await _groupService.GetGroupByIdAsync(id);
             if (group == null)
-                return BadRequest(new ApiErrorResponse(404, "This group does not exist!"));
+                return BadRequest(new ApiErrorResponse(404, "Group not found!"));
 
             try
             {
@@ -87,17 +89,17 @@ namespace TeamoWeb.API.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(new ApiErrorResponse(400, "Fail to update a group!", ex.Message));
+                return BadRequest(new ApiErrorResponse(400, ex.Message, ex.InnerException?.Message));
             }
         }
 
-        [HttpPut("delete/{id}")]
+        [HttpPatch("delete/{id}")]
         [Authorize(Roles = "Student")]
         public async Task<ActionResult<GroupDto>> DeleteGroupAsync(int id)
         {
             var group = await _groupService.GetGroupByIdAsync(id);
             if (group == null)
-                return BadRequest(new ApiErrorResponse(404, "This group does not exist!"));
+                return BadRequest(new ApiErrorResponse(404, "Group not found!"));
 
             try
             {
@@ -106,7 +108,7 @@ namespace TeamoWeb.API.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(new ApiErrorResponse(400, "Fail to delete a group!", ex.Message));
+                return BadRequest(new ApiErrorResponse(400, ex.Message, ex.InnerException?.Message));
             }
         }
 
@@ -127,6 +129,63 @@ namespace TeamoWeb.API.Controllers
             var groupDtos = groups.Any() ? groups.Select(g => g.ToDto()).ToList() : new List<GroupDto?>();
             var pagination = new Pagination<GroupDto>(groupMemberParams.PageIndex, groupMemberParams.PageSize, groups.Count(), groupDtos);
             return Ok(pagination);
+        }
+
+        [HttpPost("add-member")]
+        [Authorize(Roles = "Student")]
+        public async Task<IActionResult> AddMemberToGroup(GroupMember groupMember)
+        {
+            try
+            {
+                await _groupService.AddMemberToGroup(groupMember);
+                return Ok(new ApiErrorResponse(200, "Successfully add new member to group!"));
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new ApiErrorResponse(409, ex.Message, ex.InnerException?.Message));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ApiErrorResponse(400, ex.Message, ex.InnerException?.Message));
+            }
+        }
+
+        [HttpPost("add-position")]
+        [Authorize(Roles = "Student")]
+        public async Task<IActionResult> AddGroupPosition (GroupPositionToAddDto groupPositionDto)
+        {
+            try
+            {
+                var groupPosition = groupPositionDto.ToEntity();
+                await _groupService.AddGroupPosition(groupPosition);
+                return Ok(new ApiErrorResponse(200, "Successfully add position to group!"));
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(new ApiErrorResponse(400, ex.Message, ex.InnerException?.Message));
+            }
+        }
+
+        [HttpPatch("update-position/{id}")]
+        [Authorize(Roles = "Student")]
+        public async Task<IActionResult> UpdateGroupPosition(int id, GroupPositionToAddDto updateDto)
+        {
+            var groupPosition = await _groupService.GetGroupPositionByIdAsync(id);
+            if (groupPosition == null)
+            {
+                return NotFound(new ApiErrorResponse(404, "Group position not found."));
+            }
+
+            try
+            {
+                groupPosition = updateDto.ToEntity(groupPosition);
+                await _groupService.UpdateGroupPositionAsync(groupPosition, updateDto.SkillIds);
+                return Ok(new ApiErrorResponse(200, "Successfully update group position!"));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ApiErrorResponse(400, ex.Message, ex.InnerException?.Message));
+            }
         }
     }
 }

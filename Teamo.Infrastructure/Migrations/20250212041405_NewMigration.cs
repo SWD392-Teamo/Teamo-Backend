@@ -444,8 +444,7 @@ namespace Teamo.Infrastructure.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     GroupId = table.Column<int>(type: "int", nullable: false),
-                    DestStudentId = table.Column<int>(type: "int", nullable: false),
-                    SrcStudentId = table.Column<int>(type: "int", nullable: false),
+                    StudentId = table.Column<int>(type: "int", nullable: false),
                     RequestTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     RequestContent = table.Column<string>(type: "nvarchar(1000)", nullable: true),
                     GroupPositionId = table.Column<int>(type: "int", nullable: false),
@@ -455,14 +454,8 @@ namespace Teamo.Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_Applications", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Applications_AspNetUsers_DestStudentId",
-                        column: x => x.DestStudentId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Applications_AspNetUsers_SrcStudentId",
-                        column: x => x.SrcStudentId,
+                        name: "FK_Applications_AspNetUsers_StudentId",
+                        column: x => x.StudentId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
@@ -488,7 +481,7 @@ namespace Teamo.Infrastructure.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     GroupId = table.Column<int>(type: "int", nullable: false),
                     StudentId = table.Column<int>(type: "int", nullable: false),
-                    GroupPositionId = table.Column<int>(type: "int", nullable: false),
+                    GroupPositionId = table.Column<int>(type: "int", nullable: true),
                     Role = table.Column<string>(type: "varchar(50)", nullable: false)
                 },
                 constraints: table =>
@@ -541,11 +534,6 @@ namespace Teamo.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Applications_DestStudentId",
-                table: "Applications",
-                column: "DestStudentId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Applications_GroupId",
                 table: "Applications",
                 column: "GroupId");
@@ -556,9 +544,9 @@ namespace Teamo.Infrastructure.Migrations
                 column: "GroupPositionId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Applications_SrcStudentId",
+                name: "IX_Applications_StudentId",
                 table: "Applications",
-                column: "SrcStudentId");
+                column: "StudentId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
