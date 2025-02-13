@@ -5,6 +5,7 @@ using Teamo.Core.Enums;
 using Teamo.Core.Interfaces.Services;
 using Teamo.Core.Specifications.Users;
 using TeamoWeb.API.Dtos;
+using TeamoWeb.API.Errors;
 using TeamoWeb.API.Extensions;
 using TeamoWeb.API.RequestHelpers;
 
@@ -40,7 +41,7 @@ namespace TeamoWeb.API.Controllers
         {
             var userSpec = new UserSpecification(id);
             var user = await _userService.GetUserWithSpec(userSpec);
-            if (user == null) return NotFound();
+            if (user == null) return NotFound(new ApiErrorResponse(404, "User not found."));
             return Ok(user.ToProfileDto());
         }
 
@@ -51,13 +52,13 @@ namespace TeamoWeb.API.Controllers
         {
             var userSpec = new UserSpecification(id);
             var user = await _userService.GetUserWithSpec(userSpec);
-            if(user == null) return NotFound();
+            if(user == null) return NotFound(new ApiErrorResponse(404, "User not found."));
 
-            if(user.Status == UserStatus.Active) return BadRequest();
+            if(user.Status != UserStatus.Active) return BadRequest(new ApiErrorResponse(400, "Failed to ban user."));
             user.Status = UserStatus.Inactive;
             
             var result = await _userService.UpdateUserAsync(user);
-            if (result.Succeeded) return Ok();
+            if (result.Succeeded) return Ok(new ApiErrorResponse(200, "Banned user successfully."));
             else return BadRequest();
         }
     }

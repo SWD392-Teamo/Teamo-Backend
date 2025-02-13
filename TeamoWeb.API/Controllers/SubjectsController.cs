@@ -6,6 +6,7 @@ using Teamo.Core.Interfaces.Services;
 using Teamo.Core.Specifications.Majors;
 using Teamo.Core.Specifications.Subjects;
 using TeamoWeb.API.Dtos;
+using TeamoWeb.API.Errors;
 using TeamoWeb.API.Extensions;
 using TeamoWeb.API.RequestHelpers;
 
@@ -37,7 +38,7 @@ namespace TeamoWeb.API.Controllers
         {
             var subject = await _subjectService.GetSubjectByIdAsync(id);
             if (subject == null) 
-                return NotFound();
+                return NotFound(new ApiErrorResponse(404, "Subject not found"));
             return subject.ToDto();
         }
     }

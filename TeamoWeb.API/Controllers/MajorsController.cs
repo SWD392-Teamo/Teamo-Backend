@@ -1,10 +1,12 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Teamo.Core.Entities;
 using Teamo.Core.Interfaces;
 using Teamo.Core.Specifications.Majors;
 using Teamo.Infrastructure.Services;
 using TeamoWeb.API.Dtos;
+using TeamoWeb.API.Errors;
 using TeamoWeb.API.Extensions;
 
 namespace TeamoWeb.API.Controllers
@@ -35,7 +37,7 @@ namespace TeamoWeb.API.Controllers
         {
             var majorSpec = new MajorSpecification(id);
             var major = await _majorRepo.GetEntityWithSpec(majorSpec);
-            if (major == null) return NotFound();
+            if (major == null) return NotFound(new ApiErrorResponse(404, "Major not found."));
             return Ok(major.ToDto());
         }
     }
