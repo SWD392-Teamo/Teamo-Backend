@@ -97,7 +97,7 @@ namespace TeamoWeb.API.Controllers
 
             var result = await _appService.CreateNewApplicationAsync(newApp);
             if(!result) return BadRequest(new ApiErrorResponse(400, "Failed to create and send application."));
-            return Ok(new ApiErrorResponse(200, "Application sent successfully. View in My Applications."));
+            return Ok(new ApiErrorResponse(200, "Application sent successfully."));
         }
     }
 }

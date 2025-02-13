@@ -41,6 +41,7 @@ namespace TeamoWeb.API.Controllers
         {
             var userSpec = new UserSpecification(id);
             var user = await _userService.GetUserWithSpec(userSpec);
+
             if (user == null) return NotFound(new ApiErrorResponse(404, "User not found."));
             return Ok(user.ToProfileDto());
         }
@@ -58,6 +59,7 @@ namespace TeamoWeb.API.Controllers
             user.Status = UserStatus.Inactive;
             
             var result = await _userService.UpdateUserAsync(user);
+            
             if (result.Succeeded) return Ok(new ApiErrorResponse(200, "Banned user successfully."));
             else return BadRequest();
         }

@@ -37,7 +37,9 @@ namespace TeamoWeb.API.Controllers
         {
             var majorSpec = new MajorSpecification(id);
             var major = await _majorRepo.GetEntityWithSpec(majorSpec);
+
             if (major == null) return NotFound(new ApiErrorResponse(404, "Major not found."));
+            
             return Ok(major.ToDto());
         }
     }

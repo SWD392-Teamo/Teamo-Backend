@@ -21,6 +21,7 @@ namespace TeamoWeb.API.Controllers
         public async Task<ActionResult<Skill>> GetSkillById(int id)
         {
             var skill = await _skillService.GetSkillByIdAsync(id);
+            
             if(skill == null) return NotFound(new ApiErrorResponse(404, "Skill not found."));
             return Ok(skill);
         }
