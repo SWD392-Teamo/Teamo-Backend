@@ -59,11 +59,11 @@ namespace TeamoWeb.API.Controllers
         }
 
         //Approve or reject application
-        [HttpPatch]
+        [HttpPatch("{id}")]
         [Authorize(Roles = "Student")]
-        public async Task<ActionResult> ReviewApplication([FromBody] ApplicationDto appReviewDto)
+        public async Task<ActionResult> ReviewApplication(int id, [FromBody] ApplicationDto appReviewDto)
         {
-            var appReview = await _appService.GetApplicationByIdAsync(appReviewDto.Id);
+            var appReview = await _appService.GetApplicationByIdAsync(id);
             if(appReview == null || appReview.Status != ApplicationStatus.Requested) 
                 return BadRequest(new ApiErrorResponse(400, "Unable to review this application."));
         

@@ -63,11 +63,11 @@ namespace TeamoWeb.API.Controllers
         }
 
         //Update subject, update name or description only
-        [HttpPatch]
+        [HttpPatch("{id}")]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult> UpdateSubject([FromBody] SubjectDto subjectDto)
+        public async Task<ActionResult> UpdateSubject(int id, [FromBody] SubjectDto subjectDto)
         {
-            var subject = await _subjectService.GetSubjectByIdAsync(subjectDto.Id);
+            var subject = await _subjectService.GetSubjectByIdAsync(id);
             if(subject == null) return NotFound(new ApiErrorResponse(404, "Subject not found."));
 
             subject = subjectDto.ToEntity(subject);
