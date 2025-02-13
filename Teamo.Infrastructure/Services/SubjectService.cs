@@ -39,6 +39,18 @@ namespace Teamo.Infrastructure.Services
             return subjects;          
         }
 
+        public async Task<bool> CreateSubjectAsync(Subject subject)
+        {
+            _unitOfWork.Repository<Subject>().Add(subject);
+            return await _unitOfWork.Complete();
+        }
+
+        public async Task<bool> UpdateSubjectAsync(Subject subject)
+        {
+            _unitOfWork.Repository<Subject>().Update(subject);
+            return await _unitOfWork.Complete();
+        }
+
         public async Task<int> CountSubjectsAsync(SubjectParams subjectParams)
         {
             var subjectSpec = new SubjectSpecification(subjectParams);
