@@ -172,7 +172,7 @@ namespace Teamo.Infrastructure.Data
                 var semData = await File
                     .ReadAllTextAsync(path + @"/Data/SeedData/semesters.json");
 
-                var semesters = JsonSerializer.Deserialize<List<Semester>>(semData);
+                var semesters = JsonSerializer.Deserialize<List<Semester>>(semData, options);
 
                 if (semesters == null) return;
 
