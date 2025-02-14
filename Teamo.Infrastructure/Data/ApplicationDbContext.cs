@@ -15,23 +15,23 @@ namespace Teamo.Infrastructure.Data
         {
         }
 
-        public DbSet<Link> Link { get; set; }
-        public DbSet<Major> Major { get; set; }
-        public DbSet<Skill> Skill { get; set; }
-        public DbSet<Student> Student { get; set; }
-        public DbSet<StudentSkill> StudentSkill { get; set; }
-        public DbSet<Subject> Subject { get; set; }
-        public DbSet<MajorSubject> MajorSubject { get; set; }
-        public DbSet<Field> Field { get; set; }
-        public DbSet<SubjectField> SubjectField { get; set; }
-        public DbSet<Semester> Semester { get; set; }
-        public DbSet<Group> Group { get; set; }
-        public DbSet<GroupPosition> GroupPosition { get; set; }
-        public DbSet<GroupMember> GroupMember { get; set; }
-        public DbSet<GroupPositionSkill> GroupPositionSkill { get; set; }
-        public DbSet<Application> Application { get; set; }
-        public DbSet<GroupMemberPosition> GroupMemberPosition { get; set; }
-        public DbSet<Post> Post { get; set; }
+        public DbSet<Link> Links { get; set; }
+        public DbSet<Major> Majors { get; set; }
+        public DbSet<Skill> Skills { get; set; }
+        public DbSet<Student> Students { get; set; }
+        public DbSet<StudentSkill> StudentSkills { get; set; }
+        public DbSet<Subject> Subjects { get; set; }
+        public DbSet<MajorSubject> MajorSubjects { get; set; }
+        public DbSet<Field> Fields { get; set; }
+        public DbSet<SubjectField> SubjectFields { get; set; }
+        public DbSet<Semester> Semesters { get; set; }
+        public DbSet<Group> Groups { get; set; }
+        public DbSet<GroupPosition> GroupPositions { get; set; }
+        public DbSet<GroupMember> GroupMembers { get; set; }
+        public DbSet<GroupPositionSkill> GroupPositionSkills { get; set; }
+        public DbSet<Application> Applications { get; set; }
+        public DbSet<GroupMemberPosition> GroupMemberPositions { get; set; }
+        public DbSet<Post> Posts { get; set; }
         
         protected override void OnModelCreating(ModelBuilder builder)
         {

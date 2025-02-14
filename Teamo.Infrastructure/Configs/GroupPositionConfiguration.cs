@@ -9,6 +9,8 @@ namespace Teamo.Infrastructure.Configs
     {
         public void Configure(EntityTypeBuilder<GroupPosition> builder)
         {
+            builder.ToTable("GroupPosition");
+
             builder.Property(o => o.Name).HasColumnType("nvarchar(100)");
 
             builder.Property(o => o.Status)

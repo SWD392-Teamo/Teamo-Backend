@@ -9,6 +9,8 @@ namespace Teamo.Infrastructure.Configs
     {
         public void Configure(EntityTypeBuilder<Post> builder)
         {
+            builder.ToTable("Post");
+
             builder.Property(o => o.Content).HasColumnType("nvarchar(1000)");
 
             builder.HasOne(o => o.GroupMember)

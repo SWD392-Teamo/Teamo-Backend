@@ -8,6 +8,8 @@ namespace Teamo.Infrastructure.Configs
     {
         public void Configure(EntityTypeBuilder<SubjectField> builder)
         {
+            builder.ToTable("SubjectField");
+            
             builder.HasOne(o => o.Subject)
                 .WithMany(s => s.SubjectFields)
                 .HasForeignKey(o => o.SubjectId);

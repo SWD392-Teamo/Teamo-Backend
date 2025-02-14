@@ -9,6 +9,8 @@ namespace Teamo.Infrastructure.Configs
     {
         public void Configure(EntityTypeBuilder<StudentSkill> builder)
         {
+            builder.ToTable("StudentSkill");
+
             builder.Property(o => o.Level)
                 .HasConversion(
                     s => s.ToString(),

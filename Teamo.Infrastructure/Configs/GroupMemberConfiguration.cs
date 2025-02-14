@@ -9,6 +9,8 @@ namespace Teamo.Infrastructure.Configs
     {
         public void Configure(EntityTypeBuilder<GroupMember> builder)
         {
+            builder.ToTable("GroupMember");
+
             builder.HasOne(o => o.Group)
                 .WithMany(g => g.GroupMembers)
                 .HasForeignKey(o => o.GroupId)
