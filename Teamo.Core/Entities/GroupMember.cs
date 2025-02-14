@@ -6,7 +6,7 @@ namespace Teamo.Core.Entities
 {
     public class GroupMember : BaseEntity
     {
-        public required int GroupId { get; set; }
+        public int GroupId { get; set; }
         public Group Group { get; set; }
         public required int StudentId { get; set; }
         public User Student { get; set; }
