@@ -16,11 +16,5 @@ namespace Teamo.Core.Specifications.Groups
             AddInclude(gp => gp.Skills);
             AddInclude(gp => gp.GroupPositionSkills);
         }
-        public GroupPositionSpecification(GroupPositionParams groupPositionParams)
-            : base (x => (!groupPositionParams.GroupId.HasValue || groupPositionParams.GroupId == x.GroupId) &&
-                (!groupPositionParams.PositionId.HasValue || groupPositionParams.PositionId == x.Id))
-        {
-            
-        }
     }
 }
