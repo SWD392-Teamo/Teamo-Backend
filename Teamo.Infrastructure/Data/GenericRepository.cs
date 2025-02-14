@@ -138,7 +138,6 @@ namespace Infrastructure.Data
         {
             _context.Set<T>().AddRange(entities);
         }
-
         /// <summary>
         /// Remove a range of new items of type T to the database.
         /// </summary>

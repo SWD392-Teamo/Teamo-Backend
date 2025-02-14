@@ -59,6 +59,7 @@ namespace TeamoWeb.API.Controllers
             try
             {
                 var group = groupDto.ToEntity();
+
                 await _groupService.CreateGroupAsync(group, user.Id);
                 group = await _groupService.GetGroupByIdAsync(group.Id);
                 var createdGroupDto = group.ToDto();

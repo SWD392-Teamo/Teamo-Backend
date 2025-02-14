@@ -1,3 +1,4 @@
+
 ﻿using System.ComponentModel.DataAnnotations;
 using Teamo.Core.Enums;
 
