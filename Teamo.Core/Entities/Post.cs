@@ -10,6 +10,6 @@ namespace Teamo.Core.Entities
         public PostStatus Status { get; set; }
         public PostPrivacy Privacy { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
-        public DateTime UpdatedAt { get; set; } = DateTime.Now;
+        public DateTime? UpdatedAt { get; set; }
     }
 }

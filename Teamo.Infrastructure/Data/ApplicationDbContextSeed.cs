@@ -34,7 +34,7 @@ namespace Teamo.Infrastructure.Data
             }
 
             // Seed majors
-            if (!context.Majors.Any())
+            if (!context.Major.Any())
             {
                 var maData = await File
                     .ReadAllTextAsync(path + @"/Data/SeedData/majors.json");
@@ -43,7 +43,7 @@ namespace Teamo.Infrastructure.Data
 
                 if (majors == null) return;
 
-                context.Majors.AddRange(majors);
+                context.Major.AddRange(majors);
 
                 await context.SaveChangesAsync();
             }
@@ -152,7 +152,7 @@ namespace Teamo.Infrastructure.Data
             }
 
             // Seed subjects
-            if (!context.Subjects.Any())
+            if (!context.Subject.Any())
             {
                 var subData = await File
                     .ReadAllTextAsync(path + @"/Data/SeedData/subjects.json");
@@ -161,13 +161,13 @@ namespace Teamo.Infrastructure.Data
 
                 if (subjects == null) return;
 
-                context.Subjects.AddRange(subjects);
+                context.Subject.AddRange(subjects);
 
                 await context.SaveChangesAsync();
             }
 
             // Seed semesters
-            if (!context.Semesters.Any())
+            if (!context.Semester.Any())
             {
                 var semData = await File
                     .ReadAllTextAsync(path + @"/Data/SeedData/semesters.json");
@@ -176,13 +176,13 @@ namespace Teamo.Infrastructure.Data
 
                 if (semesters == null) return;
 
-                context.Semesters.AddRange(semesters);
+                context.Semester.AddRange(semesters);
 
                 await context.SaveChangesAsync();
             }
 
             // Seed fields
-            if (!context.Fields.Any())
+            if (!context.Field.Any())
             {
                 var fieldData = await File
                     .ReadAllTextAsync(path + @"/Data/SeedData/fields.json");
@@ -191,13 +191,13 @@ namespace Teamo.Infrastructure.Data
 
                 if (fields == null) return;
 
-                context.Fields.AddRange(fields);
+                context.Field.AddRange(fields);
 
                 await context.SaveChangesAsync();
             }
 
             // Seed skills
-            if (!context.Skills.Any())
+            if (!context.Skill.Any())
             {
                 var skillData = await File
                     .ReadAllTextAsync(path + @"/Data/SeedData/skills.json");
@@ -206,13 +206,13 @@ namespace Teamo.Infrastructure.Data
 
                 if (skills == null) return;
 
-                context.Skills.AddRange(skills);
+                context.Skill.AddRange(skills);
 
                 await context.SaveChangesAsync();
             }
 
             // Seed major subjects
-            if (!context.MajorSubjects.Any())
+            if (!context.MajorSubject.Any())
             {
                 var maSubData = await File
                     .ReadAllTextAsync(path + @"/Data/SeedData/majorSubjects.json");
@@ -222,13 +222,13 @@ namespace Teamo.Infrastructure.Data
 
                 if (majorSubjects == null) return;
 
-                context.MajorSubjects.AddRange(majorSubjects);
+                context.MajorSubject.AddRange(majorSubjects);
 
                 await context.SaveChangesAsync();
             }
 
             // Seed subject fields
-            if (!context.SubjectFields.Any())
+            if (!context.SubjectField.Any())
             {
                 var subFieldData = await File
                     .ReadAllTextAsync(path + @"/Data/SeedData/subjectFields.json");
@@ -238,13 +238,13 @@ namespace Teamo.Infrastructure.Data
 
                 if (subjectFields == null) return;
 
-                context.SubjectFields.AddRange(subjectFields);
+                context.SubjectField.AddRange(subjectFields);
 
                 await context.SaveChangesAsync();
             }
 
             // Seed Group 
-            if (!context.Groups.Any())
+            if (!context.Group.Any())
             {
                 var groupData = await File
                     .ReadAllTextAsync(path + @"/Data/SeedData/groups.json");
@@ -254,12 +254,12 @@ namespace Teamo.Infrastructure.Data
 
                 if (groups == null) return;
 
-                context.Groups.AddRange(groups);
+                context.Group.AddRange(groups);
 
                 await context.SaveChangesAsync();
             }
             // Seed Group Position
-            if (!context.GroupPositions.Any())
+            if (!context.GroupPosition.Any())
             {
                 var groupPositionData = await File
                     .ReadAllTextAsync(path + @"/Data/SeedData/groupPositions.json");
@@ -269,13 +269,13 @@ namespace Teamo.Infrastructure.Data
 
                 if (groupPositions == null) return;
 
-                context.GroupPositions.AddRange(groupPositions);
+                context.GroupPosition.AddRange(groupPositions);
 
                 await context.SaveChangesAsync();
             }
 
             // Seed Group Member
-            if (!context.GroupMembers.Any())
+            if (!context.GroupMember.Any())
             {
                 var groupMemberData = await File
                     .ReadAllTextAsync(path + @"/Data/SeedData/groupMembers.json");
@@ -285,13 +285,13 @@ namespace Teamo.Infrastructure.Data
 
                 if (groupMembers == null) return;
 
-                context.GroupMembers.AddRange(groupMembers);
+                context.GroupMember.AddRange(groupMembers);
 
                 await context.SaveChangesAsync();
             }
 
             //Seed Applications
-            if (!context.Applications.Any())
+            if (!context.Application.Any())
             {
                 var applicationData = await File
                     .ReadAllTextAsync(path + @"/Data/SeedData/applications.json");
@@ -301,13 +301,13 @@ namespace Teamo.Infrastructure.Data
 
                 if (applications == null) return;
 
-                context.Applications.AddRange(applications);
+                context.Application.AddRange(applications);
 
                 await context.SaveChangesAsync();
             }
 
             //Seed Student Skills
-            if (!context.StudentSkills.Any())
+            if (!context.StudentSkill.Any())
             {
                 var studentSkillsData = await File
                     .ReadAllTextAsync(path + @"/Data/SeedData/studentSkills.json");
@@ -317,7 +317,7 @@ namespace Teamo.Infrastructure.Data
 
                 if (studentSkills == null) return;
 
-                context.StudentSkills.AddRange(studentSkills);
+                context.StudentSkill.AddRange(studentSkills);
 
                 await context.SaveChangesAsync();
             }
