@@ -9,6 +9,8 @@ namespace Teamo.Infrastructure.Configs
     {
         public void Configure(EntityTypeBuilder<Application> builder)
         {
+            builder.ToTable("Application");
+
             builder.Property(o => o.RequestContent).HasColumnType("nvarchar(1000)");
             
             builder.Property(o => o.Status)
