@@ -290,6 +290,22 @@ namespace Teamo.Infrastructure.Data
                 await context.SaveChangesAsync();
             }
 
+            //Seed GroupMemberPositions
+            if (!context.GroupMemberPosition.Any())
+            {
+                var groupMemberPositionsData = await File
+                    .ReadAllTextAsync(path + @"/Data/SeedData/groupMemberPositions.json");
+
+                var groupMemberPositions = JsonSerializer.Deserialize<List<GroupMemberPosition>>(groupMemberPositionsData);
+
+
+                if (groupMemberPositions == null) return;
+
+                context.GroupMemberPosition.AddRange(groupMemberPositions);
+
+                await context.SaveChangesAsync();
+            }
+
             //Seed Applications
             if (!context.Application.Any())
             {
