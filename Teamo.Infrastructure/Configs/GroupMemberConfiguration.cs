@@ -9,6 +9,8 @@ namespace Teamo.Infrastructure.Configs
     {
         public void Configure(EntityTypeBuilder<GroupMember> builder)
         {
+            builder.ToTable("GroupMember");
+
             builder.HasOne(o => o.Group)
                 .WithMany(g => g.GroupMembers)
                 .HasForeignKey(o => o.GroupId)
@@ -19,16 +21,15 @@ namespace Teamo.Infrastructure.Configs
                 .HasForeignKey(o => o.StudentId)
                 .OnDelete(DeleteBehavior.Restrict); 
 
-            builder.HasOne(o => o.GroupPosition)
-                .WithMany()
-                .HasForeignKey(o => o.GroupPositionId)
-                .OnDelete(DeleteBehavior.Restrict); 
-
             builder.Property(o => o.Role)
                 .HasConversion(
                     s => s.ToString(),
                     s => (GroupMemberRole)Enum.Parse(typeof(GroupMemberRole), s))
-                .HasColumnType("varchar(50)");                
+                .HasColumnType("varchar(50)");
+
+            builder.HasMany(o => o.GroupPositions)
+                .WithMany()
+                .UsingEntity<GroupMemberPosition>();              
         }
     }
 }

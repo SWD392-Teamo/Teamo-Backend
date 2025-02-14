@@ -11,6 +11,8 @@ namespace Teamo.Infrastructure.Configs
     {
         public void Configure(EntityTypeBuilder<User> builder)
         {
+            builder.ToTable("User");
+
             builder.Property(u => u.UserName).HasColumnType("varchar(50)");
             builder.Property(u => u.PhoneNumber).HasColumnType("varchar(20)");
             builder.Property(u => u.Email).HasColumnType("varchar(100)");

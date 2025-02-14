@@ -8,6 +8,7 @@ namespace Teamo.Infrastructure.Configs
     {
         public void Configure(EntityTypeBuilder<Link> builder)
         {
+            builder.ToTable("Link");
             builder.Property(l => l.Name).HasColumnType("nvarchar(100)");
             builder.Property(l => l.Url).HasColumnType("varchar(200)");
 
