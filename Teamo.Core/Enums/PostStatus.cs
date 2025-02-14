@@ -4,6 +4,5 @@ namespace Teamo.Core.Enums
     {
         Posted,
         Updated,
-        Deleted
     }
 }
