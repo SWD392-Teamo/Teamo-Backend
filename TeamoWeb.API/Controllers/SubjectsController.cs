@@ -21,6 +21,7 @@ namespace TeamoWeb.API.Controllers
             _subjectService = subjectService;
         }
 
+        //Get subjects with spec
         [HttpGet]
         [Authorize]
         public async Task<ActionResult<IReadOnlyList<SubjectDto>>> GetSubjects([FromQuery] SubjectParams subjectParams)
@@ -33,6 +34,7 @@ namespace TeamoWeb.API.Controllers
             return Ok(pagination);
         }
 
+        //Get subject by id
         [HttpGet("{id}")]
         [Authorize]
         public async Task<ActionResult<SubjectDto?>> GetSubjectById(int id)
@@ -54,6 +56,9 @@ namespace TeamoWeb.API.Controllers
             if(string.IsNullOrEmpty(subjectDto.Name) || string.IsNullOrEmpty(subjectDto.Code))
                 return BadRequest(new ApiErrorResponse(400, "Please input all required fields."));
 
+            var duplicateCode = await _subjectService.CheckDuplicateCodeSubject(subjectDto.Code);
+            if(!duplicateCode) return BadRequest(new ApiErrorResponse(400, "Subject code must be unique."));
+            
             var subject = subjectDto.ToEntity();
 
             var result = await _subjectService.CreateSubjectAsync(subject);

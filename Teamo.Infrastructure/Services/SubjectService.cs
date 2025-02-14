@@ -70,5 +70,14 @@ namespace Teamo.Infrastructure.Services
 
             return count;
         }
+
+        public async Task<bool> CheckDuplicateCodeSubject(string code)
+        {
+            var result = true;
+            var subjectSpec = new SubjectSpecification(code);
+            var duplicateCode = await _unitOfWork.Repository<Subject>().GetEntityWithSpec(subjectSpec);
+            if(duplicateCode != null) result = false;
+            return result;
+        }
     }
 }

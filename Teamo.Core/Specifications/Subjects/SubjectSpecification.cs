@@ -15,8 +15,12 @@ namespace Teamo.Core.Specifications.Subjects
                 subjectParams.PageSize);
         }
         
-        public SubjectSpecification(int id)
-            : base(x => x.Id == id)
+        public SubjectSpecification(int id) : base(x => x.Id == id)
+        {
+        }
+
+        public SubjectSpecification(string code) 
+            : base(x => x.Code.ToLower().Equals(code.ToLower()))
         {
         }
     }

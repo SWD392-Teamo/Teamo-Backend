@@ -10,5 +10,6 @@ namespace Teamo.Core.Interfaces.Services
         Task<bool> CreateSubjectAsync(Subject subject);
         Task<bool> UpdateSubjectAsync (Subject subject);
         Task<int> CountSubjectsAsync(SubjectParams subjectParams);
+        Task<bool> CheckDuplicateCodeSubject(string code);
     }
 }
