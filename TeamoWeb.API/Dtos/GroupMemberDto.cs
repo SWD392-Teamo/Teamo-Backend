@@ -4,6 +4,7 @@ namespace TeamoWeb.API.Dtos
 {
     public class GroupMemberDto
     {
+        public int Id { get; set; }
         public string? MemberName { get; set; }
         public string? MemberEmail { get; set; }
         public string? ImgUrl { get; set; }

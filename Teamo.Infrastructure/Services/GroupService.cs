@@ -84,6 +84,11 @@ namespace Teamo.Infrastructure.Services
             return await _unitOfWork.Repository<Group>().GetEntityWithSpec(spec);
         }
 
+        public async Task<GroupMember> GetGroupMemberByIdAsync(int groupMemberId)
+        {
+            return await _unitOfWork.Repository<GroupMember>().GetByIdAsync(groupMemberId);
+        }
+
         public async Task<GroupPosition> GetGroupPositionByIdAsync(int id)
         {
             var spec = new GroupPositionSpecification(id);
@@ -105,6 +110,12 @@ namespace Teamo.Infrastructure.Services
                 groups.Add(group);
             }
             return groups;
+        }
+
+        public async Task RemoveMemberFromGroup(GroupMember groupMember)
+        {
+            _unitOfWork.Repository<GroupMember>().Delete(groupMember);
+            await _unitOfWork.Repository<GroupMember>().SaveAllAsync();
         }
 
         public async Task UpdateGroupAsync(Group group)

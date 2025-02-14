@@ -29,6 +29,7 @@ namespace TeamoWeb.API.Extensions
                 GroupMembers = group.GroupMembers?
                     .Select(gm => new GroupMemberDto
                     {
+                        Id = gm.Id,
                         MemberName = gm.Student.FirstName + " " + gm.Student.LastName,
                         MemberEmail = gm.Student.Email,
                         ImgUrl = gm.Student.ImgUrl,

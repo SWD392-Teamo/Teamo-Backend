@@ -98,7 +98,7 @@ namespace TeamoWeb.API.Controllers
         {
             var group = await _groupService.GetGroupByIdAsync(id);
             if (group == null)
-                return BadRequest(new ApiErrorResponse(404, "Group not found!"));
+                return NotFound(new ApiErrorResponse(404, "Group not found!"));
 
             try
             {
@@ -180,6 +180,31 @@ namespace TeamoWeb.API.Controllers
                 groupPosition = updateDto.ToEntity(groupPosition);
                 await _groupService.UpdateGroupPositionAsync(groupPosition, updateDto.SkillIds);
                 return Ok(new ApiErrorResponse(200, "Successfully update group position!"));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ApiErrorResponse(400, ex.Message, ex.InnerException?.Message));
+            }
+        }
+
+        [HttpPatch("remove-member/{id}")]
+        [Authorize(Roles = "Student")]
+        public async Task<IActionResult> RemoveMemberFromGroup(int id)
+        {
+            var groupMember = await _groupService.GetGroupMemberByIdAsync(id);
+            if (groupMember == null)
+            {
+                return NotFound(new ApiErrorResponse(404, "Group Member not found!"));
+            }
+
+            try
+            {
+                await _groupService.RemoveMemberFromGroup(groupMember);
+                return Ok(new ApiErrorResponse(200, "Successfully remove member from group!"));
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new ApiErrorResponse(409, ex.Message, ex.InnerException?.Message));
             }
             catch (Exception ex)
             {
