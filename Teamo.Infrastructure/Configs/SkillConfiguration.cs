@@ -8,6 +8,7 @@ namespace Teamo.Infrastructure.Configs
     {
         public void Configure(EntityTypeBuilder<Skill> builder)
         {
+            builder.ToTable("Skill");
             builder.Property(o => o.Name).HasColumnType("nvarchar(100)");
             builder.Property(o => o.Type).HasColumnType("nvarchar(100)");
         }

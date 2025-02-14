@@ -10,6 +10,8 @@ namespace Teamo.Core.Specifications.Groups
                         (!groupMemberParams.Role.HasValue || groupMemberParams.Role == x.Role) &&
                         (!groupMemberParams.Studentd.HasValue || groupMemberParams.Studentd == x.StudentId))
         {
+            ApplyPaging(groupMemberParams.PageSize * (groupMemberParams.PageIndex - 1),
+                groupMemberParams.PageSize);
         }
     }
 }

@@ -7,6 +7,7 @@ using Teamo.Core.Interfaces;
 using Teamo.Core.Interfaces.Services;
 using Teamo.Core.Specifications.Applications;
 using TeamoWeb.API.Dtos;
+using TeamoWeb.API.Errors;
 using TeamoWeb.API.Extensions;
 using TeamoWeb.API.RequestHelpers;
 
@@ -27,7 +28,7 @@ namespace TeamoWeb.API.Controllers
         public async Task<ActionResult<ApplicationDto?>> GetApplicationById(int id)
         {
             var app = await _appService.GetApplicationByIdAsync(id);
-            if(app == null) return NotFound();
+            if(app == null) return NotFound(new ApiErrorResponse(404, "Application not found"));
             return Ok(app.ToDto());
         }
 
@@ -58,21 +59,22 @@ namespace TeamoWeb.API.Controllers
         }
 
         //Approve or reject application
-        [HttpPatch]
+        [HttpPatch("{id}")]
         [Authorize(Roles = "Student")]
-        public async Task<ActionResult> ReviewApplication([FromBody] ApplicationDto appReviewDto)
+        public async Task<ActionResult> ReviewApplication(int id, [FromBody] ApplicationDto appReviewDto)
         {
-            var appReview = await _appService.GetApplicationByIdAsync(appReviewDto.Id);
-            if(appReview == null || !(appReview.Status == ApplicationStatus.Requested)) 
-                return BadRequest();
+            var appReview = await _appService.GetApplicationByIdAsync(id);
+            if(appReview == null || appReview.Status != ApplicationStatus.Requested) 
+                return BadRequest(new ApiErrorResponse(400, "Unable to review this application."));
         
             //Check if current user is the leader of corresponding group
             var groupLeaderEmail = await _appService.GetGroupLeaderEmailAsync(appReview.GroupId);
-            if(!User.GetEmail().Equals(groupLeaderEmail)) return BadRequest();
+            if(!User.GetEmail().Equals(groupLeaderEmail)) 
+                return BadRequest(new ApiErrorResponse(400, "Only group leaders can review applications."));
 
             var result = await _appService.ReviewApplicationAsync(appReview, appReviewDto.Status);
-            if(result) return Ok();
-            else return BadRequest();
+            if(result) return Ok(new ApiErrorResponse(200, "Application reviewed successfully."));
+            else return BadRequest(new ApiErrorResponse(200, "Failed to review application."));
         }
 
         //Create and send an application
@@ -82,7 +84,7 @@ namespace TeamoWeb.API.Controllers
         {
             //Check for validity to apply
             var isValid = await _appService.CheckValidToApply(app.GroupId,app.StudentId,app.GroupPositionId);
-            if(!isValid) return BadRequest();
+            if(!isValid) return BadRequest(new ApiErrorResponse(400, "Not applicable to create applications."));
 
             var newApp = new Application(){
                 GroupId = app.GroupId,
@@ -94,8 +96,8 @@ namespace TeamoWeb.API.Controllers
             };
 
             var result = await _appService.CreateNewApplicationAsync(newApp);
-            if(!result) return BadRequest();
-            return Ok();
+            if(!result) return BadRequest(new ApiErrorResponse(400, "Failed to create and send application."));
+            return Ok(new ApiErrorResponse(200, "Application sent successfully."));
         }
     }
 }

@@ -8,6 +8,7 @@ namespace Teamo.Infrastructure.Configs
     {
         public void Configure(EntityTypeBuilder<GroupPositionSkill> builder)
         {
+            builder.ToTable("GroupPositionSkill");
             builder.HasOne(o => o.GroupPosition)
                 .WithMany(g => g.GroupPositionSkills)
                 .HasForeignKey(o => o.GroupPositionId);

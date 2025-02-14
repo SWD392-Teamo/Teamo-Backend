@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Teamo.Core.Entities;
 using Teamo.Core.Interfaces;
 using Teamo.Core.Specifications.Skills;
+using TeamoWeb.API.Errors;
 
 namespace TeamoWeb.API.Controllers
 {
@@ -20,7 +21,8 @@ namespace TeamoWeb.API.Controllers
         public async Task<ActionResult<Skill>> GetSkillById(int id)
         {
             var skill = await _skillService.GetSkillByIdAsync(id);
-            if(skill == null) return NotFound();
+            
+            if(skill == null) return NotFound(new ApiErrorResponse(404, "Skill not found."));
             return Ok(skill);
         }
 

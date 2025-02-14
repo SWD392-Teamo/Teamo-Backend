@@ -172,7 +172,7 @@ namespace Teamo.Infrastructure.Data
                 var semData = await File
                     .ReadAllTextAsync(path + @"/Data/SeedData/semesters.json");
 
-                var semesters = JsonSerializer.Deserialize<List<Semester>>(semData);
+                var semesters = JsonSerializer.Deserialize<List<Semester>>(semData, options);
 
                 if (semesters == null) return;
 
@@ -286,6 +286,22 @@ namespace Teamo.Infrastructure.Data
                 if (groupMembers == null) return;
 
                 context.GroupMembers.AddRange(groupMembers);
+
+                await context.SaveChangesAsync();
+            }
+
+            //Seed GroupMemberPositions
+            if (!context.GroupMemberPositions.Any())
+            {
+                var groupMemberPositionsData = await File
+                    .ReadAllTextAsync(path + @"/Data/SeedData/groupMemberPositions.json");
+
+                var groupMemberPositions = JsonSerializer.Deserialize<List<GroupMemberPosition>>(groupMemberPositionsData);
+
+
+                if (groupMemberPositions == null) return;
+
+                context.GroupMemberPositions.AddRange(groupMemberPositions);
 
                 await context.SaveChangesAsync();
             }

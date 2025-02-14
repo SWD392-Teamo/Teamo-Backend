@@ -36,17 +36,6 @@ namespace Teamo.Infrastructure.Services
                 throw new InvalidOperationException("This student already exists in this group!");
             }
 
-            var groupPositionSpec = new GroupPositionSpecification(new GroupPositionParams
-            {
-                GroupId = groupMember.GroupId,
-                PositionId = groupMember.GroupPositionId
-            });
-            var groupPositon = await _unitOfWork.Repository<GroupPosition>().GetEntityWithSpec(groupPositionSpec);
-            if (groupPositon == null)
-            {
-                throw new InvalidOperationException("This group does not have this position");
-            }
-
             groupMember.Role = GroupMemberRole.Member;
             _unitOfWork.Repository<GroupMember>().Add(groupMember);
             await _unitOfWork.Repository<GroupMember>().SaveAllAsync();
@@ -84,6 +73,11 @@ namespace Teamo.Infrastructure.Services
             return await _unitOfWork.Repository<Group>().GetEntityWithSpec(spec);
         }
 
+        public async Task<GroupMember> GetGroupMemberByIdAsync(int groupMemberId)
+        {
+            return await _unitOfWork.Repository<GroupMember>().GetByIdAsync(groupMemberId);
+        }
+
         public async Task<GroupPosition> GetGroupPositionByIdAsync(int id)
         {
             var spec = new GroupPositionSpecification(id);
@@ -105,6 +99,12 @@ namespace Teamo.Infrastructure.Services
                 groups.Add(group);
             }
             return groups;
+        }
+
+        public async Task RemoveMemberFromGroup(GroupMember groupMember)
+        {
+            _unitOfWork.Repository<GroupMember>().Delete(groupMember);
+            await _unitOfWork.Repository<GroupMember>().SaveAllAsync();
         }
 
         public async Task UpdateGroupAsync(Group group)

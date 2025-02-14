@@ -1,0 +1,30 @@
+[
+    {
+        "GroupMemberId": 1,
+        "GroupPositionId": 1
+    },
+    {
+        "GroupMemberId": 2,
+        "GroupPositionId": 2
+    },
+    {
+        "GroupMemberId": 3,
+        "GroupPositionId": 5
+    },
+    {
+        "GroupMemberId": 4,
+        "GroupPositionId": 6
+    },
+    {
+        "GroupMemberId": 5,
+        "GroupPositionId": 8
+    },
+    {
+        "GroupMemberId": 6,
+        "GroupPositionId": 7
+    },
+    {
+        "GroupMemberId": 7,
+        "GroupPositionId": 10
+    }
+]

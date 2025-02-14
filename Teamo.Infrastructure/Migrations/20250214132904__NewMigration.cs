@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Teamo.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class NewMigration : Migration
+    public partial class _NewMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -27,7 +27,7 @@ namespace Teamo.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Fields",
+                name: "Field",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -37,11 +37,11 @@ namespace Teamo.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Fields", x => x.Id);
+                    table.PrimaryKey("PK_Field", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Majors",
+                name: "Major",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -52,11 +52,11 @@ namespace Teamo.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Majors", x => x.Id);
+                    table.PrimaryKey("PK_Major", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Semesters",
+                name: "Semester",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -64,15 +64,16 @@ namespace Teamo.Infrastructure.Migrations
                     Name = table.Column<string>(type: "nvarchar(100)", nullable: true),
                     Code = table.Column<string>(type: "varchar(20)", nullable: true),
                     StartDate = table.Column<DateOnly>(type: "date", nullable: false),
-                    EndDate = table.Column<DateOnly>(type: "date", nullable: false)
+                    EndDate = table.Column<DateOnly>(type: "date", nullable: false),
+                    Status = table.Column<string>(type: "varchar(50)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Semesters", x => x.Id);
+                    table.PrimaryKey("PK_Semester", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Skills",
+                name: "Skill",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -82,11 +83,11 @@ namespace Teamo.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Skills", x => x.Id);
+                    table.PrimaryKey("PK_Skill", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Students",
+                name: "Student",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -103,11 +104,11 @@ namespace Teamo.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Students", x => x.Id);
+                    table.PrimaryKey("PK_Student", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Subjects",
+                name: "Subject",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -119,7 +120,7 @@ namespace Teamo.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Subjects", x => x.Id);
+                    table.PrimaryKey("PK_Subject", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -144,7 +145,7 @@ namespace Teamo.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "AspNetUsers",
+                name: "User",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -175,17 +176,17 @@ namespace Teamo.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                    table.PrimaryKey("PK_User", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_AspNetUsers_Majors_MajorID",
+                        name: "FK_User_Major_MajorID",
                         column: x => x.MajorID,
-                        principalTable: "Majors",
+                        principalTable: "Major",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "MajorSubjects",
+                name: "MajorSubject",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -195,23 +196,23 @@ namespace Teamo.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_MajorSubjects", x => x.Id);
+                    table.PrimaryKey("PK_MajorSubject", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_MajorSubjects_Majors_MajorId",
+                        name: "FK_MajorSubject_Major_MajorId",
                         column: x => x.MajorId,
-                        principalTable: "Majors",
+                        principalTable: "Major",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_MajorSubjects_Subjects_SubjectId",
+                        name: "FK_MajorSubject_Subject_SubjectId",
                         column: x => x.SubjectId,
-                        principalTable: "Subjects",
+                        principalTable: "Subject",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "SubjectFields",
+                name: "SubjectField",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -221,17 +222,17 @@ namespace Teamo.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_SubjectFields", x => x.Id);
+                    table.PrimaryKey("PK_SubjectField", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_SubjectFields_Fields_FieldId",
+                        name: "FK_SubjectField_Field_FieldId",
                         column: x => x.FieldId,
-                        principalTable: "Fields",
+                        principalTable: "Field",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_SubjectFields_Subjects_SubjectId",
+                        name: "FK_SubjectField_Subject_SubjectId",
                         column: x => x.SubjectId,
-                        principalTable: "Subjects",
+                        principalTable: "Subject",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -250,9 +251,9 @@ namespace Teamo.Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_AspNetUserClaims", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_AspNetUserClaims_AspNetUsers_UserId",
+                        name: "FK_AspNetUserClaims_User_UserId",
                         column: x => x.UserId,
-                        principalTable: "AspNetUsers",
+                        principalTable: "User",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -270,9 +271,9 @@ namespace Teamo.Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_AspNetUserLogins", x => new { x.LoginProvider, x.ProviderKey });
                     table.ForeignKey(
-                        name: "FK_AspNetUserLogins_AspNetUsers_UserId",
+                        name: "FK_AspNetUserLogins_User_UserId",
                         column: x => x.UserId,
-                        principalTable: "AspNetUsers",
+                        principalTable: "User",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -294,9 +295,9 @@ namespace Teamo.Infrastructure.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_AspNetUserRoles_AspNetUsers_UserId",
+                        name: "FK_AspNetUserRoles_User_UserId",
                         column: x => x.UserId,
-                        principalTable: "AspNetUsers",
+                        principalTable: "User",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -314,15 +315,15 @@ namespace Teamo.Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_AspNetUserTokens", x => new { x.UserId, x.LoginProvider, x.Name });
                     table.ForeignKey(
-                        name: "FK_AspNetUserTokens_AspNetUsers_UserId",
+                        name: "FK_AspNetUserTokens_User_UserId",
                         column: x => x.UserId,
-                        principalTable: "AspNetUsers",
+                        principalTable: "User",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Groups",
+                name: "Group",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -340,35 +341,35 @@ namespace Teamo.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Groups", x => x.Id);
+                    table.PrimaryKey("PK_Group", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Groups_AspNetUsers_CreatedById",
-                        column: x => x.CreatedById,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Groups_Fields_FieldId",
+                        name: "FK_Group_Field_FieldId",
                         column: x => x.FieldId,
-                        principalTable: "Fields",
+                        principalTable: "Field",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Groups_Semesters_SemesterId",
+                        name: "FK_Group_Semester_SemesterId",
                         column: x => x.SemesterId,
-                        principalTable: "Semesters",
+                        principalTable: "Semester",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Groups_Subjects_SubjectId",
+                        name: "FK_Group_Subject_SubjectId",
                         column: x => x.SubjectId,
-                        principalTable: "Subjects",
+                        principalTable: "Subject",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Group_User_CreatedById",
+                        column: x => x.CreatedById,
+                        principalTable: "User",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Links",
+                name: "Link",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -379,17 +380,17 @@ namespace Teamo.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Links", x => x.Id);
+                    table.PrimaryKey("PK_Link", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Links_AspNetUsers_StudentId",
+                        name: "FK_Link_User_StudentId",
                         column: x => x.StudentId,
-                        principalTable: "AspNetUsers",
+                        principalTable: "User",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "StudentSkills",
+                name: "StudentSkill",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -400,23 +401,50 @@ namespace Teamo.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_StudentSkills", x => x.Id);
+                    table.PrimaryKey("PK_StudentSkill", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_StudentSkills_AspNetUsers_StudentId",
-                        column: x => x.StudentId,
-                        principalTable: "AspNetUsers",
+                        name: "FK_StudentSkill_Skill_SkillId",
+                        column: x => x.SkillId,
+                        principalTable: "Skill",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_StudentSkills_Skills_SkillId",
-                        column: x => x.SkillId,
-                        principalTable: "Skills",
+                        name: "FK_StudentSkill_User_StudentId",
+                        column: x => x.StudentId,
+                        principalTable: "User",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "GroupPositions",
+                name: "GroupMember",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    GroupId = table.Column<int>(type: "int", nullable: false),
+                    StudentId = table.Column<int>(type: "int", nullable: false),
+                    Role = table.Column<string>(type: "varchar(50)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_GroupMember", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_GroupMember_Group_GroupId",
+                        column: x => x.GroupId,
+                        principalTable: "Group",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_GroupMember_User_StudentId",
+                        column: x => x.StudentId,
+                        principalTable: "User",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "GroupPosition",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -428,17 +456,41 @@ namespace Teamo.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_GroupPositions", x => x.Id);
+                    table.PrimaryKey("PK_GroupPosition", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_GroupPositions_Groups_GroupId",
+                        name: "FK_GroupPosition_Group_GroupId",
                         column: x => x.GroupId,
-                        principalTable: "Groups",
+                        principalTable: "Group",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Applications",
+                name: "Post",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    GroupMemberId = table.Column<int>(type: "int", nullable: false),
+                    Content = table.Column<string>(type: "nvarchar(1000)", nullable: true),
+                    Status = table.Column<string>(type: "varchar(20)", nullable: false),
+                    Privacy = table.Column<string>(type: "varchar(20)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Post", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Post_GroupMember_GroupMemberId",
+                        column: x => x.GroupMemberId,
+                        principalTable: "GroupMember",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Application",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -452,63 +504,55 @@ namespace Teamo.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Applications", x => x.Id);
+                    table.PrimaryKey("PK_Application", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Applications_AspNetUsers_StudentId",
-                        column: x => x.StudentId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Applications_GroupPositions_GroupPositionId",
+                        name: "FK_Application_GroupPosition_GroupPositionId",
                         column: x => x.GroupPositionId,
-                        principalTable: "GroupPositions",
+                        principalTable: "GroupPosition",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Applications_Groups_GroupId",
+                        name: "FK_Application_Group_GroupId",
                         column: x => x.GroupId,
-                        principalTable: "Groups",
+                        principalTable: "Group",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Application_User_StudentId",
+                        column: x => x.StudentId,
+                        principalTable: "User",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "GroupMemberPosition",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    GroupPositionId = table.Column<int>(type: "int", nullable: false),
+                    GroupMemberId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_GroupMemberPosition", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_GroupMemberPosition_GroupMember_GroupMemberId",
+                        column: x => x.GroupMemberId,
+                        principalTable: "GroupMember",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_GroupMemberPosition_GroupPosition_GroupPositionId",
+                        column: x => x.GroupPositionId,
+                        principalTable: "GroupPosition",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "GroupMembers",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    GroupId = table.Column<int>(type: "int", nullable: false),
-                    StudentId = table.Column<int>(type: "int", nullable: false),
-                    GroupPositionId = table.Column<int>(type: "int", nullable: true),
-                    Role = table.Column<string>(type: "varchar(50)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_GroupMembers", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_GroupMembers_AspNetUsers_StudentId",
-                        column: x => x.StudentId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_GroupMembers_GroupPositions_GroupPositionId",
-                        column: x => x.GroupPositionId,
-                        principalTable: "GroupPositions",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_GroupMembers_Groups_GroupId",
-                        column: x => x.GroupId,
-                        principalTable: "Groups",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "GroupPositionSkills",
+                name: "GroupPositionSkill",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -518,34 +562,34 @@ namespace Teamo.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_GroupPositionSkills", x => x.Id);
+                    table.PrimaryKey("PK_GroupPositionSkill", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_GroupPositionSkills_GroupPositions_GroupPositionId",
+                        name: "FK_GroupPositionSkill_GroupPosition_GroupPositionId",
                         column: x => x.GroupPositionId,
-                        principalTable: "GroupPositions",
+                        principalTable: "GroupPosition",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_GroupPositionSkills_Skills_SkillId",
+                        name: "FK_GroupPositionSkill_Skill_SkillId",
                         column: x => x.SkillId,
-                        principalTable: "Skills",
+                        principalTable: "Skill",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Applications_GroupId",
-                table: "Applications",
+                name: "IX_Application_GroupId",
+                table: "Application",
                 column: "GroupId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Applications_GroupPositionId",
-                table: "Applications",
+                name: "IX_Application_GroupPositionId",
+                table: "Application",
                 column: "GroupPositionId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Applications_StudentId",
-                table: "Applications",
+                name: "IX_Application_StudentId",
+                table: "Application",
                 column: "StudentId");
 
             migrationBuilder.CreateIndex(
@@ -576,113 +620,123 @@ namespace Teamo.Infrastructure.Migrations
                 column: "RoleId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Group_CreatedById",
+                table: "Group",
+                column: "CreatedById");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Group_FieldId",
+                table: "Group",
+                column: "FieldId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Group_SemesterId",
+                table: "Group",
+                column: "SemesterId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Group_SubjectId",
+                table: "Group",
+                column: "SubjectId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_GroupMember_GroupId",
+                table: "GroupMember",
+                column: "GroupId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_GroupMember_StudentId",
+                table: "GroupMember",
+                column: "StudentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_GroupMemberPosition_GroupMemberId",
+                table: "GroupMemberPosition",
+                column: "GroupMemberId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_GroupMemberPosition_GroupPositionId",
+                table: "GroupMemberPosition",
+                column: "GroupPositionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_GroupPosition_GroupId",
+                table: "GroupPosition",
+                column: "GroupId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_GroupPositionSkill_GroupPositionId",
+                table: "GroupPositionSkill",
+                column: "GroupPositionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_GroupPositionSkill_SkillId",
+                table: "GroupPositionSkill",
+                column: "SkillId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Link_StudentId",
+                table: "Link",
+                column: "StudentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MajorSubject_MajorId",
+                table: "MajorSubject",
+                column: "MajorId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MajorSubject_SubjectId",
+                table: "MajorSubject",
+                column: "SubjectId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Post_GroupMemberId",
+                table: "Post",
+                column: "GroupMemberId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_StudentSkill_SkillId",
+                table: "StudentSkill",
+                column: "SkillId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_StudentSkill_StudentId",
+                table: "StudentSkill",
+                column: "StudentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SubjectField_FieldId",
+                table: "SubjectField",
+                column: "FieldId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SubjectField_SubjectId",
+                table: "SubjectField",
+                column: "SubjectId");
+
+            migrationBuilder.CreateIndex(
                 name: "EmailIndex",
-                table: "AspNetUsers",
+                table: "User",
                 column: "NormalizedEmail");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AspNetUsers_MajorID",
-                table: "AspNetUsers",
+                name: "IX_User_MajorID",
+                table: "User",
                 column: "MajorID");
 
             migrationBuilder.CreateIndex(
                 name: "UserNameIndex",
-                table: "AspNetUsers",
+                table: "User",
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_GroupMembers_GroupId",
-                table: "GroupMembers",
-                column: "GroupId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_GroupMembers_GroupPositionId",
-                table: "GroupMembers",
-                column: "GroupPositionId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_GroupMembers_StudentId",
-                table: "GroupMembers",
-                column: "StudentId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_GroupPositions_GroupId",
-                table: "GroupPositions",
-                column: "GroupId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_GroupPositionSkills_GroupPositionId",
-                table: "GroupPositionSkills",
-                column: "GroupPositionId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_GroupPositionSkills_SkillId",
-                table: "GroupPositionSkills",
-                column: "SkillId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Groups_CreatedById",
-                table: "Groups",
-                column: "CreatedById");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Groups_FieldId",
-                table: "Groups",
-                column: "FieldId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Groups_SemesterId",
-                table: "Groups",
-                column: "SemesterId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Groups_SubjectId",
-                table: "Groups",
-                column: "SubjectId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Links_StudentId",
-                table: "Links",
-                column: "StudentId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_MajorSubjects_MajorId",
-                table: "MajorSubjects",
-                column: "MajorId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_MajorSubjects_SubjectId",
-                table: "MajorSubjects",
-                column: "SubjectId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_StudentSkills_SkillId",
-                table: "StudentSkills",
-                column: "SkillId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_StudentSkills_StudentId",
-                table: "StudentSkills",
-                column: "StudentId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_SubjectFields_FieldId",
-                table: "SubjectFields",
-                column: "FieldId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_SubjectFields_SubjectId",
-                table: "SubjectFields",
-                column: "SubjectId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Applications");
+                name: "Application");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
@@ -700,52 +754,58 @@ namespace Teamo.Infrastructure.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "GroupMembers");
+                name: "GroupMemberPosition");
 
             migrationBuilder.DropTable(
-                name: "GroupPositionSkills");
+                name: "GroupPositionSkill");
 
             migrationBuilder.DropTable(
-                name: "Links");
+                name: "Link");
 
             migrationBuilder.DropTable(
-                name: "MajorSubjects");
+                name: "MajorSubject");
 
             migrationBuilder.DropTable(
-                name: "Students");
+                name: "Post");
 
             migrationBuilder.DropTable(
-                name: "StudentSkills");
+                name: "Student");
 
             migrationBuilder.DropTable(
-                name: "SubjectFields");
+                name: "StudentSkill");
+
+            migrationBuilder.DropTable(
+                name: "SubjectField");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "GroupPositions");
+                name: "GroupPosition");
 
             migrationBuilder.DropTable(
-                name: "Skills");
+                name: "GroupMember");
 
             migrationBuilder.DropTable(
-                name: "Groups");
+                name: "Skill");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
+                name: "Group");
 
             migrationBuilder.DropTable(
-                name: "Fields");
+                name: "Field");
 
             migrationBuilder.DropTable(
-                name: "Semesters");
+                name: "Semester");
 
             migrationBuilder.DropTable(
-                name: "Subjects");
+                name: "Subject");
 
             migrationBuilder.DropTable(
-                name: "Majors");
+                name: "User");
+
+            migrationBuilder.DropTable(
+                name: "Major");
         }
     }
 }

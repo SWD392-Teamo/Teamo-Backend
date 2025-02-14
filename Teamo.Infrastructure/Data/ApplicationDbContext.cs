@@ -30,6 +30,9 @@ namespace Teamo.Infrastructure.Data
         public DbSet<GroupMember> GroupMembers { get; set; }
         public DbSet<GroupPositionSkill> GroupPositionSkills { get; set; }
         public DbSet<Application> Applications { get; set; }
+        public DbSet<GroupMemberPosition> GroupMemberPositions { get; set; }
+        public DbSet<Post> Posts { get; set; }
+        
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
