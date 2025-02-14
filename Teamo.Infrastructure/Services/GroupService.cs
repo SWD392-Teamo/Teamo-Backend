@@ -36,17 +36,6 @@ namespace Teamo.Infrastructure.Services
                 throw new InvalidOperationException("This student already exists in this group!");
             }
 
-            var groupPositionSpec = new GroupPositionSpecification(new GroupPositionParams
-            {
-                GroupId = groupMember.GroupId,
-                PositionId = groupMember.GroupPositionId
-            });
-            var groupPositon = await _unitOfWork.Repository<GroupPosition>().GetEntityWithSpec(groupPositionSpec);
-            if (groupPositon == null)
-            {
-                throw new InvalidOperationException("This group does not have this position");
-            }
-
             groupMember.Role = GroupMemberRole.Member;
             _unitOfWork.Repository<GroupMember>().Add(groupMember);
             await _unitOfWork.Repository<GroupMember>().SaveAllAsync();

@@ -33,7 +33,7 @@ namespace TeamoWeb.API.Extensions
                         MemberName = gm.Student.FirstName + " " + gm.Student.LastName,
                         MemberEmail = gm.Student.Email,
                         ImgUrl = gm.Student.ImgUrl,
-                        Position = gm.GroupPosition?.Name,
+                        Positions = gm.GroupPositions.Select(gp => gp.Name),
                         Role = gm.Role
                     }).ToList() ?? new List<GroupMemberDto>(),
 
@@ -120,7 +120,6 @@ namespace TeamoWeb.API.Extensions
                 }
                 return new GroupPosition
                 {
-                    GroupId = groupPositionDto.GroupId,
                     Name = groupPositionDto.Name,
                     Count = groupPositionDto.Count.Value,
                     GroupPositionSkills = groupPositionDto.SkillIds
@@ -136,6 +135,20 @@ namespace TeamoWeb.API.Extensions
             groupPosition.Count = groupPositionDto.Count ?? groupPosition.Count;
             groupPosition.Status = groupPositionDto.Status ?? groupPosition.Status;
             return groupPosition;
+        }
+
+        // Mapping GroupMemberToAddDto to GroupMember
+        public static GroupMember ToEntity (this GroupMemberToAddDto groupMemberToAddDto)
+        {
+            return new GroupMember
+            {
+                StudentId = groupMemberToAddDto.StudentId,
+                GroupMemberPositions = groupMemberToAddDto.GroupPositionIds
+                                      .Select(gpId => new GroupMemberPosition
+                                      {
+                                          GroupPositionId = gpId
+                                      }).ToList()
+            };
         }
     }
 }

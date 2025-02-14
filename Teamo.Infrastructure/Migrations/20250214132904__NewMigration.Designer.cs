@@ -12,8 +12,8 @@ using Teamo.Infrastructure.Data;
 namespace Teamo.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250212041405_NewMigration")]
-    partial class NewMigration
+    [Migration("20250214132904__NewMigration")]
+    partial class _NewMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -193,7 +193,7 @@ namespace Teamo.Infrastructure.Migrations
 
                     b.HasIndex("StudentId");
 
-                    b.ToTable("Applications");
+                    b.ToTable("Application", (string)null);
                 });
 
             modelBuilder.Entity("Teamo.Core.Entities.Field", b =>
@@ -212,7 +212,7 @@ namespace Teamo.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Fields");
+                    b.ToTable("Field", (string)null);
                 });
 
             modelBuilder.Entity("Teamo.Core.Entities.Group", b =>
@@ -264,7 +264,7 @@ namespace Teamo.Infrastructure.Migrations
 
                     b.HasIndex("SubjectId");
 
-                    b.ToTable("Groups");
+                    b.ToTable("Group", (string)null);
                 });
 
             modelBuilder.Entity("Teamo.Core.Entities.GroupMember", b =>
@@ -278,9 +278,6 @@ namespace Teamo.Infrastructure.Migrations
                     b.Property<int>("GroupId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("GroupPositionId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Role")
                         .IsRequired()
                         .HasColumnType("varchar(50)");
@@ -292,11 +289,32 @@ namespace Teamo.Infrastructure.Migrations
 
                     b.HasIndex("GroupId");
 
-                    b.HasIndex("GroupPositionId");
-
                     b.HasIndex("StudentId");
 
-                    b.ToTable("GroupMembers");
+                    b.ToTable("GroupMember", (string)null);
+                });
+
+            modelBuilder.Entity("Teamo.Core.Entities.GroupMemberPosition", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("GroupMemberId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("GroupPositionId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GroupMemberId");
+
+                    b.HasIndex("GroupPositionId");
+
+                    b.ToTable("GroupMemberPosition", (string)null);
                 });
 
             modelBuilder.Entity("Teamo.Core.Entities.GroupPosition", b =>
@@ -324,7 +342,7 @@ namespace Teamo.Infrastructure.Migrations
 
                     b.HasIndex("GroupId");
 
-                    b.ToTable("GroupPositions");
+                    b.ToTable("GroupPosition", (string)null);
                 });
 
             modelBuilder.Entity("Teamo.Core.Entities.GroupPositionSkill", b =>
@@ -347,7 +365,7 @@ namespace Teamo.Infrastructure.Migrations
 
                     b.HasIndex("SkillId");
 
-                    b.ToTable("GroupPositionSkills");
+                    b.ToTable("GroupPositionSkill", (string)null);
                 });
 
             modelBuilder.Entity("Teamo.Core.Entities.Identity.User", b =>
@@ -446,7 +464,7 @@ namespace Teamo.Infrastructure.Migrations
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
-                    b.ToTable("AspNetUsers", (string)null);
+                    b.ToTable("User", (string)null);
                 });
 
             modelBuilder.Entity("Teamo.Core.Entities.Link", b =>
@@ -470,7 +488,7 @@ namespace Teamo.Infrastructure.Migrations
 
                     b.HasIndex("StudentId");
 
-                    b.ToTable("Links");
+                    b.ToTable("Link", (string)null);
                 });
 
             modelBuilder.Entity("Teamo.Core.Entities.Major", b =>
@@ -492,7 +510,7 @@ namespace Teamo.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Majors");
+                    b.ToTable("Major", (string)null);
                 });
 
             modelBuilder.Entity("Teamo.Core.Entities.MajorSubject", b =>
@@ -515,7 +533,42 @@ namespace Teamo.Infrastructure.Migrations
 
                     b.HasIndex("SubjectId");
 
-                    b.ToTable("MajorSubjects");
+                    b.ToTable("MajorSubject", (string)null);
+                });
+
+            modelBuilder.Entity("Teamo.Core.Entities.Post", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Content")
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("GroupMemberId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Privacy")
+                        .IsRequired()
+                        .HasColumnType("varchar(20)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("varchar(20)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GroupMemberId");
+
+                    b.ToTable("Post", (string)null);
                 });
 
             modelBuilder.Entity("Teamo.Core.Entities.Semester", b =>
@@ -538,9 +591,13 @@ namespace Teamo.Infrastructure.Migrations
                     b.Property<DateOnly>("StartDate")
                         .HasColumnType("date");
 
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("varchar(50)");
+
                     b.HasKey("Id");
 
-                    b.ToTable("Semesters");
+                    b.ToTable("Semester", (string)null);
                 });
 
             modelBuilder.Entity("Teamo.Core.Entities.Skill", b =>
@@ -559,7 +616,7 @@ namespace Teamo.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Skills");
+                    b.ToTable("Skill", (string)null);
                 });
 
             modelBuilder.Entity("Teamo.Core.Entities.Student", b =>
@@ -600,7 +657,7 @@ namespace Teamo.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Students");
+                    b.ToTable("Student", (string)null);
                 });
 
             modelBuilder.Entity("Teamo.Core.Entities.StudentSkill", b =>
@@ -627,7 +684,7 @@ namespace Teamo.Infrastructure.Migrations
 
                     b.HasIndex("StudentId");
 
-                    b.ToTable("StudentSkills");
+                    b.ToTable("StudentSkill", (string)null);
                 });
 
             modelBuilder.Entity("Teamo.Core.Entities.Subject", b =>
@@ -652,7 +709,7 @@ namespace Teamo.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Subjects");
+                    b.ToTable("Subject", (string)null);
                 });
 
             modelBuilder.Entity("Teamo.Core.Entities.SubjectField", b =>
@@ -675,7 +732,7 @@ namespace Teamo.Infrastructure.Migrations
 
                     b.HasIndex("SubjectId");
 
-                    b.ToTable("SubjectFields");
+                    b.ToTable("SubjectField", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
@@ -799,11 +856,6 @@ namespace Teamo.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Teamo.Core.Entities.GroupPosition", "GroupPosition")
-                        .WithMany()
-                        .HasForeignKey("GroupPositionId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
                     b.HasOne("Teamo.Core.Entities.Identity.User", "Student")
                         .WithMany()
                         .HasForeignKey("StudentId")
@@ -812,9 +864,26 @@ namespace Teamo.Infrastructure.Migrations
 
                     b.Navigation("Group");
 
-                    b.Navigation("GroupPosition");
-
                     b.Navigation("Student");
+                });
+
+            modelBuilder.Entity("Teamo.Core.Entities.GroupMemberPosition", b =>
+                {
+                    b.HasOne("Teamo.Core.Entities.GroupMember", "GroupMember")
+                        .WithMany("GroupMemberPositions")
+                        .HasForeignKey("GroupMemberId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Teamo.Core.Entities.GroupPosition", "GroupPosition")
+                        .WithMany()
+                        .HasForeignKey("GroupPositionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("GroupMember");
+
+                    b.Navigation("GroupPosition");
                 });
 
             modelBuilder.Entity("Teamo.Core.Entities.GroupPosition", b =>
@@ -887,6 +956,17 @@ namespace Teamo.Infrastructure.Migrations
                     b.Navigation("Subject");
                 });
 
+            modelBuilder.Entity("Teamo.Core.Entities.Post", b =>
+                {
+                    b.HasOne("Teamo.Core.Entities.GroupMember", "GroupMember")
+                        .WithMany()
+                        .HasForeignKey("GroupMemberId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("GroupMember");
+                });
+
             modelBuilder.Entity("Teamo.Core.Entities.StudentSkill", b =>
                 {
                     b.HasOne("Teamo.Core.Entities.Skill", "Skill")
@@ -932,6 +1012,11 @@ namespace Teamo.Infrastructure.Migrations
                     b.Navigation("GroupMembers");
 
                     b.Navigation("GroupPositions");
+                });
+
+            modelBuilder.Entity("Teamo.Core.Entities.GroupMember", b =>
+                {
+                    b.Navigation("GroupMemberPositions");
                 });
 
             modelBuilder.Entity("Teamo.Core.Entities.GroupPosition", b =>
