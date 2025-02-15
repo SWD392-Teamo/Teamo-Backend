@@ -15,6 +15,7 @@ namespace TeamoWeb.API.Extensions
                 Code = major.Code,
                 Name = major.Name,
                 CreatedDate = major.CreatedDate,
+                Status = major.Status,
                 Subjects =(major.Subjects != null) ? 
                     major.Subjects.Select(subject => subject.ToDto()).ToList() : null
             };
