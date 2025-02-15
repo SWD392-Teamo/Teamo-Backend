@@ -9,9 +9,13 @@ namespace Teamo.Core.Specifications.Groups
     {
         public GroupSpecification(GroupParams groupParams)
             : base(x => (string.IsNullOrEmpty(groupParams.Search)
-            || x.GroupPositions.Any(gp => gp.Name.ToLower().Contains(groupParams.Search))) &&
+            || x.GroupPositions.Any(gp => gp.Name.ToLower().Contains(groupParams.Search.ToLower()))
+            || x.Name.ToLower().Contains(groupParams.Search.ToLower())
+            || x.Title.ToLower().Contains(groupParams.Search.ToLower())) &&
             (!groupParams.SubjectId.HasValue || x.SubjectId == groupParams.SubjectId) &&
-            (!groupParams.Status.HasValue  || groupParams.Status == x.Status))          
+            (!groupParams.Status.HasValue  || groupParams.Status == x.Status) &&
+            (!groupParams.SemesterId.HasValue || groupParams.SemesterId == x.SemesterId) &&
+            (!groupParams.FieldId.HasValue || groupParams.FieldId == x.FieldId))          
         {
             AddThenInclude(q => q.Include(x => x.GroupPositions).ThenInclude(a => a.Skills));
             AddInclude(x => x.CreatedByUser);
