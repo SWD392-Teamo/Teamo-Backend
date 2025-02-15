@@ -2,10 +2,12 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Teamo.Core.Entities;
+using Teamo.Core.Enums;
 using Teamo.Core.Interfaces;
 using Teamo.Core.Specifications.Majors;
 using Teamo.Core.Specifications.Semesters;
 using TeamoWeb.API.Dtos;
+using TeamoWeb.API.Errors;
 
 namespace TeamoWeb.API.Controllers
 {
@@ -35,8 +37,24 @@ namespace TeamoWeb.API.Controllers
             if (semester == null)
             {
                 return NotFound();
-            } 
+            }
             return Ok(semester);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<Semester>> CreateSemester([FromBody]Semester semester)
+        {
+            try
+            {
+                _semesterRepo.Add(semester);
+                await _semesterRepo.SaveAllAsync();
+                return Ok(semester);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ApiErrorResponse(400, ex.Message, ex.InnerException?.Message));
+            }
         }
     }
 }
