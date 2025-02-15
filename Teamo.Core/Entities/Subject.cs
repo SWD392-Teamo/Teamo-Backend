@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations.Schema;
+using Teamo.Core.Enums;
 using Teamo.Core.Interfaces;
 
 namespace Teamo.Core.Entities
@@ -11,5 +12,6 @@ namespace Teamo.Core.Entities
         public required DateOnly CreatedDate { get; set; } = DateOnly.FromDateTime(DateTime.Now);
         public List<Field> Fields { get; set; }
         public List<SubjectField> SubjectFields { get; set; }
+        public SubjectStatus Status { get; set; } = SubjectStatus.Active;
     }
 }

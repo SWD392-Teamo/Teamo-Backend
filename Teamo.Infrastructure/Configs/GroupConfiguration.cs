@@ -14,7 +14,6 @@ namespace Teamo.Infrastructure.Configs
             builder.Property(o => o.Name).HasColumnType("nvarchar(100)");
             builder.Property(o => o.Title).HasColumnType("nvarchar(200)");
             builder.Property(o => o.Description).HasColumnType("nvarchar(1000)");
-            builder.Property(o => o.Name).HasColumnType("nvarchar(100)");
 
             builder.HasOne(o => o.Semester)
                 .WithMany()
