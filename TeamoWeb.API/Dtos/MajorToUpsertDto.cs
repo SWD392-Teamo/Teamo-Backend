@@ -1,6 +1,6 @@
 ﻿namespace TeamoWeb.API.Dtos
 {
-    public class MajorToAddDto
+    public class MajorToUpsertDto
     {
         public string? Code { get; set; }
         public string? Name { get; set; }

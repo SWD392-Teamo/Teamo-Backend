@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
+using System.Net.WebSockets;
 using Teamo.Core.Entities;
 using Teamo.Core.Interfaces;
 using Teamo.Core.Specifications.Majors;
@@ -45,7 +46,7 @@ namespace TeamoWeb.API.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<MajorDto>> CreateMajor(MajorToAddDto majorDto)
+        public async Task<ActionResult<MajorDto>> CreateMajor(MajorToUpsertDto majorDto)
         {
             try
             {
@@ -60,5 +61,24 @@ namespace TeamoWeb.API.Controllers
             }           
         }
 
+        [HttpPatch("{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<MajorDto>> UpdateMajor(int id, MajorToUpsertDto majorDto)
+        {
+            try
+            {
+                var major = await _majorRepo.GetEntityWithSpec(new MajorSpecification(id));
+                if (major == null) return NotFound();
+
+                major = majorDto.toEntity(major);
+                _majorRepo.Update(major);
+                await _majorRepo.SaveAllAsync();
+                return Ok(major.ToDto());
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ApiErrorResponse(400, ex.Message, ex.InnerException?.Message));
+            }
+        }
     }
 }

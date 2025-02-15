@@ -20,7 +20,7 @@ namespace TeamoWeb.API.Extensions
             };
         }
 
-        public static Major toEntity(this MajorToAddDto majorDto, Major? major = null)
+        public static Major toEntity(this MajorToUpsertDto majorDto, Major? major = null)
         {
             if(major == null)
             {
