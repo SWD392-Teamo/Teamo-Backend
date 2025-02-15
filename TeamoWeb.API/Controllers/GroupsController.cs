@@ -230,6 +230,30 @@ namespace TeamoWeb.API.Controllers
         }
 
         /// <summary>
+        /// Removes a group position.
+        /// </summary>
+        [HttpDelete("{groupId}/positions/{groupPositionId}")]
+        [Authorize(Roles = "Student")]
+        public async Task<IActionResult> DeleteGroupPosition(int groupPositionId)
+        {
+            try
+            {
+                var groupPosition = await _groupService.GetGroupPositionByIdAsync(groupPositionId);
+                if (groupPosition == null)
+                {
+                    return NotFound(new ApiErrorResponse(404, "Group position not found."));
+                }
+
+                await _groupService.RemoveGroupPositionAsync(groupPosition);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ApiErrorResponse(400, ex.Message, ex.InnerException?.Message));
+            }
+        }
+
+        /// <summary>
         /// Removes a member from a group.
         /// </summary>
         [HttpDelete("{groupId}/members/{groupMemberId}")]
@@ -251,6 +275,29 @@ namespace TeamoWeb.API.Controllers
             catch (InvalidOperationException ex)
             {
                 return BadRequest(new ApiErrorResponse(409, ex.Message, ex.InnerException?.Message));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ApiErrorResponse(400, ex.Message, ex.InnerException?.Message));
+            }
+        }
+
+        [HttpPatch("{groupId}/members/{groupMemberId}")]
+        [Authorize(Roles = "Student")]
+        public async Task<IActionResult> UpdateGroupMember (int groupId, int groupMemberId, GroupMemberToAddDto gmDto)
+        {
+            try
+            {
+                var groupMember = await _groupService.GetGroupMemberByIdAsync(groupMemberId);
+                if (groupMember == null)
+                {
+                    return NotFound(new ApiErrorResponse(404, "Group Member not found!"));
+                }
+                groupMember = gmDto.ToEntity(groupMember);
+                await _groupService.UpdateGroupMemberAsync(groupMember, gmDto.GroupPositionIds);
+
+                var group = await _groupService.GetGroupByIdAsync(groupId);
+                return Ok(group.ToDto());
             }
             catch (Exception ex)
             {
