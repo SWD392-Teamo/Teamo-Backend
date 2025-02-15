@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using System.Net.WebSockets;
 using Teamo.Core.Entities;
+using Teamo.Core.Enums;
 using Teamo.Core.Interfaces;
 using Teamo.Core.Specifications.Majors;
 using Teamo.Infrastructure.Services;
@@ -74,6 +75,24 @@ namespace TeamoWeb.API.Controllers
                 _majorRepo.Update(major);
                 await _majorRepo.SaveAllAsync();
                 return Ok(major.ToDto());
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ApiErrorResponse(400, ex.Message, ex.InnerException?.Message));
+            }
+        }
+        [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<MajorDto>> DeleteMajor(int id)
+        {
+            try
+            {
+                var major = await _majorRepo.GetEntityWithSpec(new MajorSpecification(id));
+                if (major == null) return NotFound();
+
+                major.Status = MajorStatus.Inactive;
+                _majorRepo.Update(major);
+                return Ok();
             }
             catch (Exception ex)
             {

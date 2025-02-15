@@ -6,10 +6,12 @@ namespace Teamo.Core.Specifications.Majors
     public class MajorSpecification : BaseSpecification<Major>
     {
         public MajorSpecification(MajorSpecParams majorSpecParams)
-            : base(x => string.IsNullOrEmpty(majorSpecParams.Search)
+            : base(x => (string.IsNullOrEmpty(majorSpecParams.Search)
                         || x.Code.ToLower().Contains(majorSpecParams.Search)
-                        || x.Name.ToLower().Contains(majorSpecParams.Search))
+                        || x.Name.ToLower().Contains(majorSpecParams.Search)) &&
+            (!majorSpecParams.Status.HasValue || majorSpecParams.Status == x.Status))
         {
+            AddInclude(x => x.Subjects);
             ApplyPaging(majorSpecParams.PageSize * (majorSpecParams.PageIndex - 1),
                 majorSpecParams.PageSize);
         }
