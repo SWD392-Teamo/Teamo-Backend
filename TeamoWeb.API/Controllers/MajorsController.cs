@@ -42,5 +42,23 @@ namespace TeamoWeb.API.Controllers
             
             return Ok(major.ToDto());
         }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<MajorDto>> CreateMajor(MajorToAddDto majorDto)
+        {
+            try
+            {
+                var major = majorDto.toEntity();
+                _majorRepo.Add(major);
+                await _majorRepo.SaveAllAsync();
+                return Ok(major.ToDto());
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ApiErrorResponse(400, ex.Message, ex.InnerException?.Message));
+            }           
+        }
+
     }
 }
