@@ -48,7 +48,8 @@ namespace Teamo.Infrastructure.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Code = table.Column<string>(type: "varchar(20)", nullable: true),
                     Name = table.Column<string>(type: "varchar(100)", nullable: true),
-                    CreatedDate = table.Column<DateOnly>(type: "date", nullable: false)
+                    CreatedDate = table.Column<DateOnly>(type: "date", nullable: false),
+                    Status = table.Column<string>(type: "varchar(50)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -114,9 +115,10 @@ namespace Teamo.Infrastructure.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Code = table.Column<string>(type: "varchar(20)", nullable: true),
-                    Name = table.Column<string>(type: "nvarchar(100)", nullable: true),
-                    Description = table.Column<string>(type: "nvarchar(1000)", nullable: true),
-                    CreatedDate = table.Column<DateOnly>(type: "date", nullable: false)
+                    Name = table.Column<string>(type: "varchar(100)", nullable: true),
+                    Description = table.Column<string>(type: "varchar(1000)", nullable: true),
+                    CreatedDate = table.Column<DateOnly>(type: "date", nullable: false),
+                    Status = table.Column<string>(type: "varchar(50)", nullable: false)
                 },
                 constraints: table =>
                 {

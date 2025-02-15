@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Teamo.Core.Entities;
+using Teamo.Core.Enums;
 
 namespace Teamo.Infrastructure.Configs
 {
@@ -16,6 +17,12 @@ namespace Teamo.Infrastructure.Configs
             builder.HasMany(m => m.Subjects)
                 .WithMany()
                 .UsingEntity<MajorSubject>();
+
+            builder.Property(o => o.Status)
+                .HasConversion(
+                    s => s.ToString(),
+                    s => (MajorStatus)Enum.Parse(typeof(MajorStatus), s))
+                .HasColumnType("varchar(50)");
         }
     }
 }
