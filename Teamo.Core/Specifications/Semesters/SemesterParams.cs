@@ -2,7 +2,7 @@
 
 namespace Teamo.Core.Specifications.Semesters
 {
-    public class SemesterParams
+    public class SemesterParams : PagingParams
     {
         private string _search;
         public string Search

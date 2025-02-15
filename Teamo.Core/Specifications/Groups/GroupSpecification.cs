@@ -9,9 +9,9 @@ namespace Teamo.Core.Specifications.Groups
     {
         public GroupSpecification(GroupParams groupParams)
             : base(x => (string.IsNullOrEmpty(groupParams.Search)
-            || x.GroupPositions.Any(gp => gp.Name.ToLower().Contains(groupParams.Search.ToLower()))
-            || x.Name.ToLower().Contains(groupParams.Search.ToLower())
-            || x.Title.ToLower().Contains(groupParams.Search.ToLower())) &&
+            || x.GroupPositions.Any(gp => gp.Name.ToLower().Contains(groupParams.Search))
+            || x.Name.ToLower().Contains(groupParams.Search)
+            || x.Title.ToLower().Contains(groupParams.Search)) &&
             (!groupParams.SubjectId.HasValue || x.SubjectId == groupParams.SubjectId) &&
             (!groupParams.Status.HasValue  || groupParams.Status == x.Status) &&
             (!groupParams.SemesterId.HasValue || groupParams.SemesterId == x.SemesterId) &&
