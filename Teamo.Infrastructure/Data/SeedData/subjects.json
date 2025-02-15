@@ -1,122 +1,142 @@
 [
-    {
-        "Code": "SSG104",
-        "Name": "Communications & In-Group Working Skills",
-        "Description": "The course covers theories of communication, working in group, and activities for students to practice applying the theories in academic and working contexts.",
-        "CreatedDate": "2023-12-22"
-    },
-    {
-        "Code": "EXE101",
-        "Name": "Experiential Entrepreneurship 1",
-        "Description": "This course will provide students with essential knowledge and tips on starting a start-up efficiently and effectively.",
-        "CreatedDate": "2023-12-22"
-    },
-    {
-        "Code": "EXE201",
-        "Name": "Experiential Entrepreneurship 2",
-        "Description": "In Experiental Entrepreneurship 2, groups of students will develop product/service for their start-up ideas prepared from Experiental Entrepreneurship 1 and deploy sales and find real customers for their group's products, services.",
-        "CreatedDate": "2023-12-22"
-    },
-    {
-        "Code": "SWP391",
-        "Name": "Software Development Project",
-        "Description": "This course focuses on designing, developing, and integrating the basic Web-based system, application using Java Web or .NET technologies.",
-        "CreatedDate": "2023-12-22"
-    },
-    {
-        "Code": "SWD392",
-        "Name": "Software Architecture & Design",
-        "Description": "This is a course in concepts and methods for the architectural design of software systems of sufficient size and complexity to require the effort of several people for many months.",
-        "CreatedDate": "2023-12-22"
-    },
-    {
-        "Code": "IOT102",
-        "Name": "Internet of Things",
-        "Description": "The content includes basic concepts and applications of IoT and practical exercises on learning KIT.",
-        "CreatedDate": "2023-12-22"
-    },
-    {
-        "Code": "SDP201",
-        "Name": "Sound Production",
-        "Description": "This course is designed as an introduction to the basic techniques and principles necessary for audio devices (microphone, mixer, ...) and audio editing application like Adobe Audition for students are able to record, voice-over, foley as well as edit and chord audio for animation movie, short movie, TVC, Viral, etc,.",
-        "CreatedDate": "2023-12-22"
-    },
-    {
-        "Code": "IBS301",
-        "Name": "Internation Business Strategy",
-        "Description": "This Course is based on the Coursera Specialization - Business Strategy, which covers both the dynamics and the global aspects of strategic management.",
-        "CreatedDate": "2023-12-22"
-    },
-    {
-        "Code": "RMB301",
-        "Name": "Business Research Methods",
-        "Description": "This course introduces students to a number of research methods useful for academic and professional investigations of business practices.",
-        "CreatedDate": "2023-12-22"
-    },
-    {
-        "Code": "MKT201",
-        "Name": "Consumber Behavior",
-        "Description": "This course is designed to provide students with essential and working knowledge of the terminology and concepts in the field of consumer behavior and a better understanding of how consumers make choices and how their choices ultimately affect their well-being. ",
-        "CreatedDate": "2023-12-22"
-    },
-    {
-        "Code": "MKT304",
-        "Name": "Integrated Marketing Communications",
-        "Description": "The course aims to provide students a solid foundation on different aspects of advertising and other major integrated marketing communications tools, and the role of these tools in the marketing process.",
-        "CreatedDate": "2023-12-22"
-    },
-    {
-        "Code": "SSB201",
-        "Name": "Advanced Business Communications",
-        "Description": "This course addresses the fundamental elements of communication in business environment to equip learners with essential communication tools to ensure success for both individuals and organization.",
-        "CreatedDate": "2023-12-22"
-    },
-    {
-        "Code": "CAA201",
-        "Name": "Communications & Advertising",
-        "Description": "The course aims to provide students a solid foundation on different aspects of advertising and other major integrated marketing communications tools, and the role of these tools in the marketing process.",
-        "CreatedDate": "2023-12-22"
-    },
-    {
-        "Code": "VDP301",
-        "Name": "Video Production",
-        "Description": "This course incorporates in its approach a combination of applied media aesthetics theory and hands-on production experience in Video production.",
-        "CreatedDate": "2023-12-22"
-    },
-    {
-        "Code": "BRA301",
-        "Name": "Brand Management",
-        "Description": "This course is designed to develop knowledge, skills, and perspectives to support the application of managing products and developing brand strategies in the marketing area.",
-        "CreatedDate": "2023-12-22"
-    },
-    {
-        "Code": "MEP301",
-        "Name": "Multimedia Production Project",
-        "Description": "This course will describe five primary stages in multimedia project, determine the scope of a multimedia project.",
-        "CreatedDate": "2023-12-22"
-    },
-    {
-        "Code": "DTA301",
-        "Name": "Data Analysis",
-        "Description": "Knowledge about data analysis concept, primary methods and processes, and analysis skills has become an essential part of an education in information system because main objectives of information systems are to support for enterprize's business.",
-        "CreatedDate": "2023-12-22"
-    },
-    {
-        "Code": "ISP392",
-        "Name": "Information System Programming Project",
-        "Description": "This course focuses on designing, developing, and integrating the basic Web-based system, application using Java Web or .NET technologies",
-        "CreatedDate": "2023-12-22"
-    },
-    {
-        "Code": "ITA301",
-        "Name": "Information System Analysis & Design",
-        "Description": "This course aims to explain to students all aspects of analysis and design an information system.",
-        "CreatedDate": "2023-12-22"
-    },
-    {
-        "Code": "CCO201",
-        "Name": "Corporate Communication",
-        "Description": "This course provides a comprehensive introduction to corporate communications and public relations: it is for anyone with an interest in corporate communication, or anyone seeking to understand the growing importance of communication for corporations.",
-        "CreatedDate": "2023-12-22"
-    }
+  {
+    "Code": "SSG104",
+    "Name": "Communications & In-Group Working Skills",
+    "Description": "The course covers theories of communication, working in group, and activities for students to practice applying the theories in academic and working contexts.",
+    "CreatedDate": "2023-12-22",
+    "Status": "Active"
+  },
+  {
+    "Code": "EXE101",
+    "Name": "Experiential Entrepreneurship 1",
+    "Description": "This course will provide students with essential knowledge and tips on starting a start-up efficiently and effectively.",
+    "CreatedDate": "2023-12-22",
+    "Status": "Active"
+  },
+  {
+    "Code": "EXE201",
+    "Name": "Experiential Entrepreneurship 2",
+    "Description": "In Experiental Entrepreneurship 2, groups of students will develop product/service for their start-up ideas prepared from Experiental Entrepreneurship 1 and deploy sales and find real customers for their group's products, services.",
+    "CreatedDate": "2023-12-22",
+    "Status": "Active"
+  },
+  {
+    "Code": "SWP391",
+    "Name": "Software Development Project",
+    "Description": "This course focuses on designing, developing, and integrating the basic Web-based system, application using Java Web or .NET technologies.",
+    "CreatedDate": "2023-12-22",
+    "Status": "Active"
+  },
+  {
+    "Code": "SWD392",
+    "Name": "Software Architecture & Design",
+    "Description": "This is a course in concepts and methods for the architectural design of software systems of sufficient size and complexity to require the effort of several people for many months.",
+    "CreatedDate": "2023-12-22",
+    "Status": "Active"
+  },
+  {
+    "Code": "IOT102",
+    "Name": "Internet of Things",
+    "Description": "The content includes basic concepts and applications of IoT and practical exercises on learning KIT.",
+    "CreatedDate": "2023-12-22",
+    "Status": "Active"
+  },
+  {
+    "Code": "SDP201",
+    "Name": "Sound Production",
+    "Description": "This course is designed as an introduction to the basic techniques and principles necessary for audio devices (microphone, mixer, ...) and audio editing application like Adobe Audition for students are able to record, voice-over, foley as well as edit and chord audio for animation movie, short movie, TVC, Viral, etc,.",
+    "CreatedDate": "2023-12-22",
+    "Status": "Active"
+  },
+  {
+    "Code": "IBS301",
+    "Name": "Internation Business Strategy",
+    "Description": "This Course is based on the Coursera Specialization - Business Strategy, which covers both the dynamics and the global aspects of strategic management.",
+    "CreatedDate": "2023-12-22",
+    "Status": "Active"
+  },
+  {
+    "Code": "RMB301",
+    "Name": "Business Research Methods",
+    "Description": "This course introduces students to a number of research methods useful for academic and professional investigations of business practices.",
+    "CreatedDate": "2023-12-22",
+    "Status": "Active"
+  },
+  {
+    "Code": "MKT201",
+    "Name": "Consumber Behavior",
+    "Description": "This course is designed to provide students with essential and working knowledge of the terminology and concepts in the field of consumer behavior and a better understanding of how consumers make choices and how their choices ultimately affect their well-being. ",
+    "CreatedDate": "2023-12-22",
+    "Status": "Active"
+  },
+  {
+    "Code": "MKT304",
+    "Name": "Integrated Marketing Communications",
+    "Description": "The course aims to provide students a solid foundation on different aspects of advertising and other major integrated marketing communications tools, and the role of these tools in the marketing process.",
+    "CreatedDate": "2023-12-22",
+    "Status": "Active"
+  },
+  {
+    "Code": "SSB201",
+    "Name": "Advanced Business Communications",
+    "Description": "This course addresses the fundamental elements of communication in business environment to equip learners with essential communication tools to ensure success for both individuals and organization.",
+    "CreatedDate": "2023-12-22",
+    "Status": "Active"
+  },
+  {
+    "Code": "CAA201",
+    "Name": "Communications & Advertising",
+    "Description": "The course aims to provide students a solid foundation on different aspects of advertising and other major integrated marketing communications tools, and the role of these tools in the marketing process.",
+    "CreatedDate": "2023-12-22",
+    "Status": "Active"
+  },
+  {
+    "Code": "VDP301",
+    "Name": "Video Production",
+    "Description": "This course incorporates in its approach a combination of applied media aesthetics theory and hands-on production experience in Video production.",
+    "CreatedDate": "2023-12-22",
+    "Status": "Active"
+  },
+  {
+    "Code": "BRA301",
+    "Name": "Brand Management",
+    "Description": "This course is designed to develop knowledge, skills, and perspectives to support the application of managing products and developing brand strategies in the marketing area.",
+    "CreatedDate": "2023-12-22",
+    "Status": "Active"
+  },
+  {
+    "Code": "MEP301",
+    "Name": "Multimedia Production Project",
+    "Description": "This course will describe five primary stages in multimedia project, determine the scope of a multimedia project.",
+    "CreatedDate": "2023-12-22",
+    "Status": "Active"
+  },
+  {
+    "Code": "DTA301",
+    "Name": "Data Analysis",
+    "Description": "Knowledge about data analysis concept, primary methods and processes, and analysis skills has become an essential part of an education in information system because main objectives of information systems are to support for enterprize's business.",
+    "CreatedDate": "2023-12-22",
+    "Status": "Active"
+  },
+  {
+    "Code": "ISP392",
+    "Name": "Information System Programming Project",
+    "Description": "This course focuses on designing, developing, and integrating the basic Web-based system, application using Java Web or .NET technologies",
+    "CreatedDate": "2023-12-22",
+    "Status": "Active"
+  },
+  {
+    "Code": "ITA301",
+    "Name": "Information System Analysis & Design",
+    "Description": "This course aims to explain to students all aspects of analysis and design an information system.",
+    "CreatedDate": "2023-12-22",
+    "Status": "Active"
+  },
+  {
+    "Code": "CCO201",
+    "Name": "Corporate Communication",
+    "Description": "This course provides a comprehensive introduction to corporate communications and public relations: it is for anyone with an interest in corporate communication, or anyone seeking to understand the growing importance of communication for corporations.",
+    "CreatedDate": "2023-12-22",
+    "Status": "Active"
+  }
 ]

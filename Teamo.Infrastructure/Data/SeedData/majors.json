@@ -2,41 +2,49 @@
     {
         "Code": "SE",
         "Name": "Software Engineering",
-        "CreatedDate": "2023-11-19"
+        "CreatedDate": "2023-11-19",
+        "Status":  "Active"
     },
     {
-        "Code": "IA",
-        "Name": "Information Assurance",
-        "CreatedDate": "2023-11-19"
+      "Code": "IA",
+      "Name": "Information Assurance",
+      "CreatedDate": "2023-11-19",
+      "Status": "Active"
     },
-    {
-        "Code": "AI",
-        "Name": "Artificial Intelligence",
-        "CreatedDate": "2023-11-19"
-    },
-    {
-        "Code": "IS",
-        "Name": "Information System",
-        "CreatedDate": "2023-11-19"
-    },
-    {
-        "Code": "IB",
-        "Name": "Internation Business",
-        "CreatedDate": "2023-11-19"
-    },
-    {
-        "Code": "MC",
-        "Name": "Multimedia Communication",
-        "CreatedDate": "2023-11-19"
-    },
-    {
-        "Code": "MKT",
-        "Name": "Digital Marketing",
-        "CreatedDate": "2023-11-19"
-    },
-    {
-        "Code": "GD",
-        "Name": "Digital Art & Design",
-        "CreatedDate": "2023-11-19"
-    }
+  {
+    "Code": "AI",
+    "Name": "Artificial Intelligence",
+    "CreatedDate": "2023-11-19",
+    "Status": "Active"
+  },
+  {
+    "Code": "IS",
+    "Name": "Information System",
+    "CreatedDate": "2023-11-19",
+    "Status": "Active"
+  },
+  {
+    "Code": "IB",
+    "Name": "Internation Business",
+    "CreatedDate": "2023-11-19",
+    "Status": "Active"
+  },
+  {
+    "Code": "MC",
+    "Name": "Multimedia Communication",
+    "CreatedDate": "2023-11-19",
+    "Status": "Active"
+  },
+  {
+    "Code": "MKT",
+    "Name": "Digital Marketing",
+    "CreatedDate": "2023-11-19",
+    "Status": "Active"
+  },
+  {
+    "Code": "GD",
+    "Name": "Digital Art & Design",
+    "CreatedDate": "2023-11-19",
+    "Status": "Active"
+  }
 ]
