@@ -1,8 +1,11 @@
-﻿namespace TeamoWeb.API.Dtos
+﻿using Teamo.Core.Enums;
+
+namespace TeamoWeb.API.Dtos
 {
     public class GroupMemberToAddDto
     {
-        public int StudentId { get; set; }
+        public int? StudentId { get; set; }
+        public GroupMemberRole? Role { get; set; }
         public IEnumerable<int> GroupPositionIds { get; set; } = new List<int>();
     }
 }

@@ -138,17 +138,28 @@ namespace TeamoWeb.API.Extensions
         }
 
         // Mapping GroupMemberToAddDto to GroupMember
-        public static GroupMember ToEntity (this GroupMemberToAddDto groupMemberToAddDto)
+        public static GroupMember ToEntity(this GroupMemberToAddDto groupMemberToAddDto, GroupMember? groupMember = null)
         {
-            return new GroupMember
+            if (groupMember == null)
             {
-                StudentId = groupMemberToAddDto.StudentId,
-                GroupMemberPositions = groupMemberToAddDto.GroupPositionIds
-                                      .Select(gpId => new GroupMemberPosition
-                                      {
-                                          GroupPositionId = gpId
-                                      }).ToList()
-            };
+                return new GroupMember
+                {
+                    StudentId = groupMemberToAddDto.StudentId.Value,
+                    GroupMemberPositions = groupMemberToAddDto.GroupPositionIds
+                                                      .Select(gpId => new GroupMemberPosition
+                                                      {
+                                                          GroupPositionId = gpId
+                                                      }).ToList()
+                };
+            }
+
+            groupMember.GroupMemberPositions = groupMemberToAddDto.GroupPositionIds
+                                                      .Select(gpId => new GroupMemberPosition
+                                                      {
+                                                          GroupPositionId = gpId
+                                                      }).ToList();
+            groupMember.Role = groupMemberToAddDto.Role ?? groupMember.Role;
+            return groupMember;
         }
     }
 }
