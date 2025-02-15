@@ -101,6 +101,13 @@ namespace Teamo.Infrastructure.Services
             return groups;
         }
 
+        public async Task RemoveGroupPositionAsync(GroupPosition groupPosition)
+        {
+            groupPosition.Status = GroupPositionStatus.Closed;
+            _unitOfWork.Repository<GroupPosition>().Update(groupPosition);
+            await _unitOfWork.Repository<GroupPosition>().SaveAllAsync();
+        }
+
         public async Task RemoveMemberFromGroup(GroupMember groupMember)
         {
             _unitOfWork.Repository<GroupMember>().Delete(groupMember);
@@ -111,6 +118,28 @@ namespace Teamo.Infrastructure.Services
         {
             _unitOfWork.Repository<Group>().Update(group);
             await _unitOfWork.Repository<Group>().SaveAllAsync();
+        }
+
+        public async Task UpdateGroupMemberAsync(GroupMember groupMember, IEnumerable<int> groupPositionIds)
+        {
+            var existingMemberPositions = await _unitOfWork.Repository<GroupMemberPosition>()
+                                                  .ListAsync(new GroupMemberPositionSpecification(groupMember.Id));
+            var existingMemberPositionIds = existingMemberPositions.Select(s => s.GroupPositionId).ToList();
+
+            var positionsToAdd = groupPositionIds.Except(existingMemberPositionIds)
+                              .Select(positionId => new GroupMemberPosition
+                              {
+                                  GroupMemberId = groupMember.Id,
+                                  GroupPositionId = positionId
+                              });
+            var positionsToRemove = existingMemberPositions.Where(s => !groupPositionIds.Contains(s.GroupPositionId));
+
+            // update Group Member
+            _unitOfWork.Repository<GroupMember>().Update(groupMember);
+            // update Group Member Position
+            _unitOfWork.Repository<GroupMemberPosition>().AddRange(positionsToAdd);
+            _unitOfWork.Repository<GroupMemberPosition>().DeleteRange(positionsToRemove);
+            await _unitOfWork.Repository<GroupMember>().SaveAllAsync();
         }
 
         public async Task UpdateGroupPositionAsync(GroupPosition groupPosition, IEnumerable<int> skillIds)

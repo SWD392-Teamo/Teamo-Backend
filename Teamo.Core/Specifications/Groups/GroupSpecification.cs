@@ -1,6 +1,7 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
 using Teamo.Core.Entities;
+using Teamo.Core.Enums;
 
 namespace Teamo.Core.Specifications.Groups
 {
@@ -10,8 +11,7 @@ namespace Teamo.Core.Specifications.Groups
             : base(x => (string.IsNullOrEmpty(groupParams.Search)
             || x.GroupPositions.Any(gp => gp.Name.ToLower().Contains(groupParams.Search))) &&
             (!groupParams.SubjectId.HasValue || x.SubjectId == groupParams.SubjectId) &&
-            (!groupParams.Status.HasValue  || groupParams.Status == x.Status)
-            )
+            (!groupParams.Status.HasValue  || groupParams.Status == x.Status))          
         {
             AddThenInclude(q => q.Include(x => x.GroupPositions).ThenInclude(a => a.Skills));
             AddInclude(x => x.CreatedByUser);
