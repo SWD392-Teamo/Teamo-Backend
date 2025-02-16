@@ -25,5 +25,12 @@ namespace TeamoWeb.API.Extensions
                     user.StudentSkills.Select(s => s.ToDto()).ToList() : new List<StudentSkillDto?>()
             };
         }
+
+        //Update description
+        public static User UpdateDescription(this ProfileDto profileDto, User user)
+        {
+            user.Description = profileDto.Description;
+            return user;
+        }
     }
 }

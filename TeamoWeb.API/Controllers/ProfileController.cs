@@ -39,12 +39,14 @@ namespace TeamoWeb.API.Controllers
         //Update description in user profile
         [HttpPatch("descriptions")]
         [Authorize(Roles = "Student")]
-        public async Task<ActionResult> UpdateProfileDescription([FromBody] ProfileUpdateDto profile)
+        public async Task<ActionResult> UpdateProfileDescription([FromBody] ProfileDto profile)
         {
             var user = await _userService.GetUserByClaims(HttpContext.User);
             if (user == null) return Unauthorized(new ApiErrorResponse(401, "Unauthorized"));
 
-            var result = await _profileService.UpdateProfileDescriptionAsync(user.Id, profile.Description);
+            user = profile.UpdateDescription(user);
+
+            var result = await _profileService.UpdateProfileDescriptionAsync(user);
 
             if(result.Succeeded) return Ok(new ApiErrorResponse(200, "Profile description added successfully."));
             else return BadRequest(new ApiErrorResponse(400, "Failed to updated profile description."));
@@ -75,17 +77,31 @@ namespace TeamoWeb.API.Controllers
         //Update a skill level in user profile
         [HttpPatch("skills/{skillId}")]
         [Authorize(Roles = "Student")]
-        public async Task<ActionResult> UpdateProfileSkill([FromBody] ProfileUpdateDto profile)
+        public async Task<ActionResult> UpdateProfileSkill(int skillId, [FromBody] StudentSkillToUpsertDto studentSkillDto)
         {
-            var updateSkill = profile.StudentSkill;
-            if(updateSkill == null) return BadRequest(new ApiErrorResponse(400, "No skill selected."));
-
-            Enum.TryParse(updateSkill.SkillLevel, out StudentSkillLevel updateLevel);
+            var user = await _userService.GetUserByClaims(HttpContext.User);
+            if (user == null) return Unauthorized(new ApiErrorResponse(401, "Unauthorized"));
+            
+            studentSkillDto.SkillId = skillId;
 
             var result = await _profileService.UpdateProfileSkillAsync(profile.UserId, updateSkill.SkillId, updateLevel);
 
             if(result) return Ok(new ApiErrorResponse(200, "Skill updated successfully."));
             else return BadRequest(new ApiErrorResponse(400, "Failed to update skill."));
+        }
+
+        //Delete a skill in user profile
+        [HttpDelete("skills/{studentSkillId}")]
+        [Authorize(Roles = "Student")]
+        public async Task<ActionResult> DeleteProfileSkill(int studentSkillId)
+        {
+            var studentSkill = await _profileService.GetProfileSkillAsync(studentSkillId);
+            if(studentSkill == null) return NotFound(new ApiErrorResponse(404, "Skill not found in profile."));
+
+            var result = await _profileService.DeleteProfileSkillAsync(studentSkill);
+
+            if(!result) return BadRequest(new ApiErrorResponse(400, "Failed to delete skill from profile."));
+            return Ok(new ApiErrorResponse(200, "Skill deleted from profile successfully"));   
         }
 
         //Add a new link to user profile
@@ -128,7 +144,10 @@ namespace TeamoWeb.API.Controllers
         [Authorize(Roles = "Student")]
         public async Task<ActionResult> RemoveProfileLink(int linkId)
         {
-            var result = await _profileService.RemoveProfileLinkAsync(linkId);
+            var link = await _profileService.GetLinkByIdAsync(linkId);
+            if(link == null) return NotFound(new ApiErrorResponse(404, "Link not found"));
+            
+            var result = await _profileService.RemoveProfileLinkAsync(link);
             
             if(!result) return BadRequest(new ApiErrorResponse(400, "Failed to remove link from profile"));
             return Ok(new ApiErrorResponse(200, "Link removed from profile successfully."));

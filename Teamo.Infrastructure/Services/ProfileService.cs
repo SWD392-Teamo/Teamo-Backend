@@ -27,11 +27,8 @@ namespace Teamo.Infrastructure.Services
             return await _userService.GetUserWithSpec(userSpec);
         }
 
-        public async Task<IdentityResult> UpdateProfileDescriptionAsync(int userId, string description)
+        public async Task<IdentityResult> UpdateProfileDescriptionAsync(User user)
         {
-            var userSpec = new UserSpecification(userId);
-            var user = await _userService.GetUserWithSpec(userSpec);
-            user.Description = description;
             return await _userService.UpdateUserAsync(user);
         }
 
@@ -50,6 +47,17 @@ namespace Teamo.Infrastructure.Services
             return await _unitOfWork.Complete();
         }
 
+        public async Task<bool> DeleteProfileSkillAsync(StudentSkill studentSkill)
+        {
+            _unitOfWork.Repository<StudentSkill>().Delete(studentSkill);
+            return await _unitOfWork.Complete();
+        }
+
+        public async Task<StudentSkill> GetProfileSkillAsync(int studentSkillId)
+        {
+            return await _unitOfWork.Repository<StudentSkill>().GetByIdAsync(studentSkillId);
+        }
+
         public async Task<bool> AddProfileLinkAsync(Link newLink)
         {
             _unitOfWork.Repository<Link>().Add(newLink);
@@ -64,14 +72,14 @@ namespace Teamo.Infrastructure.Services
 
         public async Task<Link> GetLinkByIdAsync(int id)
         {
-            return await _unitOfWork.Repository<Link>().GetByIdAsync(id);
+            var linkSpec = new LinkSpecification(id);
+            var link = await _unitOfWork.Repository<Link>().GetEntityWithSpec(linkSpec);
+            return link;
         }
 
-        public async Task<bool> RemoveProfileLinkAsync(int linkId)
+        public async Task<bool> RemoveProfileLinkAsync(Link link)
         {
-            var linkSpec = new LinkSpecification(linkId);
-            var profileLink = await _unitOfWork.Repository<Link>().GetEntityWithSpec(linkSpec);
-            _unitOfWork.Repository<Link>().Delete(profileLink);
+            _unitOfWork.Repository<Link>().Delete(link);
             return await _unitOfWork.Complete();
         }
     }

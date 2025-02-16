@@ -11,11 +11,30 @@ namespace TeamoWeb.API.Extensions
             if(studentSkill == null) return null;
             return new StudentSkillDto
             {
-                SkillId = studentSkill.SkillId,
                 SkillName = studentSkill.Skill.Name,
                 SkillType = studentSkill.Skill.Type,
                 SkillLevel = studentSkill.Level.ToString()
             };
+        }
+
+        public static StudentSkill ToEntity(this StudentSkillToUpsertDto studentSkillDto, StudentSkill? studentSkill = null)
+        {
+            Enum.TryParse(studentSkillDto.Level, out StudentSkillLevel level);
+
+            //Add skill to user profile
+            if(studentSkill == null)
+            {
+                return new StudentSkill{
+                    SkillId = studentSkillDto.SkillId,
+                    StudentId = studentSkillDto.StudentId,
+                    Level = level
+                };
+            }
+
+            //Update level of skill in user profile
+            studentSkill.Level = level;
+
+            return studentSkill;
         }
     }
 }
