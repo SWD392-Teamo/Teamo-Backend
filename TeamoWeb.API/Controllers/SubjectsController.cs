@@ -99,6 +99,5 @@ namespace TeamoWeb.API.Controllers
             if(!result) return BadRequest(new ApiErrorResponse(400, "Failed to delete subject"));
             return Ok(new ApiErrorResponse(200, "Deleted subject successfully."));
         }
-
     }
 }

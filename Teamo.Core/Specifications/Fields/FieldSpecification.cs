@@ -13,11 +13,9 @@ namespace Teamo.Core.Specifications.Fields
         }
 
         public FieldSpecification(FieldParams fieldParams)
-            : base(x => (string.IsNullOrEmpty(fieldParams.Search)
+            : base(x => string.IsNullOrEmpty(fieldParams.Search)
                 || x.Name.ToLower().Contains(fieldParams.Search)
                 || x.Description.ToLower().Contains(fieldParams.Search))
-                && (fieldParams.SubjectId.HasValue
-                || !fieldParams.SubjectId.HasValue))
         {
         }
     }

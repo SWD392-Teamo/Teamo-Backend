@@ -1,0 +1,14 @@
+using Teamo.Core.Entities;
+using Teamo.Core.Specifications.Fields;
+
+namespace Teamo.Core.Interfaces.Services
+{
+    public interface IFieldService
+    {
+        Task<IReadOnlyList<Field>> GetFieldsWithSpecAsync(FieldParams fieldParams);
+        Task<Field> GetFieldByIdAsync(int id);
+        Task<bool> CreateFieldAsync(Field field);
+        Task<bool> DeleteFieldAsync(Field field);
+        Task<bool> CheckDuplicateNameField(string name);  
+    }
+}

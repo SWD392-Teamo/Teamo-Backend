@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Teamo.Core.Entities;
 using Teamo.Core.Interfaces;
+using Teamo.Core.Interfaces.Services;
 using Teamo.Core.Specifications.Fields;
 using Teamo.Core.Specifications.SubjectFields;
 using TeamoWeb.API.Errors;
@@ -11,11 +12,11 @@ namespace TeamoWeb.API.Controllers
 {
     public class FieldsController : BaseApiController
     {
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IFieldService _fieldService;
         
-        public FieldsController(IUnitOfWork unitOfWork)
+        public FieldsController(IFieldService fieldService)
         {
-            _unitOfWork = unitOfWork;
+            _fieldService = fieldService;
         }
 
         //Get fields
@@ -23,16 +24,7 @@ namespace TeamoWeb.API.Controllers
         [Authorize]
         public async Task<ActionResult<IReadOnlyList<Field>>> GetFields([FromQuery] FieldParams fieldParams)
         {
-            //Getting fields of a Subject if subjectId in params has value
-            var subjectFieldSpec = new SubjectFieldSpecification(fieldParams.SubjectId);
-            var subjectFields = await _unitOfWork.Repository<SubjectField>().ListAsync(subjectFieldSpec);
-            var fields = subjectFields.Select(s => s.Field).ToList();
-
-            //Getting fields with spec
-            var fieldSpec = new FieldSpecification(fieldParams);
-            var fieldsWithSpec = await _unitOfWork.Repository<Field>().ListAsync(fieldSpec);
-            fields = fields.Where(f => fieldsWithSpec.Contains(f)).ToList();
-
+            var fields = await _fieldService.GetFieldsWithSpecAsync(fieldParams);
             return Ok(fields);
         }
 
@@ -40,8 +32,7 @@ namespace TeamoWeb.API.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Field>> GetFieldById(int id)
         {
-            var fieldSpec = new FieldSpecification(id);
-            var field = await _unitOfWork.Repository<Field>().GetEntityWithSpec(fieldSpec);
+            var field = await _fieldService.GetFieldByIdAsync(id);
             if(field == null) return NotFound(new ApiErrorResponse(404, "Field not found."));
             return Ok(field);
         }
@@ -54,15 +45,26 @@ namespace TeamoWeb.API.Controllers
             if(field == null || string.IsNullOrEmpty(field.Name))
                 return BadRequest(new ApiErrorResponse(400, "Please input all required fields."));
             
-            var existFieldSpec = new FieldSpecification(field.Name);
-            var existField = await _unitOfWork.Repository<Field>().GetEntityWithSpec(existFieldSpec);
-            if(existField != null) return BadRequest(new ApiErrorResponse(400, "Already exists field with this name."));
+            var existField = await _fieldService.CheckDuplicateNameField(field.Name);
+            if(!existField) return BadRequest(new ApiErrorResponse(400, "Already exists field with this name."));
 
-            _unitOfWork.Repository<Field>().Add(field);
-            var result = await _unitOfWork.Complete();
+            var result = await _fieldService.CreateFieldAsync(field);
 
             if(!result) return BadRequest(new ApiErrorResponse(400, "Failed to create new field."));
             return Ok(field);
+        }
+
+        //Delete field
+        [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult> DeleteField(int id)
+        {
+            var field = await _fieldService.GetFieldByIdAsync(id);
+            if(field == null) return NotFound(new ApiErrorResponse(404, "Field not found"));
+            
+            var result = await _fieldService.DeleteFieldAsync(field);
+            if(!result) return BadRequest(new ApiErrorResponse(400, "Failed to delete field."));
+            return Ok(new ApiErrorResponse(200, "Deleted field successfully."));            
         }
     }
 }

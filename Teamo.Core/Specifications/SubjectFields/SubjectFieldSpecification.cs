@@ -8,5 +8,9 @@ namespace Teamo.Core.Specifications.SubjectFields
         {
             AddInclude(x => x.Field);
         }
+
+        public SubjectFieldSpecification(int fieldId) : base(x => x.FieldId == fieldId)
+        {
+        }
     }
 }
