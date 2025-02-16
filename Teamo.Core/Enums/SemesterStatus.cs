@@ -11,8 +11,6 @@ namespace Teamo.Core.Enums
         [EnumMember(Value = "Past")]
         Past,
         [EnumMember(Value = "Upcoming")]
-        Upcoming,
-        [EnumMember(Value = "Deleted")]
-        Deleted
+        Upcoming
     }
 }

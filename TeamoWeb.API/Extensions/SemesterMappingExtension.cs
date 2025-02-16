@@ -35,6 +35,11 @@ namespace TeamoWeb.API.Extensions
                 semester.EndDate = dto.EndDate ?? semester.EndDate;
             }
             
+            if(semester.StartDate > semester.EndDate)
+            {
+                throw new ArgumentException("End date must be greater than start date.");
+            }
+
             semester.Status = UpdateStatus(semester.StartDate, semester.EndDate);
             return semester;
         }
