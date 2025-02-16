@@ -8,6 +8,10 @@ namespace Teamo.Core.Specifications.Skills
         {
         }
 
+        public SkillSpecification(string name) : base(x => x.Name.ToLower().Equals(name.ToLower()))
+        {
+        }
+
         public SkillSpecification(SkillParams skillParams)
             : base(x => (string.IsNullOrEmpty(skillParams.Search)
                         || x.Name.ToLower().Contains(skillParams.Search)
