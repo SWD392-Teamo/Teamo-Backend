@@ -21,9 +21,9 @@ namespace Teamo.Infrastructure.Services
             _userService = userService;
         }
 
-        public async Task<User> GetProfileAsync(string userEmail)
+        public async Task<User> GetProfileAsync(int id)
         {
-            var userSpec = new UserSpecification(userEmail);
+            var userSpec = new UserSpecification(id);
             return await _userService.GetUserWithSpec(userSpec);
         }
 
@@ -56,14 +56,15 @@ namespace Teamo.Infrastructure.Services
             return await _unitOfWork.Complete();
         }
 
-        public async Task<bool> UpdateProfileLinkAsync(int linkId, string linkName, string linkurl)
+        public async Task<bool> UpdateProfileLinkAsync(Link link)
         {
-            var linkSpec = new LinkSpecification(linkId);
-            var profileLink = await _unitOfWork.Repository<Link>().GetEntityWithSpec(linkSpec);
-            profileLink.Name = linkName;
-            profileLink.Url = linkurl;
-            _unitOfWork.Repository<Link>().Update(profileLink);
+            _unitOfWork.Repository<Link>().Update(link);
             return await _unitOfWork.Complete();
+        }
+
+        public async Task<Link> GetLinkByIdAsync(int id)
+        {
+            return await _unitOfWork.Repository<Link>().GetByIdAsync(id);
         }
 
         public async Task<bool> RemoveProfileLinkAsync(int linkId)

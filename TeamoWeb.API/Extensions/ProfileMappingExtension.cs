@@ -10,7 +10,6 @@ namespace TeamoWeb.API.Extensions
             if(user == null) return null;
             return new ProfileDto
             {
-                UserId = user.Id,
                 Code = user.Code,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
@@ -18,7 +17,6 @@ namespace TeamoWeb.API.Extensions
                 Gender = user.Gender.ToString(),
                 Dob = user.Dob,
                 ImgUrl = user.ImgUrl ?? null,
-                Status = user.Status.ToString(),
                 Description = user.Description ?? null,
                 MajorCode = user.Major.Code,
                 Links = (user.Links != null) ? 

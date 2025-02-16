@@ -12,14 +12,6 @@ namespace Teamo.Core.Specifications.Users
             AddInclude(x => x.Links);
         }
 
-        public UserSpecification(string email)
-            : base(x => x.Email.Equals(email))
-        {
-            AddInclude(x => x.Major);
-            AddInclude(x => x.Skills);
-            AddInclude(x => x.Links);
-        }
-
         public UserSpecification(UserSpecParams userSpecParams)
             : base(x => (string.IsNullOrEmpty(userSpecParams.Search)
                         || x.Code.ToLower().Contains(userSpecParams.Search)
