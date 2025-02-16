@@ -68,5 +68,11 @@ namespace Teamo.Infrastructure.Services
 
             return result;
         }
+
+        public async Task<int> CountAsync(FieldParams fieldParams)
+        {
+            var fields = await GetFieldsWithSpecAsync(fieldParams);
+            return fields.Count;
+        }
     }
 }

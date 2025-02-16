@@ -1,6 +1,6 @@
 namespace Teamo.Core.Specifications.Fields
 {
-    public class FieldParams
+    public class FieldParams : PagingParams
     {
         private string _search;
         public string Search

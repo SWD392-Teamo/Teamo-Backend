@@ -7,6 +7,7 @@ using Teamo.Core.Interfaces.Services;
 using Teamo.Core.Specifications.Fields;
 using Teamo.Core.Specifications.SubjectFields;
 using TeamoWeb.API.Errors;
+using TeamoWeb.API.RequestHelpers;
 
 namespace TeamoWeb.API.Controllers
 {
@@ -25,7 +26,9 @@ namespace TeamoWeb.API.Controllers
         public async Task<ActionResult<IReadOnlyList<Field>>> GetFields([FromQuery] FieldParams fieldParams)
         {
             var fields = await _fieldService.GetFieldsWithSpecAsync(fieldParams);
-            return Ok(fields);
+            var count = await _fieldService.CountAsync(fieldParams);
+            var pagination = new Pagination<Field>(fieldParams.PageIndex,fieldParams.PageSize,count,fields);
+            return Ok(pagination);
         }
 
         //Get field by id

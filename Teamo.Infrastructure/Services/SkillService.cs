@@ -45,5 +45,23 @@ namespace Teamo.Infrastructure.Services
 
             return skills;
         }
+
+        public async Task<bool> CreateSkillAsync(Skill skill)
+        {
+            _unitOfWork.Repository<Skill>().Add(skill);
+            return await _unitOfWork.Complete();
+        }
+
+        public async Task<bool> CheckDuplicateSkillAsync(string name)
+        {
+            var result = true;
+
+            var skillSpec = new SkillSpecification(name);
+            var existSkill = await _unitOfWork.Repository<Skill>().GetEntityWithSpec(skillSpec);
+            
+            if(existSkill != null) result = false;
+
+            return result;
+        }
     }
 }

@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Teamo.Core.Entities;
 using Teamo.Core.Interfaces;
@@ -32,6 +33,22 @@ namespace TeamoWeb.API.Controllers
         {
             var skills = await _skillService.GetSkillsWithSpecAsync(skillParams);
             return Ok(skills);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult> CreateSkill([FromBody] Skill skill)
+        {
+            if(skill == null || string.IsNullOrEmpty(skill.Name) || string.IsNullOrEmpty(skill.Type))
+                return BadRequest(new ApiErrorResponse(400, "Please input all required fields."));
+
+            //Check for duplicates
+            var check = await _skillService.CheckDuplicateSkillAsync(skill.Name);
+            if(!check) return BadRequest(new ApiErrorResponse(400, "Already exists skill with this name."));
+            
+            var result = await _skillService.CreateSkillAsync(skill);
+            if(!result) return BadRequest(new ApiErrorResponse(400, "Failed to create skill."));
+            return Ok(skill);
         }
     }
 }
