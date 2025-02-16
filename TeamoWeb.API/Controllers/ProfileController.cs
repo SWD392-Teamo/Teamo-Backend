@@ -75,16 +75,16 @@ namespace TeamoWeb.API.Controllers
         }
 
         //Update a skill level in user profile
-        [HttpPatch("skills/{skillId}")]
+        [HttpPatch("skills/{studentSkillId}")]
         [Authorize(Roles = "Student")]
-        public async Task<ActionResult> UpdateProfileSkill(int skillId, [FromBody] StudentSkillToUpsertDto studentSkillDto)
+        public async Task<ActionResult> UpdateProfileSkill(int studentSkillId, [FromBody] StudentSkillToUpsertDto studentSkillDto)
         {
-            var user = await _userService.GetUserByClaims(HttpContext.User);
-            if (user == null) return Unauthorized(new ApiErrorResponse(401, "Unauthorized"));
-            
-            studentSkillDto.SkillId = skillId;
+            var studentSkill = await _profileService.GetProfileSkillAsync(studentSkillId);
+            if(studentSkill == null) return NotFound(new ApiErrorResponse(404, "Skill not found in profile."));
 
-            var result = await _profileService.UpdateProfileSkillAsync(profile.UserId, updateSkill.SkillId, updateLevel);
+            studentSkill = studentSkillDto.ToEntity(studentSkill);
+
+            var result = await _profileService.UpdateProfileSkillAsync(studentSkill);
 
             if(result) return Ok(new ApiErrorResponse(200, "Skill updated successfully."));
             else return BadRequest(new ApiErrorResponse(400, "Failed to update skill."));

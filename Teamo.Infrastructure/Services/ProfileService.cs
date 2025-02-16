@@ -38,12 +38,9 @@ namespace Teamo.Infrastructure.Services
             return await _unitOfWork.Complete();
         }
 
-        public async Task<bool> UpdateProfileSkillAsync(int userId, int skillId, StudentSkillLevel skillLevel)
+        public async Task<bool> UpdateProfileSkillAsync(StudentSkill studentSkill)
         {
-            var spec = new StudentSkillSpecification(skillId, userId);
-            var profileSkill = await _unitOfWork.Repository<StudentSkill>().GetEntityWithSpec(spec);
-            profileSkill.Level = skillLevel;
-            _unitOfWork.Repository<StudentSkill>().Update(profileSkill);
+            _unitOfWork.Repository<StudentSkill>().Update(studentSkill);
             return await _unitOfWork.Complete();
         }
 
