@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Teamo.Core.Entities;
+using Teamo.Core.Enums;
 using Teamo.Core.Interfaces;
 using Teamo.Core.Interfaces.Services;
 using Teamo.Core.Specifications.Majors;
@@ -82,5 +83,22 @@ namespace TeamoWeb.API.Controllers
             if(!result) return BadRequest(new ApiErrorResponse(400, "Failed to update subject."));
             else return Ok(new ApiErrorResponse(200, "Updated subject successfully."));
         }
+
+        //Delete subject, change subject status to inactive
+        [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult> DeleteSubject(int id)
+        {
+            var subject = await _subjectService.GetSubjectByIdAsync(id);
+            if(subject == null) return BadRequest(new ApiErrorResponse(400, "Subject not found."));
+            if(subject.Status == SubjectStatus.Inactive)
+                return BadRequest(new ApiErrorResponse(400, "Subject is already inactive."));
+
+            var result = await _subjectService.DeleteSubjectAsync(subject);
+
+            if(!result) return BadRequest(new ApiErrorResponse(400, "Failed to delete subject"));
+            return Ok(new ApiErrorResponse(200, "Deleted subject successfully."));
+        }
+
     }
 }

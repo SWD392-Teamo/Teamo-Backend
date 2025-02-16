@@ -29,6 +29,8 @@ namespace TeamoWeb.API.Extensions
             services.AddScoped<ISubjectService, SubjectService>();
             services.AddDataProtection();
 
+            services.AddRouting(opt => opt.LowercaseUrls = true);
+
             services.AddSwaggerGen(c =>
 {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Teamo API", Version = "v1" });

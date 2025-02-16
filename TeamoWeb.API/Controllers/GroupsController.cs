@@ -16,8 +16,6 @@ using Group = Teamo.Core.Entities.Group;
 
 namespace TeamoWeb.API.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
     public class GroupsController : BaseApiController
     {
         private readonly IGroupService _groupService;
@@ -222,30 +220,6 @@ namespace TeamoWeb.API.Controllers
 
                 var group = await _groupService.GetGroupByIdAsync(groupId);
                 return Ok(group.ToDto());
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new ApiErrorResponse(400, ex.Message, ex.InnerException?.Message));
-            }
-        }
-
-        /// <summary>
-        /// Removes a group position.
-        /// </summary>
-        [HttpDelete("{groupId}/positions/{groupPositionId}")]
-        [Authorize(Roles = "Student")]
-        public async Task<IActionResult> DeleteGroupPosition(int groupPositionId)
-        {
-            try
-            {
-                var groupPosition = await _groupService.GetGroupPositionByIdAsync(groupPositionId);
-                if (groupPosition == null)
-                {
-                    return NotFound(new ApiErrorResponse(404, "Group position not found."));
-                }
-
-                await _groupService.RemoveGroupPositionAsync(groupPosition);
-                return Ok();
             }
             catch (Exception ex)
             {

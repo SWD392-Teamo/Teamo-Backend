@@ -1,4 +1,5 @@
 ﻿using Teamo.Core.Entities;
+using Teamo.Core.Enums;
 using TeamoWeb.API.Dtos;
 
 namespace TeamoWeb.API.Extensions
@@ -17,6 +18,7 @@ namespace TeamoWeb.API.Extensions
                 Name = subject.Name,
                 Description = subject.Description,
                 CreatedDate = subject.CreatedDate,
+                Status = subject.Status.ToString()
             };
         }
 
@@ -30,7 +32,8 @@ namespace TeamoWeb.API.Extensions
                     Name = subjectDto.Name,
                     Code = subjectDto.Code,
                     Description = subjectDto.Description,
-                    CreatedDate = subjectDto.CreatedDate
+                    CreatedDate = subjectDto.CreatedDate,
+                    Status = SubjectStatus.Active
                 };
             }
 

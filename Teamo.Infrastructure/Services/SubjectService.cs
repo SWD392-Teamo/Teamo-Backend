@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore.Query.Internal;
 using Teamo.Core.Entities;
+using Teamo.Core.Enums;
 using Teamo.Core.Interfaces;
 using Teamo.Core.Interfaces.Services;
 using Teamo.Core.Specifications.Majors;
@@ -47,6 +48,13 @@ namespace Teamo.Infrastructure.Services
 
         public async Task<bool> UpdateSubjectAsync(Subject subject)
         {
+            _unitOfWork.Repository<Subject>().Update(subject);
+            return await _unitOfWork.Complete();
+        }
+
+        public async Task<bool> DeleteSubjectAsync(Subject subject)
+        {
+            subject.Status = SubjectStatus.Inactive;
             _unitOfWork.Repository<Subject>().Update(subject);
             return await _unitOfWork.Complete();
         }
