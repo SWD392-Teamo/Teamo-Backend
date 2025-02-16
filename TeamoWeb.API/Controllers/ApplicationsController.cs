@@ -61,13 +61,13 @@ namespace TeamoWeb.API.Controllers
             appParams.GroupId = groupId;
 
             //Check if current user is the leader of corresponding group
-             var user = await _userService.GetUserByClaims(HttpContext.User);
+            var user = await _userService.GetUserByClaims(HttpContext.User);
             if (user == null)
                 return Unauthorized(new ApiErrorResponse(401, "Unauthorized"));
 
             var groupLeaderId = await _appService.GetGroupLeaderIdAsync(groupId);
-            if(user.Id == groupLeaderId) 
-                return BadRequest(new ApiErrorResponse(400, "Only group leaders can view applications."));
+            if(user.Id != groupLeaderId) 
+                return BadRequest(new ApiErrorResponse(400, "Only group leaders can view applications"));
 
             var appSpec = new ApplicationGroupSpecification(appParams);
             var apps = await _appService.GetGroupApplicationsAsync(appSpec);
@@ -83,12 +83,12 @@ namespace TeamoWeb.API.Controllers
         public async Task<ActionResult> ReviewApplication(int groupId, int appId, [FromBody] ApplicationToUpsertDto appDto)
         {
             //Check if current user is the leader of corresponding group
-             var user = await _userService.GetUserByClaims(HttpContext.User);
+            var user = await _userService.GetUserByClaims(HttpContext.User);
             if (user == null)
                 return Unauthorized(new ApiErrorResponse(401, "Unauthorized"));
 
             var groupLeaderId = await _appService.GetGroupLeaderIdAsync(groupId);
-            if(user.Id == groupLeaderId) 
+            if(user.Id != groupLeaderId) 
                 return BadRequest(new ApiErrorResponse(400, "Only group leaders can review applications."));
             
             var app = await _appService.GetApplicationByIdAsync(appId);
@@ -107,6 +107,12 @@ namespace TeamoWeb.API.Controllers
         [Authorize(Roles = "Student")]
         public async Task<ActionResult<ApplicationDto>> CreateNewApplication([FromBody] ApplicationToUpsertDto appDto)     
         {            
+            var user = await _userService.GetUserByClaims(HttpContext.User);
+            if (user == null)
+                return Unauthorized(new ApiErrorResponse(401, "Unauthorized"));
+            
+            appDto.StudentId = user.Id;
+
             //Check for validity to apply
             var isValid = await _appService.CheckValidToApply(appDto.GroupId,appDto.StudentId,appDto.GroupPositionId);
             if(!isValid) return BadRequest(new ApiErrorResponse(400, "Not applicable to create application."));
