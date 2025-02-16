@@ -56,5 +56,24 @@ namespace TeamoWeb.API.Controllers
                 return BadRequest(new ApiErrorResponse(400, ex.Message, ex.InnerException?.Message));
             }
         }
+
+        [HttpPatch("{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<Semester>> UpdateSemester(int id, Semester updateSemester)
+        {
+            try
+            {
+                var semester = await _semesterRepo.GetByIdAsync(id);
+                if(semester == null)
+                    return NotFound();
+                _semesterRepo.Update(semester);
+                await _semesterRepo.SaveAllAsync();
+                return Ok(semester);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ApiErrorResponse(400, ex.Message, ex.InnerException?.Message));
+            }
+        }
     }
 }
