@@ -1,4 +1,6 @@
-﻿using Teamo.Core.Entities;
+﻿using System.Net.NetworkInformation;
+using Teamo.Core.Entities;
+using Teamo.Core.Enums;
 using TeamoWeb.API.Dtos;
 
 namespace TeamoWeb.API.Extensions
@@ -16,7 +18,7 @@ namespace TeamoWeb.API.Extensions
                     throw new ArgumentException("All required fields must be provided when adding a new semester.");
                 }
 
-                return new Semester
+                semester = new Semester
                 {
                     Name = dto.Name,
                     Code = dto.Code,
@@ -24,14 +26,34 @@ namespace TeamoWeb.API.Extensions
                     EndDate = dto.EndDate.Value
                 };
             }
-
-            // for updating
-            semester.Name = string.IsNullOrEmpty(dto.Name) ? dto.Name : semester.Name;
-            semester.Code = string.IsNullOrEmpty(dto.Code) ? dto.Code : semester.Code;
-            semester.StartDate = dto.StartDate ?? semester.StartDate;
-            semester.EndDate = dto.EndDate ?? semester.EndDate;
-
+            else
+            {
+                // for updating
+                semester.Name = string.IsNullOrEmpty(dto.Name) ? dto.Name : semester.Name;
+                semester.Code = string.IsNullOrEmpty(dto.Code) ? dto.Code : semester.Code;
+                semester.StartDate = dto.StartDate ?? semester.StartDate;
+                semester.EndDate = dto.EndDate ?? semester.EndDate;
+            }
+            
+            semester.Status = UpdateStatus(semester.StartDate, semester.EndDate);
             return semester;
+        }
+        private static SemesterStatus UpdateStatus(DateOnly startDate, DateOnly endDate)
+        {
+            var today = DateOnly.FromDateTime(DateTime.UtcNow);
+
+            if (startDate > today)
+            {
+                return SemesterStatus.Upcoming;
+            }
+            else if (startDate <= today && endDate > today)
+            {
+                return SemesterStatus.Ongoing;
+            }
+            else
+            {
+                return SemesterStatus.Past;
+            }
         }
     }
 }

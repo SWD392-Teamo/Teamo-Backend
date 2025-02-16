@@ -6,11 +6,13 @@ namespace Teamo.Core.Enums
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum SemesterStatus
     {
-        [EnumMember(Value = "Opened")]
-        Opened,
-        [EnumMember(Value = "Closed")]
-        Closed,
+        [EnumMember(Value = "Ongoing")]
+        Ongoing,
+        [EnumMember(Value = "Past")]
+        Past,
         [EnumMember(Value = "Upcoming")]
-        Upcoming
+        Upcoming,
+        [EnumMember(Value = "Deleted")]
+        Deleted
     }
 }
