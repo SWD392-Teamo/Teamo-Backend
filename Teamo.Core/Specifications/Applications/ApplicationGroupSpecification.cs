@@ -7,7 +7,6 @@ namespace Teamo.Core.Specifications.Applications
 
         public ApplicationGroupSpecification(ApplicationParams appParams)
             : base(x => (x.GroupId == appParams.GroupId)
-                    &&(!appParams.PositionId.HasValue || x.GroupPositionId == appParams.PositionId)
                     &&(string.IsNullOrEmpty(appParams.Status)
                     || x.Status.ToString().ToLower().Equals(appParams.Status.ToLower())))
         {

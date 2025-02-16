@@ -33,15 +33,10 @@ namespace Teamo.Infrastructure.Services
             return await _unitOfWork.Repository<Application>().ListAsync(appSpec);
         }
 
-        public async Task<bool> ReviewApplicationAsync(Application app, string newStatus)
+        public async Task<bool> ReviewApplicationAsync(Application app)
         {   
-            if(Enum.TryParse(newStatus, out ApplicationStatus appStatus))
-            {
-                app.Status = appStatus;
-                _unitOfWork.Repository<Application>().Update(app);
-                return await _unitOfWork.Complete();
-            }
-            else return false;
+            _unitOfWork.Repository<Application>().Update(app);
+            return await _unitOfWork.Complete();
         }
 
         public async Task<bool> CreateNewApplicationAsync(Application newAapp)
@@ -50,7 +45,7 @@ namespace Teamo.Infrastructure.Services
             return await _unitOfWork.Complete();            
         }
 
-        public async Task<string> GetGroupLeaderEmailAsync(int groupId)
+        public async Task<int> GetGroupLeaderIdAsync(int groupId)
         {
             var groupSpec = new GroupSpecification(groupId);
             var group = await _unitOfWork.Repository<Group>().GetEntityWithSpec(groupSpec);
@@ -63,7 +58,7 @@ namespace Teamo.Infrastructure.Services
             var memberSpec = new GroupMemberSpecification(memberParams);
             var groupLeader = await _unitOfWork.Repository<GroupMember>().GetEntityWithSpec(memberSpec);
 
-            return groupLeader.Student.Email;
+            return groupLeader.StudentId;
         }
 
         public async Task<bool> CheckValidToApply(int groupId, int studentId, int groupPositionId)

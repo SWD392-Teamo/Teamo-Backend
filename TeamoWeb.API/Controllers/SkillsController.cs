@@ -48,7 +48,7 @@ namespace TeamoWeb.API.Controllers
             
             var result = await _skillService.CreateSkillAsync(skill);
             if(!result) return BadRequest(new ApiErrorResponse(400, "Failed to create skill."));
-            return Ok(new ApiErrorResponse(200, "Skill created successfully."));
+            return Ok(skill);
         }
     }
 }
