@@ -117,5 +117,26 @@ namespace TeamoWeb.API.Controllers
             if(!result) return BadRequest(new ApiErrorResponse(400, "Failed to create and send application."));
             return Ok(new ApiErrorResponse(200, "Application sent successfully."));
         }
+
+        //Delete application (recall unanswered application)
+        [HttpDelete("{id}")]
+        [Authorize(Roles = "Student")]
+        public async Task<ActionResult> DeleteApplication(int id)
+        {
+            var app = await _appService.GetApplicationByIdAsync(id);
+            if(app == null) return NotFound(new ApiErrorResponse(404, "Application not found."));
+
+            //Check if current user is the sender of the corresponding application
+            var user = await _userService.GetUserByClaims(HttpContext.User);
+            if (user == null || user.Id != app.StudentId)
+                return Unauthorized(new ApiErrorResponse(401, "Unauthorized"));
+            
+            if(app.Status != ApplicationStatus.Requested)
+                return BadRequest(new ApiErrorResponse(400, "The application has been reviewed."));
+
+            var result = await _appService.DeleteApplicationAsync(app);
+            if(!result) return BadRequest(new ApiErrorResponse(400, "Failed to delete application."));
+            return Ok(new ApiErrorResponse(200, "Application deleted successfully."));
+        }
     }
 }

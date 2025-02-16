@@ -45,6 +45,12 @@ namespace Teamo.Infrastructure.Services
             return await _unitOfWork.Complete();            
         }
 
+        public async Task<bool> DeleteApplicationAsync(Application app)
+        {
+            _unitOfWork.Repository<Application>().Delete(app);
+            return await _unitOfWork.Complete();
+        }
+
         public async Task<int> GetGroupLeaderIdAsync(int groupId)
         {
             var groupSpec = new GroupSpecification(groupId);
