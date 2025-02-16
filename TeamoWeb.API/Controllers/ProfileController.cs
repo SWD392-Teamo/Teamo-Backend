@@ -55,23 +55,17 @@ namespace TeamoWeb.API.Controllers
         //Add a new skill to user profile
         [HttpPost("skills")]
         [Authorize(Roles = "Student")]
-        public async Task<ActionResult> AddProfileSkill([FromBody] ProfileUpdateDto profile)
+        public async Task<ActionResult> AddProfileSkill([FromBody] StudentSkillToUpsertDto studentSkillDto)
         {
-            var newSkill = profile.StudentSkill;
-            if(newSkill == null) return BadRequest(new ApiErrorResponse(400, "No skill selected."));
+             var user = await _userService.GetUserByClaims(HttpContext.User);
+            if (user == null) return Unauthorized(new ApiErrorResponse(401, "Unauthorized"));
+            studentSkillDto.StudentId = user.Id;
 
-            Enum.TryParse(newSkill.SkillLevel, out StudentSkillLevel level);
-            var studentSkill = new StudentSkill()
-                {
-                    SkillId = newSkill.SkillId, 
-                    StudentId = profile.UserId,
-                    Level = level
-                };
-
+            var studentSkill = studentSkillDto.ToEntity();
             var result = await _profileService.AddProfileSkillAsync(studentSkill);
 
-            if(result) return Ok(new ApiErrorResponse(200, "Skill added to profile successfully."));
-            else return BadRequest(new ApiErrorResponse(400, "Failed to add skill to profile."));
+            if(!result) return BadRequest(new ApiErrorResponse(400, "Failed to add skill to profile."));
+            return Ok(new ApiErrorResponse(200, "Skill added to profile successfully."));
         }
 
         //Update a skill level in user profile
@@ -86,8 +80,8 @@ namespace TeamoWeb.API.Controllers
 
             var result = await _profileService.UpdateProfileSkillAsync(studentSkill);
 
-            if(result) return Ok(new ApiErrorResponse(200, "Skill updated successfully."));
-            else return BadRequest(new ApiErrorResponse(400, "Failed to update skill."));
+            if(!result) return BadRequest(new ApiErrorResponse(400, "Failed to update skill."));
+            return Ok(new ApiErrorResponse(200, "Skill updated successfully."));
         }
 
         //Delete a skill in user profile
