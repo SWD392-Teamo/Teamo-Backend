@@ -27,6 +27,7 @@ namespace TeamoWeb.API.Extensions
             services.AddScoped<IApplicationService, ApplicationService>();
             services.AddScoped<ISkillService, SkillService>();
             services.AddScoped<ISubjectService, SubjectService>();
+            services.AddScoped<IFieldService, FieldService>();
             services.AddDataProtection();
 
             services.AddRouting(opt => opt.LowercaseUrls = true);
