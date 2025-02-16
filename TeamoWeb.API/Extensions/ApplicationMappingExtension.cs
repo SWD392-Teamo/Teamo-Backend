@@ -21,26 +21,26 @@ namespace TeamoWeb.API.Extensions
             };
         }
 
-        public static Application ToEntity(this ApplicationToUpsertDto applicationDto, Application? application = null)
+        public static Application ToEntity(this ApplicationToUpsertDto appDto, Application? app = null)
         {
             //Create application
-            if (application == null)
+            if (app == null)
             {
                 return new Application{
-                    GroupId = applicationDto.GroupId,
-                    StudentId = applicationDto.StudentId,
-                    RequestTime = applicationDto.RequestTime,
-                    RequestContent = applicationDto.RequestContent,
-                    GroupPositionId = applicationDto.GroupPositionId,
+                    GroupId = appDto.GroupId,
+                    StudentId = appDto.StudentId,
+                    RequestTime = appDto.RequestTime,
+                    RequestContent = appDto.RequestContent ?? "I would like to become a member of this group.",
+                    GroupPositionId = appDto.GroupPositionId,
                     Status = ApplicationStatus.Requested
                 };
             }
             
             //Review application
-            Enum.TryParse(applicationDto.Status, out ApplicationStatus status);
-            application.Status = status;
+            Enum.TryParse(appDto.Status, out ApplicationStatus status);
+            app.Status = status;
 
-            return application;
+            return app;
         }
     }
 }

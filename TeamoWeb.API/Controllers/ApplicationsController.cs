@@ -105,22 +105,15 @@ namespace TeamoWeb.API.Controllers
         //Create and send an application
         [HttpPost]
         [Authorize(Roles = "Student")]
-        public async Task<ActionResult<ApplicationDto>> CreateNewApplication([FromBody] ApplicationDto app)     
-        {
+        public async Task<ActionResult<ApplicationDto>> CreateNewApplication([FromBody] ApplicationToUpsertDto appDto)     
+        {            
             //Check for validity to apply
-            var isValid = await _appService.CheckValidToApply(app.GroupId,app.StudentId,app.GroupPositionId);
+            var isValid = await _appService.CheckValidToApply(appDto.GroupId,appDto.StudentId,appDto.GroupPositionId);
             if(!isValid) return BadRequest(new ApiErrorResponse(400, "Not applicable to create application."));
 
-            var newApp = new Application(){
-                GroupId = app.GroupId,
-                StudentId = app.StudentId,
-                RequestTime = app.RequestTime,
-                RequestContent = app.RequestContent,
-                GroupPositionId = app.GroupPositionId,
-                Status = ApplicationStatus.Requested
-            };
-
-            var result = await _appService.CreateNewApplicationAsync(newApp);
+            var app = appDto.ToEntity();
+            
+            var result = await _appService.CreateNewApplicationAsync(app);
             if(!result) return BadRequest(new ApiErrorResponse(400, "Failed to create and send application."));
             return Ok(new ApiErrorResponse(200, "Application sent successfully."));
         }
