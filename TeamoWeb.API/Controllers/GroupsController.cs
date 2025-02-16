@@ -59,23 +59,18 @@ namespace TeamoWeb.API.Controllers
         [Authorize(Roles = "Student")]
         public async Task<ActionResult<GroupDto>> CreateGroupAsync(GroupToUpsertDto groupDto)
         {
-            try
-            {
-                var user = await _userService.GetUserByClaims(HttpContext.User);
-                if (user == null)
-                    return Unauthorized(new ApiErrorResponse(401, "Unauthorize"));
 
-                var group = groupDto.ToEntity();
+            var user = await _userService.GetUserByClaims(HttpContext.User);
+            if (user == null)
+                return Unauthorized(new ApiErrorResponse(401, "Unauthorize"));
 
-                await _groupService.CreateGroupAsync(group, user.Id);
-                group = await _groupService.GetGroupByIdAsync(group.Id);
-                var createdGroupDto = group.ToDto();
-                return Ok(createdGroupDto);
-            }
-            catch (Exception ex) 
-            {
-                return BadRequest(new ApiErrorResponse(400, ex.Message, ex.InnerException?.Message));
-            }
+            var group = groupDto.ToEntity();
+
+            await _groupService.CreateGroupAsync(group, user.Id);
+            group = await _groupService.GetGroupByIdAsync(group.Id);
+            var createdGroupDto = group.ToDto();
+            return Ok(createdGroupDto);
+
         }
 
         /// <summary>
@@ -85,22 +80,15 @@ namespace TeamoWeb.API.Controllers
         [Authorize(Roles = "Student")]
         public async Task<ActionResult<GroupDto>> UpdateGroupAsync(int id, GroupToUpsertDto groupDto)
         {
-            try
-            {
-                var group = await _groupService.GetGroupByIdAsync(id);
-                if (group == null)
-                    return BadRequest(new ApiErrorResponse(404, "Group not found!"));
+            var group = await _groupService.GetGroupByIdAsync(id);
+            if (group == null)
+                return BadRequest(new ApiErrorResponse(404, "Group not found!"));
 
-                var updatedGroup = groupDto.ToEntity(group);
-                await _groupService.UpdateGroupAsync(updatedGroup);
-                updatedGroup = await _groupService.GetGroupByIdAsync(group.Id);
-                var updatedGroupDto = updatedGroup.ToDto();
-                return Ok(updatedGroupDto);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new ApiErrorResponse(400, ex.Message, ex.InnerException?.Message));
-            }
+            var updatedGroup = groupDto.ToEntity(group);
+            await _groupService.UpdateGroupAsync(updatedGroup);
+            updatedGroup = await _groupService.GetGroupByIdAsync(group.Id);
+            var updatedGroupDto = updatedGroup.ToDto();
+            return Ok(updatedGroupDto);
         }
 
         /// <summary>
@@ -110,19 +98,12 @@ namespace TeamoWeb.API.Controllers
         [Authorize(Roles = "Student")]
         public async Task<ActionResult<GroupDto>> DeleteGroupAsync(int id)
         {
-            try
-            {
-                var group = await _groupService.GetGroupByIdAsync(id);
-                if (group == null)
-                    return NotFound(new ApiErrorResponse(404, "Group not found!"));
+            var group = await _groupService.GetGroupByIdAsync(id);
+            if (group == null)
+                return NotFound(new ApiErrorResponse(404, "Group not found!"));
 
-                await _groupService.DeleteGroupAsync(group);
-                return Ok(new ApiErrorResponse(200, "Successfully deleted a group!"));
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new ApiErrorResponse(400, ex.Message, ex.InnerException?.Message));
-            }
+            await _groupService.DeleteGroupAsync(group);
+            return Ok(new ApiErrorResponse(200, "Successfully deleted a group!"));
         }
 
         /// <summary>
@@ -151,27 +132,17 @@ namespace TeamoWeb.API.Controllers
         [Authorize(Roles = "Student")]
         public async Task<IActionResult> AddMemberToGroup(int id, GroupMemberToAddDto groupMemberToAddDto)
         {
-            try
-            {
-                var group = await _groupService.GetGroupByIdAsync(id);
-                if (group == null)
-                    return NotFound(new ApiErrorResponse(404, "Group not found!"));
 
-                var groupMember = groupMemberToAddDto.ToEntity();
-                groupMember.GroupId = id;
-                await _groupService.AddMemberToGroup(groupMember);
+            var group = await _groupService.GetGroupByIdAsync(id);
+            if (group == null)
+                return NotFound(new ApiErrorResponse(404, "Group not found!"));
 
-                group = await _groupService.GetGroupByIdAsync(id);
-                return Ok(group.ToDto());
-            }
-            catch (InvalidOperationException ex)
-            {
-                return BadRequest(new ApiErrorResponse(409, ex.Message, ex.InnerException?.Message));
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new ApiErrorResponse(400, ex.Message, ex.InnerException?.Message));
-            }
+            var groupMember = groupMemberToAddDto.ToEntity();
+            groupMember.GroupId = id;
+            await _groupService.AddMemberToGroup(groupMember);
+
+            group = await _groupService.GetGroupByIdAsync(id);
+            return Ok(group.ToDto());
         }
         /// <summary>
         /// Add position to group
@@ -180,23 +151,17 @@ namespace TeamoWeb.API.Controllers
         [Authorize(Roles = "Student")]
         public async Task<IActionResult> AddGroupPosition (int id, GroupPositionToAddDto groupPositionDto)
         {
-            try
-            {
-                var group = await _groupService.GetGroupByIdAsync(id);
-                if (group == null)
-                    return NotFound(new ApiErrorResponse(404, "Group not found!"));
+            var group = await _groupService.GetGroupByIdAsync(id);
+            if (group == null)
+                return NotFound(new ApiErrorResponse(404, "Group not found!"));
 
-                var groupPosition = groupPositionDto.ToEntity();
-                groupPosition.GroupId = id;
-                await _groupService.AddGroupPosition(groupPosition);
+            var groupPosition = groupPositionDto.ToEntity();
+            groupPosition.GroupId = id;
+            await _groupService.AddGroupPosition(groupPosition);
 
-                group = await _groupService.GetGroupByIdAsync(id);
-                return Ok(group.ToDto());
-            }
-            catch(Exception ex)
-            {
-                return BadRequest(new ApiErrorResponse(400, ex.Message, ex.InnerException?.Message));
-            }
+            group = await _groupService.GetGroupByIdAsync(id);
+            return Ok(group.ToDto());
+
         }
 
         /// <summary>
@@ -206,25 +171,35 @@ namespace TeamoWeb.API.Controllers
         [Authorize(Roles = "Student")]
         public async Task<IActionResult> UpdateGroupPosition(int groupId, int positionId, GroupPositionToAddDto updateDto)
         {           
-            try
+            var groupPosition = await _groupService.GetGroupPositionByIdAsync(positionId);
+            if (groupPosition == null)
             {
-                var groupPosition = await _groupService.GetGroupPositionByIdAsync(positionId);
-                if (groupPosition == null)
-                {
-                    return NotFound(new ApiErrorResponse(404, "Group position not found."));
-                }
-
-                groupPosition = updateDto.ToEntity(groupPosition);
-                groupPosition.GroupId = groupId;
-                await _groupService.UpdateGroupPositionAsync(groupPosition, updateDto.SkillIds);
-
-                var group = await _groupService.GetGroupByIdAsync(groupId);
-                return Ok(group.ToDto());
+                return NotFound(new ApiErrorResponse(404, "Group position not found."));
             }
-            catch (Exception ex)
+
+            groupPosition = updateDto.ToEntity(groupPosition);
+            groupPosition.GroupId = groupId;
+            await _groupService.UpdateGroupPositionAsync(groupPosition, updateDto.SkillIds);
+
+            var group = await _groupService.GetGroupByIdAsync(groupId);
+            return Ok(group.ToDto());
+        }
+
+        /// <summary>
+        /// Removes a group position.
+        /// </summary>
+        [HttpDelete("{groupId}/positions/{groupPositionId}")]
+        [Authorize(Roles = "Student")]
+        public async Task<IActionResult> DeleteGroupPosition(int groupPositionId)
+        {
+            var groupPosition = await _groupService.GetGroupPositionByIdAsync(groupPositionId);
+            if (groupPosition == null)
             {
-                return BadRequest(new ApiErrorResponse(400, ex.Message, ex.InnerException?.Message));
+                return NotFound(new ApiErrorResponse(404, "Group position not found."));
             }
+
+            await _groupService.RemoveGroupPositionAsync(groupPosition);
+            return Ok();
         }
 
         /// <summary>
@@ -234,49 +209,31 @@ namespace TeamoWeb.API.Controllers
         [Authorize(Roles = "Student")]
         public async Task<IActionResult> RemoveMemberFromGroup(int groupId, int groupMemberId)
         {
-            try
+            var groupMember = await _groupService.GetGroupMemberByIdAsync(groupMemberId);
+            if (groupMember == null)
             {
-                var groupMember = await _groupService.GetGroupMemberByIdAsync(groupMemberId);
-                if (groupMember == null)
-                {
-                    return NotFound(new ApiErrorResponse(404, "Group Member not found!"));
-                }
-                await _groupService.RemoveMemberFromGroup(groupMember);
+                return NotFound(new ApiErrorResponse(404, "Group Member not found!"));
+            }
+            await _groupService.RemoveMemberFromGroup(groupMember);
 
-                var group = await _groupService.GetGroupByIdAsync(groupId);
-                return Ok(group.ToDto());
-            }
-            catch (InvalidOperationException ex)
-            {
-                return BadRequest(new ApiErrorResponse(409, ex.Message, ex.InnerException?.Message));
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new ApiErrorResponse(400, ex.Message, ex.InnerException?.Message));
-            }
+            var group = await _groupService.GetGroupByIdAsync(groupId);
+            return Ok(group.ToDto());
         }
 
         [HttpPatch("{groupId}/members/{groupMemberId}")]
         [Authorize(Roles = "Student")]
         public async Task<IActionResult> UpdateGroupMember (int groupId, int groupMemberId, GroupMemberToAddDto gmDto)
         {
-            try
+            var groupMember = await _groupService.GetGroupMemberByIdAsync(groupMemberId);
+            if (groupMember == null)
             {
-                var groupMember = await _groupService.GetGroupMemberByIdAsync(groupMemberId);
-                if (groupMember == null)
-                {
-                    return NotFound(new ApiErrorResponse(404, "Group Member not found!"));
-                }
-                groupMember = gmDto.ToEntity(groupMember);
-                await _groupService.UpdateGroupMemberAsync(groupMember, gmDto.GroupPositionIds);
+                return NotFound(new ApiErrorResponse(404, "Group Member not found!"));
+            }
+            groupMember = gmDto.ToEntity(groupMember);
+            await _groupService.UpdateGroupMemberAsync(groupMember, gmDto.GroupPositionIds);
 
-                var group = await _groupService.GetGroupByIdAsync(groupId);
-                return Ok(group.ToDto());
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new ApiErrorResponse(400, ex.Message, ex.InnerException?.Message));
-            }
+            var group = await _groupService.GetGroupByIdAsync(groupId);
+            return Ok(group.ToDto());
         }
     }
 }
