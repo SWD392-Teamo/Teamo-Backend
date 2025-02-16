@@ -8,6 +8,7 @@ using Teamo.Core.Specifications.Majors;
 using Teamo.Core.Specifications.Semesters;
 using TeamoWeb.API.Dtos;
 using TeamoWeb.API.Errors;
+using TeamoWeb.API.Extensions;
 
 namespace TeamoWeb.API.Controllers
 {
@@ -43,37 +44,27 @@ namespace TeamoWeb.API.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<Semester>> CreateSemester([FromBody]Semester semester)
+        public async Task<ActionResult<Semester>> CreateSemester(SemesterToUpsertDto semesterDto)
         {
-            try
-            {
-                _semesterRepo.Add(semester);
-                await _semesterRepo.SaveAllAsync();
-                return Ok(semester);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new ApiErrorResponse(400, ex.Message, ex.InnerException?.Message));
-            }
+            var semester = semesterDto.ToEntity();
+            _semesterRepo.Add(semester);
+            await _semesterRepo.SaveAllAsync();
+            return Ok(semester);
         }
 
         [HttpPatch("{id}")]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<Semester>> UpdateSemester(int id, Semester updateSemester)
+        public async Task<ActionResult<Semester>> UpdateSemester(int id, SemesterToUpsertDto semesterDto)
         {
-            try
-            {
-                var semester = await _semesterRepo.GetByIdAsync(id);
-                if(semester == null)
-                    return NotFound();
-                _semesterRepo.Update(semester);
-                await _semesterRepo.SaveAllAsync();
-                return Ok(semester);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new ApiErrorResponse(400, ex.Message, ex.InnerException?.Message));
-            }
+
+            var semester = await _semesterRepo.GetByIdAsync(id);
+            if(semester == null)
+                return NotFound();
+
+            semester = semesterDto.ToEntity(semester);
+            _semesterRepo.Update(semester);
+            await _semesterRepo.SaveAllAsync();
+            return Ok(semester);            
         }
     }
 }
