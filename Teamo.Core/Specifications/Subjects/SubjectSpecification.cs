@@ -9,14 +9,20 @@ namespace Teamo.Core.Specifications.Subjects
             : base(x => (string.IsNullOrEmpty(subjectParams.Search)
             || x.Name.ToLower().Contains(subjectParams.Search)
             || x.Code.ToLower().Contains(subjectParams.Search)) &&
-            (!subjectParams.MajorId.HasValue || subjectParams.MajorId.HasValue))
+            (!subjectParams.MajorId.HasValue || subjectParams.MajorId.HasValue)
+            && (string.IsNullOrEmpty(subjectParams.Status)
+            || x.Status.ToString().ToLower().Equals(subjectParams.Status.ToLower())))
         {
             ApplyPaging(subjectParams.PageSize * (subjectParams.PageIndex - 1),
                 subjectParams.PageSize);
         }
         
-        public SubjectSpecification(int id)
-            : base(x => x.Id == id)
+        public SubjectSpecification(int id) : base(x => x.Id == id)
+        {
+        }
+
+        public SubjectSpecification(string code) 
+            : base(x => x.Code.ToLower().Equals(code.ToLower()))
         {
         }
     }

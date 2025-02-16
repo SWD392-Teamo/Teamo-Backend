@@ -39,7 +39,7 @@ namespace Teamo.Infrastructure.Data
                 var maData = await File
                     .ReadAllTextAsync(path + @"/Data/SeedData/majors.json");
 
-                var majors = JsonSerializer.Deserialize<List<Major>>(maData);
+                var majors = JsonSerializer.Deserialize<List<Major>>(maData, options);
 
                 if (majors == null) return;
 
@@ -157,7 +157,7 @@ namespace Teamo.Infrastructure.Data
                 var subData = await File
                     .ReadAllTextAsync(path + @"/Data/SeedData/subjects.json");
 
-                var subjects = JsonSerializer.Deserialize<List<Subject>>(subData);
+                var subjects = JsonSerializer.Deserialize<List<Subject>>(subData, options);
 
                 if (subjects == null) return;
 

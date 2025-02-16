@@ -11,6 +11,7 @@
         }
 
         public int? MajorId { get; set; }
+        public string Status { get; set; }
         public string Sort { get; set; }
     }
 }

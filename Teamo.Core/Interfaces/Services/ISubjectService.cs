@@ -8,7 +8,9 @@ namespace Teamo.Core.Interfaces.Services
         Task<Subject> GetSubjectByIdAsync(int id);
         Task<IReadOnlyList<Subject>> GetSubjectsAsync(SubjectParams subjectParams);
         Task<bool> CreateSubjectAsync(Subject subject);
-        Task<bool> UpdateSubjectAsync (Subject subject);
+        Task<bool> UpdateSubjectAsync(Subject subject);
+        Task<bool> DeleteSubjectAsync(Subject subject);
         Task<int> CountSubjectsAsync(SubjectParams subjectParams);
+        Task<bool> CheckDuplicateCodeSubject(string code);
     }
 }

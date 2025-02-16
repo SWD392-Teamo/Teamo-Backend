@@ -16,8 +16,6 @@ using Group = Teamo.Core.Entities.Group;
 
 namespace TeamoWeb.API.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
     public class GroupsController : BaseApiController
     {
         private readonly IGroupService _groupService;

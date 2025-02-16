@@ -6,7 +6,7 @@ namespace Teamo.Core.Enums
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum SubjectStatus
     {
-        [EnumMember(Value = "EnumMember")]
+        [EnumMember(Value = "Active")]
         Active,
         [EnumMember(Value = "Inactive")]
         Inactive

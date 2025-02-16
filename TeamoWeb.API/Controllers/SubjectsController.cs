@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Teamo.Core.Entities;
+using Teamo.Core.Enums;
 using Teamo.Core.Interfaces;
 using Teamo.Core.Interfaces.Services;
 using Teamo.Core.Specifications.Majors;
@@ -21,6 +22,7 @@ namespace TeamoWeb.API.Controllers
             _subjectService = subjectService;
         }
 
+        //Get subjects with spec
         [HttpGet]
         [Authorize]
         public async Task<ActionResult<IReadOnlyList<SubjectDto>>> GetSubjects([FromQuery] SubjectParams subjectParams)
@@ -33,6 +35,7 @@ namespace TeamoWeb.API.Controllers
             return Ok(pagination);
         }
 
+        //Get subject by id
         [HttpGet("{id}")]
         [Authorize]
         public async Task<ActionResult<SubjectDto?>> GetSubjectById(int id)
@@ -54,6 +57,9 @@ namespace TeamoWeb.API.Controllers
             if(string.IsNullOrEmpty(subjectDto.Name) || string.IsNullOrEmpty(subjectDto.Code))
                 return BadRequest(new ApiErrorResponse(400, "Please input all required fields."));
 
+            var duplicateCode = await _subjectService.CheckDuplicateCodeSubject(subjectDto.Code);
+            if(!duplicateCode) return BadRequest(new ApiErrorResponse(400, "Subject code must be unique."));
+            
             var subject = subjectDto.ToEntity();
 
             var result = await _subjectService.CreateSubjectAsync(subject);
@@ -76,6 +82,22 @@ namespace TeamoWeb.API.Controllers
 
             if(!result) return BadRequest(new ApiErrorResponse(400, "Failed to update subject."));
             else return Ok(new ApiErrorResponse(200, "Updated subject successfully."));
+        }
+
+        //Delete subject, change subject status to inactive
+        [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult> DeleteSubject(int id)
+        {
+            var subject = await _subjectService.GetSubjectByIdAsync(id);
+            if(subject == null) return BadRequest(new ApiErrorResponse(400, "Subject not found."));
+            if(subject.Status == SubjectStatus.Inactive)
+                return BadRequest(new ApiErrorResponse(400, "Subject is already inactive."));
+
+            var result = await _subjectService.DeleteSubjectAsync(subject);
+
+            if(!result) return BadRequest(new ApiErrorResponse(400, "Failed to delete subject"));
+            return Ok(new ApiErrorResponse(200, "Deleted subject successfully."));
         }
     }
 }
