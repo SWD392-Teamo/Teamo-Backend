@@ -21,17 +21,14 @@ namespace Teamo.Infrastructure.Services
             _userService = userService;
         }
 
-        public async Task<User> GetProfileAsync(string userEmail)
+        public async Task<User> GetProfileAsync(int id)
         {
-            var userSpec = new UserSpecification(userEmail);
+            var userSpec = new UserSpecification(id);
             return await _userService.GetUserWithSpec(userSpec);
         }
 
-        public async Task<IdentityResult> UpdateProfileDescriptionAsync(int userId, string description)
+        public async Task<IdentityResult> UpdateProfileDescriptionAsync(User user)
         {
-            var userSpec = new UserSpecification(userId);
-            var user = await _userService.GetUserWithSpec(userSpec);
-            user.Description = description;
             return await _userService.UpdateUserAsync(user);
         }
 
@@ -41,13 +38,21 @@ namespace Teamo.Infrastructure.Services
             return await _unitOfWork.Complete();
         }
 
-        public async Task<bool> UpdateProfileSkillAsync(int userId, int skillId, StudentSkillLevel skillLevel)
+        public async Task<bool> UpdateProfileSkillAsync(StudentSkill studentSkill)
         {
-            var spec = new StudentSkillSpecification(skillId, userId);
-            var profileSkill = await _unitOfWork.Repository<StudentSkill>().GetEntityWithSpec(spec);
-            profileSkill.Level = skillLevel;
-            _unitOfWork.Repository<StudentSkill>().Update(profileSkill);
+            _unitOfWork.Repository<StudentSkill>().Update(studentSkill);
             return await _unitOfWork.Complete();
+        }
+
+        public async Task<bool> DeleteProfileSkillAsync(StudentSkill studentSkill)
+        {
+            _unitOfWork.Repository<StudentSkill>().Delete(studentSkill);
+            return await _unitOfWork.Complete();
+        }
+
+        public async Task<StudentSkill> GetProfileSkillAsync(int studentSkillId)
+        {
+            return await _unitOfWork.Repository<StudentSkill>().GetByIdAsync(studentSkillId);
         }
 
         public async Task<bool> AddProfileLinkAsync(Link newLink)
@@ -56,21 +61,22 @@ namespace Teamo.Infrastructure.Services
             return await _unitOfWork.Complete();
         }
 
-        public async Task<bool> UpdateProfileLinkAsync(int linkId, string linkName, string linkurl)
+        public async Task<bool> UpdateProfileLinkAsync(Link link)
         {
-            var linkSpec = new LinkSpecification(linkId);
-            var profileLink = await _unitOfWork.Repository<Link>().GetEntityWithSpec(linkSpec);
-            profileLink.Name = linkName;
-            profileLink.Url = linkurl;
-            _unitOfWork.Repository<Link>().Update(profileLink);
+            _unitOfWork.Repository<Link>().Update(link);
             return await _unitOfWork.Complete();
         }
 
-        public async Task<bool> RemoveProfileLinkAsync(int linkId)
+        public async Task<Link> GetLinkByIdAsync(int id)
         {
-            var linkSpec = new LinkSpecification(linkId);
-            var profileLink = await _unitOfWork.Repository<Link>().GetEntityWithSpec(linkSpec);
-            _unitOfWork.Repository<Link>().Delete(profileLink);
+            var linkSpec = new LinkSpecification(id);
+            var link = await _unitOfWork.Repository<Link>().GetEntityWithSpec(linkSpec);
+            return link;
+        }
+
+        public async Task<bool> RemoveProfileLinkAsync(Link link)
+        {
+            _unitOfWork.Repository<Link>().Delete(link);
             return await _unitOfWork.Complete();
         }
     }
