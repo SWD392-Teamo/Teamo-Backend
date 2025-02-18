@@ -18,5 +18,6 @@ namespace Teamo.Core.Specifications.Groups
         public GroupStatus? Status { get; set; }
         public int? SemesterId { get; set; }
         public int? FieldId { get; set; }
+        public int? StudentId { get; set; }
     }
 }

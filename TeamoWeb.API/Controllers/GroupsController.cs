@@ -109,25 +109,6 @@ namespace TeamoWeb.API.Controllers
         }
 
         /// <summary>
-        /// Retrieves the groups of the currently logged-in user.
-        /// </summary>
-        [HttpGet("me")]
-        [Authorize(Roles = "Student")]
-        public async Task<ActionResult<GroupDto>> GetGroupByMemberIdAsync([FromQuery] GroupMemberParams groupMemberParams)
-        {
-            var user = await _userService.GetUserByClaims(HttpContext.User);
-            if (user == null)
-                return Unauthorized(new ApiErrorResponse(401, "Unauthorize"));
-
-            groupMemberParams.Studentd = user.Id;
-            var spec = new GroupMemberSpecification(groupMemberParams);
-            var groups = await _groupService.GetGroupsByMemberIdAsync(spec);
-            var groupDtos = groups.Any() ? groups.Select(g => g.ToDto()).ToList() : new List<GroupDto?>();
-            var pagination = new Pagination<GroupDto>(groupMemberParams.PageIndex, groupMemberParams.PageSize, groups.Count(), groupDtos);
-            return Ok(pagination);
-        }
-
-        /// <summary>
         /// Adds a member to a group.
         /// </summary>
         [HttpPost("{id}/members")]
@@ -151,7 +132,7 @@ namespace TeamoWeb.API.Controllers
         /// </summary>
         [HttpPost("{id}/positions")]
         [Authorize(Roles = "Student")]
-        public async Task<IActionResult> AddGroupPosition (int id, GroupPositionToAddDto groupPositionDto)
+        public async Task<IActionResult> AddGroupPosition (int id, GroupPositionToUpsertDto groupPositionDto)
         {
             var group = await _groupService.GetGroupByIdAsync(id);
             if (group == null)
@@ -171,7 +152,7 @@ namespace TeamoWeb.API.Controllers
         /// </summary>
         [HttpPatch("{groupId}/positions/{positionId}")]
         [Authorize(Roles = "Student")]
-        public async Task<IActionResult> UpdateGroupPosition(int groupId, int positionId, GroupPositionToAddDto updateDto)
+        public async Task<IActionResult> UpdateGroupPosition(int groupId, int positionId, GroupPositionToUpsertDto updateDto)
         {           
             var groupPosition = await _groupService.GetGroupPositionByIdAsync(positionId);
             if (groupPosition == null)

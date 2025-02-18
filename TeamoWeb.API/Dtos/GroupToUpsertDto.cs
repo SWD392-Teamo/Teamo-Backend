@@ -15,6 +15,6 @@ namespace TeamoWeb.API.Dtos
         public int? FieldId { get; set; }
         public int? SubjectId { get; set; }
         public GroupStatus? Status { get; set; }    
-        public IEnumerable<GroupPositionToAddDto> GroupPositions { get; set; } = Enumerable.Empty<GroupPositionToAddDto>();
+        public IEnumerable<GroupPositionToUpsertDto> GroupPositions { get; set; } = Enumerable.Empty<GroupPositionToUpsertDto>();
     }
 }
