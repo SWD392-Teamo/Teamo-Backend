@@ -109,7 +109,7 @@ namespace TeamoWeb.API.Extensions
             return group;
         }
 
-        public static GroupPosition ToEntity (this GroupPositionToAddDto groupPositionDto, GroupPosition? groupPosition = null)
+        public static GroupPosition ToEntity (this GroupPositionToUpsertDto groupPositionDto, GroupPosition? groupPosition = null)
         {
             // for add
             if (groupPosition == null)

@@ -15,7 +15,8 @@ namespace Teamo.Core.Specifications.Groups
             (!groupParams.SubjectId.HasValue || x.SubjectId == groupParams.SubjectId) &&
             (!groupParams.Status.HasValue  || groupParams.Status == x.Status) &&
             (!groupParams.SemesterId.HasValue || groupParams.SemesterId == x.SemesterId) &&
-            (!groupParams.FieldId.HasValue || groupParams.FieldId == x.FieldId))          
+            (!groupParams.FieldId.HasValue || groupParams.FieldId == x.FieldId) &&
+            (!groupParams.StudentId.HasValue || x.GroupMembers.Any(gm => gm.StudentId == groupParams.StudentId)))          
         {
             AddThenInclude(q => q.Include(x => x.GroupPositions).ThenInclude(a => a.Skills));
             AddInclude(x => x.CreatedByUser);
