@@ -10,6 +10,7 @@ namespace TeamoWeb.API.Extensions
             if(user == null) return null;
             return new ProfileDto
             {
+                Id = user.Id,
                 Code = user.Code,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
