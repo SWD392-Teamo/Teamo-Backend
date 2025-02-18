@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Teamo.Core.Entities;
 using Teamo.Core.Enums;
 
@@ -10,8 +11,17 @@ namespace Teamo.Core.Specifications.Groups
                         (!groupMemberParams.Role.HasValue || groupMemberParams.Role == x.Role) &&
                         (!groupMemberParams.Studentd.HasValue || groupMemberParams.Studentd == x.StudentId))
         {
+            AddInclude(gm => gm.Student);           
+            AddInclude(gm => gm.GroupMemberPositions);
+            AddInclude(gm => gm.GroupPositions);
             ApplyPaging(groupMemberParams.PageSize * (groupMemberParams.PageIndex - 1),
                 groupMemberParams.PageSize);
+        }
+        public GroupMemberSpecification(int id)
+            :base(x => x.Id == id)
+        {
+            AddInclude(gm => gm.GroupMemberPositions);
+            AddInclude(gm => gm.Student);
         }
     }
 }
