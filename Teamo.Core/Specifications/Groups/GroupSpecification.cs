@@ -13,7 +13,7 @@ namespace Teamo.Core.Specifications.Groups
             || x.Name.ToLower().Contains(groupParams.Search)
             || x.Title.ToLower().Contains(groupParams.Search)) &&
             (!groupParams.SubjectId.HasValue || x.SubjectId == groupParams.SubjectId) &&
-            (!groupParams.Status.HasValue  || groupParams.Status == x.Status) &&
+            (!groupParams.Status.HasValue ? x.Status != GroupStatus.Deleted : groupParams.Status == x.Status) &&
             (!groupParams.SemesterId.HasValue || groupParams.SemesterId == x.SemesterId) &&
             (!groupParams.FieldId.HasValue || groupParams.FieldId == x.FieldId) &&
             (!groupParams.StudentId.HasValue || x.GroupMembers.Any(gm => gm.StudentId == groupParams.StudentId)))          
@@ -28,9 +28,10 @@ namespace Teamo.Core.Specifications.Groups
             AddThenInclude(q => q.Include(x => x.GroupMembers).ThenInclude(u => u.GroupPositions));
             ApplyPaging(groupParams.PageSize * (groupParams.PageIndex - 1),
                 groupParams.PageSize);
+            
         }
         public GroupSpecification(int id)
-            : base(x => x.Id == id)
+            : base(x => x.Id == id && x.Status != GroupStatus.Deleted)
         {
             AddThenInclude(q => q.Include(x => x.GroupPositions).ThenInclude(a => a.Skills));
             AddThenInclude(q => q.Include(x => x.Applications).ThenInclude(a => a.Student));

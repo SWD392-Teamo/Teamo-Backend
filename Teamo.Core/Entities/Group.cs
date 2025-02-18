@@ -20,8 +20,8 @@ namespace Teamo.Core.Entities
 		public Field Field { get; set; }
 		public required int SubjectId { get; set; }
 		public Subject Subject { get; set; }
-		public List<GroupMember> GroupMembers { get; set; }
-		public List<GroupPosition> GroupPositions { get; set; }
-		public List<Application> Applications { get; set; }
+		public List<GroupMember> GroupMembers { get; set; } = new List<GroupMember>();
+		public List<GroupPosition> GroupPositions { get; set; } = new List<GroupPosition>();	
+		public List<Application> Applications { get; set; } = new List<Application>();
 	}
 }

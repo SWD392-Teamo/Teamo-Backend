@@ -9,6 +9,8 @@ namespace Teamo.Core.Enums
         [EnumMember(Value = "Open")]
         Open,
         [EnumMember(Value = "Closed")]
-        Closed
+        Closed,
+        [EnumMember(Value = "Deleted")]
+        Deleted
     }
 }
