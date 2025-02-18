@@ -10,6 +10,7 @@ namespace TeamoWeb.API.Extensions
         {
             if(application == null) return null;
             return new ApplicationDto{
+                Id = application.Id,
                 GroupName = application.Group.Name,
                 StudentName = application.Student.FirstName + " " + application.Student.LastName,
                 StudentEmail = application.Student.Email,

@@ -11,6 +11,7 @@ namespace TeamoWeb.API.Extensions
             if(studentSkill == null) return null;
             return new StudentSkillDto
             {
+                Id = studentSkill.Id,
                 SkillName = studentSkill.Skill.Name,
                 SkillType = studentSkill.Skill.Type,
                 SkillLevel = studentSkill.Level.ToString()

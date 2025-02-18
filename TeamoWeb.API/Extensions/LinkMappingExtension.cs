@@ -10,6 +10,7 @@ namespace TeamoWeb.API.Extensions
             if(link == null) return null;
             return new LinkDto
             {
+                Id = link.Id,
                 Name = link.Name,
                 Url = link.Url
             };
