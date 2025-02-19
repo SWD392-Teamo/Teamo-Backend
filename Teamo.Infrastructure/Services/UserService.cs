@@ -23,9 +23,9 @@ namespace Teamo.Infrastructure.Services
             return await _userManager.AddToRoleAsync(user, role);
         }
 
-        public async Task<IdentityResult> CreateUserAsync(User user, string password)
+        public async Task<IdentityResult> CreateUserAsync(User user)
         {
-            return await _userManager.CreateAsync(user, password);
+            return await _userManager.CreateAsync(user);
         }
 
         public async Task<string> GetUserRoleAsync(User user)

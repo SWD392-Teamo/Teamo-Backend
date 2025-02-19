@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using FirebaseAdmin.Auth;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Teamo.Core.Entities.Identity;
@@ -55,6 +56,60 @@ namespace TeamoWeb.API.Controllers
             });
         }
 
+        [HttpPost("google-login")]
+        public async Task<ActionResult> GoogleLogin([FromBody] GoogleLoginDto googleLoginDto)
+        {
+            try
+            {
+                // Get user email with firebase id token
+                var email = await GetUserEmailFromGoogleProvider(googleLoginDto.IdToken);
+
+                // Check if user exists
+                var spec = new UserSpecification(email);
+                var user = await _userService.GetUserWithSpec(spec);
+
+                if (user == null)
+                {
+                    // Create new user
+                    user = new User
+                    {
+                        Email = email,
+                        UserName = UsernameGenerator(email),
+                        EmailConfirmed = true,
+                        Status = UserStatus.Active
+                    };
+                    var result = await _userService.CreateUserAsync(user);
+                    if (!result.Succeeded) return BadRequest(result.Errors);
+
+                    // Assign default role
+                    await _userService.AddUserToRoleAsync(user, "Student");
+                }
+
+                // Check if account is inactive
+                if (user.Status.Equals(UserStatus.Inactive.ToString()))
+                    return Unauthorized();
+
+                // Sign in the user with Identity
+                await _signInManager.SignInAsync(user, true);
+
+                var userRole = await _userService.GetUserRoleAsync(user);
+                var (token, expires) = _tokenService.GenerateToken(user, userRole);
+
+                return Ok(new
+                {
+                    userId = user.Id,
+                    Email = email,
+                    Role = userRole,
+                    Token = token,
+                    Expires = expires
+                });
+            }
+            catch (FirebaseAuthException ex)
+            {
+                return Unauthorized(ex.Message);
+            }
+        }
+
         [Authorize]
         [HttpPost("logout")]
         public async Task<ActionResult> Logout()
@@ -84,6 +139,31 @@ namespace TeamoWeb.API.Controllers
         public ActionResult GetAuthState()
         {
             return Ok(new { IsAuthenticated = User.Identity?.IsAuthenticated ?? false });
+        }
+
+        private async Task<string> GetUserEmailFromGoogleProvider(string idToken)
+        {
+            // Verify the Firebase ID token
+            FirebaseToken decodedToken = await FirebaseAuth.DefaultInstance
+                .VerifyIdTokenAsync(idToken);
+
+            string uid = decodedToken.Uid;
+            string email = decodedToken.Claims["email"].ToString();
+            return email;
+        }
+
+        private string UsernameGenerator(string email)
+        {
+            string username = email.Split('@')[0];
+
+            // Generate a random number between 1000 and 9999
+            Random random = new Random();
+            int randomNumber = random.Next(1000, 9999);
+
+            // Combine the username with the random number
+            string uniqueUsername = $"{username}{randomNumber}";
+
+            return uniqueUsername;
         }
     }
 }

@@ -482,4 +482,5 @@ docker-compose.yml
 /publish
 /TeamoWeb.API/appsettings.json
 /TeamoWeb.API/appsettings.Development.json
+/TeamoWeb.API/firebase.json
 .vscode
