@@ -25,6 +25,6 @@ WORKDIR /app
 COPY --from=build /app/out .
 
 # Add firebase.json from the secret
-COPY firebase.json /app/firebase.json
+COPY firebase.json /app/out/TeamoWeb.API/firebase.json
 
 ENTRYPOINT [ "dotnet", "TeamoWeb.API.dll" ]
