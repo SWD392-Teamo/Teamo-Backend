@@ -24,4 +24,7 @@ FROM mcr.microsoft.com/dotnet/aspnet:8.0
 WORKDIR /app
 COPY --from=build /app/out .
 
+# Add firebase.json from the secret
+COPY firebase.json /app/firebase.json
+
 ENTRYPOINT [ "dotnet", "TeamoWeb.API.dll" ]
