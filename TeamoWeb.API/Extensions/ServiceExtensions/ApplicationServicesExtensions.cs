@@ -70,7 +70,7 @@ namespace TeamoWeb.API.Extensions
                 opt.AddPolicy("CorsPolicy", policy =>
                 {
                     policy.AllowAnyHeader().AllowAnyMethod()
-                        .WithOrigins(config["ClientApp"]); //"http://localhost:8081"
+                        .WithOrigins(config["ClientApp"]);
                 });
             });
 
