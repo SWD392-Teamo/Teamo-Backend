@@ -29,7 +29,7 @@ jobs:
       # Step 4: Create firebase.json from secret
       - name: Create firebase.json file from secret
         run: |
-          echo "${{ secrets.FIREBASE_JSON }}" > firebase.json
+          echo '${{ secrets.FIREBASE_JSON }}' | jq '.' > firebase.json
 
       # Step 5: Build the Docker image (use the correct context and Dockerfile path)
       - name: Build and tag Docker image
