@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Query;
 using System.Linq.Expressions;
+using Teamo.Core.Enums;
 
 namespace Teamo.Core.Specifications
 {
@@ -111,5 +112,16 @@ namespace Teamo.Core.Specifications
             Take = take;
             IsPagingEnabled = true;
         }
+
+        protected static T? ParseStatus<T>(string status) where T : struct, Enum
+        {
+            if (Enum.TryParse<T>(status, true, out var result))
+            {
+                return result;
+            }
+
+            return null;
+        }
+
     }
 }

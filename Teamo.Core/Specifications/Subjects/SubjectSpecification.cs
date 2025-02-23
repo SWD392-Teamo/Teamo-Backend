@@ -1,4 +1,5 @@
 ﻿using Teamo.Core.Entities;
+using Teamo.Core.Enums;
 using Teamo.Core.Specifications.Groups;
 
 namespace Teamo.Core.Specifications.Subjects
@@ -11,7 +12,7 @@ namespace Teamo.Core.Specifications.Subjects
             || x.Code.ToLower().Contains(subjectParams.Search)) &&
             (!subjectParams.MajorId.HasValue || subjectParams.MajorId.HasValue)
             && (string.IsNullOrEmpty(subjectParams.Status)
-            || x.Status.ToString().ToLower().Equals(subjectParams.Status.ToLower())))
+            || x.Status == ParseStatus<SubjectStatus>(subjectParams.Status)))
         {
             ApplyPaging(subjectParams.PageSize * (subjectParams.PageIndex - 1),
                 subjectParams.PageSize);

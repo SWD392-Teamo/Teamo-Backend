@@ -1,4 +1,5 @@
 ﻿using Teamo.Core.Entities.Identity;
+using Teamo.Core.Enums;
 
 namespace Teamo.Core.Specifications.Users
 {
@@ -28,7 +29,7 @@ namespace Teamo.Core.Specifications.Users
                         || x.Email.Contains(userSpecParams.Search)
                         || x.MajorID.Equals(userSpecParams.MajorId))
                         && (string.IsNullOrEmpty(userSpecParams.UserStatus)
-                        || x.Status.ToString().ToLower().Equals(userSpecParams.UserStatus.ToLower())))
+                        || x.Status == ParseStatus<UserStatus>(userSpecParams.UserStatus)))
         {
             AddInclude(x => x.Major);
             AddInclude(x => x.Skills);
