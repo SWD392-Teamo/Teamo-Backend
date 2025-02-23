@@ -19,5 +19,6 @@ namespace Teamo.Core.Entities.Identity
         public List<Link> Links { get; set; }
         public List<Skill> Skills { get; set; }
         public List<StudentSkill> StudentSkills { get; set; }
+        public List<UserDevice> Devices { get; set; }
     }
 }

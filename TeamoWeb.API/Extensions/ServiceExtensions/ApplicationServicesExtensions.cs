@@ -28,6 +28,8 @@ namespace TeamoWeb.API.Extensions
             services.AddScoped<ISkillService, SkillService>();
             services.AddScoped<ISubjectService, SubjectService>();
             services.AddScoped<IFieldService, FieldService>();
+            services.AddScoped<IDeviceService, DeviceService>();
+            services.AddScoped<INotificationService, NotificationService>();
             services.AddDataProtection();
 
             services.AddRouting(opt => opt.LowercaseUrls = true);

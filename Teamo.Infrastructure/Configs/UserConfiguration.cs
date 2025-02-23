@@ -39,7 +39,11 @@ namespace Teamo.Infrastructure.Configs
                       .WithMany()
                       .HasForeignKey(r => r.MajorID)
                       .OnDelete(DeleteBehavior.Restrict);
-            
+
+            builder.HasMany(u => u.Devices)
+                      .WithOne(ud => ud.User)
+                      .OnDelete(DeleteBehavior.Restrict);
+
             builder.HasMany(u => u.Skills).WithMany().UsingEntity<StudentSkill>();
         }
     }

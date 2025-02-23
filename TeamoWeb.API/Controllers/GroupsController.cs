@@ -1,13 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Identity.Client;
-using System.Text.RegularExpressions;
+using Microsoft.IdentityModel.Tokens;
 using Teamo.Core.Entities;
+using Teamo.Core.Entities.Identity;
 using Teamo.Core.Enums;
 using Teamo.Core.Interfaces.Services;
-using Teamo.Core.Specifications;
 using Teamo.Core.Specifications.Applications;
 using Teamo.Core.Specifications.Groups;
 using TeamoWeb.API.Dtos;
@@ -22,12 +19,22 @@ namespace TeamoWeb.API.Controllers
     {
         private readonly IGroupService _groupService;
         private readonly IApplicationService _appService;
+        private readonly INotificationService _notiService;
+        private readonly IDeviceService _deviceService;
         private readonly IUserService _userService;
-        public GroupsController(IGroupService groupService, IUserService userService, IApplicationService appService)
+        public GroupsController(
+            IGroupService groupService, 
+            IUserService userService, 
+            IApplicationService appService, 
+            INotificationService notiService, 
+            IDeviceService deviceService
+        )
         {
             _groupService = groupService;
             _userService = userService;
             _appService = appService;
+            _notiService = notiService;
+            _deviceService = deviceService;
         }
 
         /// <summary>
@@ -248,23 +255,45 @@ namespace TeamoWeb.API.Controllers
         [Authorize(Roles = "Student")]
         public async Task<ActionResult> ReviewApplication(int groupId, int appId, [FromBody] ApplicationToUpsertDto appDto)
         {
-            //Check if current user is the leader of corresponding group
+            // Get current user
             var user = await _userService.GetUserByClaims(HttpContext.User);
             if (user == null)
                 return Unauthorized(new ApiErrorResponse(401, "Unauthorized"));
 
+            // Check if current user is the leader of corresponding group
             var groupLeaderId = await _appService.GetGroupLeaderIdAsync(groupId);
             if(user.Id != groupLeaderId) 
                 return BadRequest(new ApiErrorResponse(400, "Only group leaders can review applications."));
             
+
+            // Get the application to review
             var app = await _appService.GetApplicationByIdAsync(appId);
             if(app == null || app.Status != ApplicationStatus.Requested) 
                 return BadRequest(new ApiErrorResponse(400, "Unable to review this application."));
 
             appDto.ToEntity(app);
 
+            // Update status
             var result = await _appService.ReviewApplicationAsync(app);
             if(!result) return BadRequest(new ApiErrorResponse(400, "Failed to review application."));
+            
+            // Get all current user's devices
+            var deviceTokens = await _deviceService.GetDeviceTokensForUser(app.StudentId);
+
+            if (!deviceTokens.IsNullOrEmpty())
+            {
+                var status = app.Status.ToString().ToLower();
+
+                // Generate notification contents
+                FCMessage message = CreateApplicationReviewMessage(deviceTokens, groupId, appId, user, status);
+
+                var notiResult = await _notiService.SendNotificationAsync(message);
+                if (!notiResult) 
+                    return Ok(new ApiErrorResponse(200, 
+                        "Application reviewed successfully, " +
+                        "but some failed to send notifications to some devices."));
+            }
+
             return Ok(new ApiErrorResponse(200, "Application reviewed successfully."));
         }
 
@@ -312,5 +341,22 @@ namespace TeamoWeb.API.Controllers
             return Ok(new ApiErrorResponse(200, "Application deleted successfully."));
         }
 
+        private static FCMessage CreateApplicationReviewMessage(List<string> tokens, 
+            int groupId, int appId, User user, string status)
+        {
+            return new FCMessage
+            {
+                tokens = tokens,
+                title = "Application Update",
+                body = $"Your application has been {status} by {user.FirstName + " " + user.LastName}",
+                data = new Dictionary<string, string>
+                {
+                    { "type", "application_review" },
+                    { "groupId", groupId.ToString() },
+                    { "applicationId", appId.ToString() },
+                    { "status", status }
+                }
+            };
+        }
     }
 }
