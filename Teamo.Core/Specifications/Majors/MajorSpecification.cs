@@ -11,7 +11,6 @@ namespace Teamo.Core.Specifications.Majors
                         || x.Name.ToLower().Contains(majorSpecParams.Search)) &&
             (!majorSpecParams.Status.HasValue || majorSpecParams.Status == x.Status))
         {
-            AddInclude(x => x.Subjects);
             ApplyPaging(majorSpecParams.PageSize * (majorSpecParams.PageIndex - 1),
                 majorSpecParams.PageSize);
         }

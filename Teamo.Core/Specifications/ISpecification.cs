@@ -12,6 +12,7 @@ namespace Teamo.Core.Specifications
         Expression<Func<T, bool>> Criteria {  get; }
         List<Expression<Func<T, object>>> Includes { get;}
         List<Func<IQueryable<T>, IIncludableQueryable<T, object>>> ThenIncludes { get;}
+        IQueryable<T> ApplyCriteria(IQueryable<T> query);
         Expression<Func<T, object>> OrderBy { get;}
         Expression<Func<T, object>> OrderByDescending { get;}
         int Take {  get; }

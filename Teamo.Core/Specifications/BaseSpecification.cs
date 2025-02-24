@@ -82,6 +82,20 @@ namespace Teamo.Core.Specifications
         }
 
         /// <summary>
+        /// Apply criteria only for paging without sorting or paging
+        /// </summary>
+        /// <param name="query"></param>
+        public IQueryable<T> ApplyCriteria(IQueryable<T> query)
+        {
+            if (Criteria != null)
+            {
+                query = query.Where(Criteria);
+            }
+
+            return query;
+        }
+
+        /// <summary>
         /// Assigns the sorting ascendingly expression.
         /// </summary>
         /// <param name="orderByExpression"></param>
