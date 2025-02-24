@@ -7,6 +7,7 @@ namespace Teamo.Core.Specifications.MajorSubjects
         public MajorSubjectSpecification(int majorId) : base(x => x.MajorId == majorId)
         {
             AddInclude(x => x.Subject);
+
         }
     }
 }

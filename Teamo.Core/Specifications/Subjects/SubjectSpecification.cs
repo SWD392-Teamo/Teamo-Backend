@@ -9,8 +9,7 @@ namespace Teamo.Core.Specifications.Subjects
         public SubjectSpecification(SubjectParams subjectParams)
             : base(x => (string.IsNullOrEmpty(subjectParams.Search)
             || x.Name.ToLower().Contains(subjectParams.Search)
-            || x.Code.ToLower().Contains(subjectParams.Search)) &&
-            (!subjectParams.MajorId.HasValue || subjectParams.MajorId.HasValue)
+            || x.Code.ToLower().Contains(subjectParams.Search))
             && (string.IsNullOrEmpty(subjectParams.Status)
             || x.Status == ParseStatus<SubjectStatus>(subjectParams.Status)))
         {
