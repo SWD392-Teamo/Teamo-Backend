@@ -11,6 +11,7 @@ namespace TeamoWeb.API.Dtos
         public string? Title { get; set; }
         public string? SemesterName { get; set; }
         public string? Description { get; set; }
+        public string? ImgUrl { get; set; }
         public required DateTime CreatedAt { get; set; } = DateTime.Now;
         public string? CreatedByUserName { get; set; }
         public int MaxMember { get; set; }

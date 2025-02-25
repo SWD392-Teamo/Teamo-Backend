@@ -20,6 +20,7 @@ namespace TeamoWeb.API.Extensions
                 Name = group.Name,
                 Title = group.Title,
                 Description = group.Description,
+                ImgUrl = group.ImgUrl,
                 SemesterName = group.Semester.Name,
                 CreatedAt = group.CreatedAt,
                 CreatedByUserName = group.CreatedByUser.FirstName + " " + group.CreatedByUser.LastName,
@@ -66,6 +67,7 @@ namespace TeamoWeb.API.Extensions
                     Name = groupDto.Name,
                     Title = groupDto.Title,
                     Description = groupDto.Description,
+                    ImgUrl = groupDto.ImgUrl,
                     SemesterId = groupDto.SemesterId.Value,
                     MaxMember = groupDto.MaxMember.Value,
                     FieldId = groupDto.FieldId.Value,
@@ -79,6 +81,7 @@ namespace TeamoWeb.API.Extensions
             group.Name = string.IsNullOrEmpty(groupDto.Name) ? group.Name : groupDto.Name;
             group.Title = string.IsNullOrEmpty(groupDto.Title) ? group.Title : groupDto.Title;
             group.Description = string.IsNullOrEmpty(groupDto.Description) ? group.Description : groupDto.Description;
+            group.ImgUrl = string.IsNullOrEmpty(groupDto.ImgUrl) ? group.ImgUrl : groupDto.ImgUrl;
             group.SemesterId = groupDto.SemesterId ?? group.SemesterId;
             group.MaxMember = groupDto.MaxMember ?? group.MaxMember;
             group.FieldId = groupDto.FieldId ?? group.FieldId;

@@ -14,6 +14,7 @@ namespace TeamoWeb.API.Extensions
                 Id = major.Id,
                 Code = major.Code,
                 Name = major.Name,
+                ImgUrl = major.ImgUrl,
                 CreatedDate = major.CreatedDate,
                 Status = major.Status,
                 Subjects =(major.Subjects != null) ? 
@@ -30,12 +31,14 @@ namespace TeamoWeb.API.Extensions
                 return new Major
                 {
                     Code = majorDto.Code,
-                    Name = majorDto.Name
+                    Name = majorDto.Name,
+                    ImgUrl= majorDto.ImgUrl,
                 };
             }
 
             major.Code = string.IsNullOrEmpty(majorDto.Code) ? major.Code : majorDto.Code;
             major.Name = string.IsNullOrEmpty(majorDto.Name) ? major.Name : majorDto.Name;
+            major.ImgUrl = string.IsNullOrEmpty(majorDto.ImgUrl) ? major.ImgUrl : majorDto.ImgUrl;
             return major;
         }
     }
