@@ -4,49 +4,56 @@
     "Name": "Communications & In-Group Working Skills",
     "Description": "The course covers theories of communication, working in group, and activities for students to practice applying the theories in academic and working contexts.",
     "CreatedDate": "2023-12-22",
-    "Status": "Active"
+    "Status": "Active",
+    "ImgUrl": "https://www.conovercompany.com/wp-content/uploads/2017/07/iStock-533229588.jpg"
   },
   {
     "Code": "EXE101",
     "Name": "Experiential Entrepreneurship 1",
     "Description": "This course will provide students with essential knowledge and tips on starting a start-up efficiently and effectively.",
     "CreatedDate": "2023-12-22",
-    "Status": "Active"
+    "Status": "Active",
+    "ImgUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcROjwQTv8p7Td89guC8Aon1as3VxiSuvFHBow&s"
   },
   {
     "Code": "EXE201",
     "Name": "Experiential Entrepreneurship 2",
     "Description": "In Experiental Entrepreneurship 2, groups of students will develop product/service for their start-up ideas prepared from Experiental Entrepreneurship 1 and deploy sales and find real customers for their group's products, services.",
     "CreatedDate": "2023-12-22",
-    "Status": "Active"
+    "Status": "Active",
+    "ImgUrl": "https://storage.timviec365.vn/timviec365/pictures/images/Entrepreneur-la-gi.jpg"
   },
   {
     "Code": "SWP391",
     "Name": "Software Development Project",
     "Description": "This course focuses on designing, developing, and integrating the basic Web-based system, application using Java Web or .NET technologies.",
     "CreatedDate": "2023-12-22",
-    "Status": "Active"
+    "Status": "Active",
+    "ImgUrl": "https://cdn.bap-software.net/2023/12/08230700/AIsoftwaredevelopment1.jpg"
   },
   {
     "Code": "SWD392",
     "Name": "Software Architecture & Design",
     "Description": "This is a course in concepts and methods for the architectural design of software systems of sufficient size and complexity to require the effort of several people for many months.",
     "CreatedDate": "2023-12-22",
-    "Status": "Active"
+    "Status": "Active",
+    "ImgUrl": "https://topdev.vn/blog/wp-content/uploads/2017/10/microservices1.png"
   },
   {
     "Code": "IOT102",
     "Name": "Internet of Things",
     "Description": "The content includes basic concepts and applications of IoT and practical exercises on learning KIT.",
     "CreatedDate": "2023-12-22",
-    "Status": "Active"
+    "Status": "Active",
+    "ImgUrl": "https://imageio.forbes.com/specials-images/imageserve/65a840d4f0598075b91e8c0f/0x0.jpg?format=jpg&height=900&width=1600&fit=bounds"
   },
   {
     "Code": "SDP201",
     "Name": "Sound Production",
     "Description": "This course is designed as an introduction to the basic techniques and principles necessary for audio devices (microphone, mixer, ...) and audio editing application like Adobe Audition for students are able to record, voice-over, foley as well as edit and chord audio for animation movie, short movie, TVC, Viral, etc,.",
     "CreatedDate": "2023-12-22",
-    "Status": "Active"
+    "Status": "Active",
+    "ImgUrl": "https://file.hstatic.net/200000618235/article/sound-editor-post-pro-1536x1363_93fc2bf9826f4fc0a970f488a5b4e3e9.jpg"
   },
   {
     "Code": "IBS301",
