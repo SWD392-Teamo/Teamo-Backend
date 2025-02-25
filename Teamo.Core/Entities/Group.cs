@@ -8,7 +8,8 @@ namespace Teamo.Core.Entities
 	{
 		public required string Name { get; set; }
 		public required string Title { get; set; } 
-		public required int SemesterId { get; set; }
+		public string? ImgUrl { get; set; }
+        public required int SemesterId { get; set; }
 		public Semester Semester { get; set; }
 		public string Description { get; set; }
 		public DateTime CreatedAt { get; set; } = DateTime.Now;

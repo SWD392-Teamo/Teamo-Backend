@@ -1,16 +1,18 @@
 [
-    {
-        "Code": "SE",
-        "Name": "Software Engineering",
-        "CreatedDate": "2023-11-19",
-        "Status":  "Active"
-    },
-    {
-      "Code": "IA",
-      "Name": "Information Assurance",
-      "CreatedDate": "2023-11-19",
-      "Status": "Active"
-    },
+  {
+    "Code": "SE",
+    "Name": "Software Engineering",
+    "CreatedDate": "2023-11-19",
+    "Status": "Active",
+    "ImgUrl": "https://s3-sgn09.fptcloud.com/codelearnstorage/Upload/Blog/nganh-ky-thuat-phan-mem-thi-hoc-gi-63730031600.8199.jpg"
+  },
+  {
+    "Code": "IA",
+    "Name": "Information Assurance",
+    "CreatedDate": "2023-11-19",
+    "Status": "Active",
+    "ImgUrl": "https://tailieu.antoanthongtin.vn/files/images/site-2/20210603/cong-viec-cua-mot-chuyen-vien-phan-tich-bao-mat-thong-tin-24-03062021084724.jpg"
+  },
   {
     "Code": "AI",
     "Name": "Artificial Intelligence",
