@@ -28,5 +28,15 @@
         "SkillId": 7,
         "StudentId": 4,
         "Level": "Advanced"
+    },
+    {
+        "SkillId": 7,
+        "StudentId": 2,
+        "Level": "Advanced"
+    },
+    {
+        "SkillId": 8,
+        "StudentId": 2,
+        "Level": "Intermediate"
     }
 ]

@@ -38,5 +38,37 @@
         "RequestContent": "Looking for film crew.",
         "GroupPositionId": 13,
         "Status": "Requested"
+    },
+    {
+        "GroupId": 1,
+        "StudentId": 2,
+        "RequestTime": "2025-01-07T00:00:00Z",
+        "RequestContent": "Would like to join EXE team as a dev.",
+        "GroupPositionId": 2,
+        "Status": "Approved"
+    },
+    {
+        "GroupId": 3,
+        "StudentId": 2,
+        "RequestTime": "2025-01-08T00:00:00Z",
+        "RequestContent": "Can work with .NET and NextJS",
+        "GroupPositionId": 7,
+        "Status": "Approved"
+    },
+    {
+        "GroupId": 4,
+        "StudentId": 2,
+        "RequestTime": "2025-02-01T00:00:00Z",
+        "RequestContent": "Experienced with Adobe After Effects",
+        "GroupPositionId": 12,
+        "Status": "Rejected"
+    },
+    {
+        "GroupId": 4,
+        "StudentId": 2,
+        "RequestTime": "2025-02-07T00:00:00Z",
+        "RequestContent": "Wanting to experience a new field.",
+        "GroupPositionId": 13,
+        "Status": "Requested"
     }
 ]
