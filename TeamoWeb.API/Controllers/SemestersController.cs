@@ -28,7 +28,7 @@ namespace TeamoWeb.API.Controllers
         {
             var spec = new SemesterSpecification(semesterParams);
             return await CreatePagedResult(_semesterRepo, spec, semesterParams.PageIndex,
-                semesterParams.PageSize);
+                semesterParams.PageSize, s => s.ToDto());
         }
         [HttpGet("{id}")]
         [Authorize(Roles = "Admin")]
@@ -39,7 +39,7 @@ namespace TeamoWeb.API.Controllers
             {
                 return NotFound();
             }
-            return Ok(semester);
+            return Ok(semester.ToDto());
         }
 
         [HttpPost]
@@ -49,7 +49,7 @@ namespace TeamoWeb.API.Controllers
             var semester = semesterDto.ToEntity();
             _semesterRepo.Add(semester);
             await _semesterRepo.SaveAllAsync();
-            return Ok(semester);
+            return Ok(semester.ToDto());
         }
 
         [HttpPatch("{id}")]
@@ -64,7 +64,7 @@ namespace TeamoWeb.API.Controllers
             semester = semesterDto.ToEntity(semester);
             _semesterRepo.Update(semester);
             await _semesterRepo.SaveAllAsync();
-            return Ok(semester);            
+            return Ok(semester.ToDto());            
         }
     }
 }

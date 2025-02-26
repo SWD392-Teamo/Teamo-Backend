@@ -63,7 +63,7 @@ namespace TeamoWeb.API.Controllers
             var result = await _userService.UpdateUserAsync(user);
             
             if (result.Succeeded) return Ok(new ApiErrorResponse(200, "Banned user successfully."));
-            else return BadRequest();
+            else return BadRequest(new ApiErrorResponse(400, "Failed to ban user."));
         }
 
         //Display current user's profile

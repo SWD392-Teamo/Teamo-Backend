@@ -1,9 +1,9 @@
-using System.ComponentModel.DataAnnotations.Schema;
 using Teamo.Core.Enums;
+using Teamo.Core.Interfaces;
 
 namespace Teamo.Core.Entities
 {
-    public class Semester : BaseEntity
+    public class Semester : BaseEntity, IDtoConvertible
     {
         public required string Name { get; set; }
         public required string Code { get; set; }

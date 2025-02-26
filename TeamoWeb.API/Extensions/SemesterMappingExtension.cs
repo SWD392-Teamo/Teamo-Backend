@@ -60,5 +60,19 @@ namespace TeamoWeb.API.Extensions
                 return SemesterStatus.Past;
             }
         }
+
+        public static SemesterDto? ToDto(this Semester? semester)
+        {
+            if(semester == null) return null;
+            return new SemesterDto
+            {
+                Id = semester.Id,
+                Name = semester.Name,
+                Code = semester.Code,
+                StartDate = semester.StartDate,
+                EndDate = semester.EndDate,
+                Status = semester.Status.ToString()
+            };
+        }
     }
 }

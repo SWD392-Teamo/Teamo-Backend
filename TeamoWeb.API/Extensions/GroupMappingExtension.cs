@@ -168,13 +168,8 @@ namespace TeamoWeb.API.Extensions
                 Count = groupPosition.Count,
                 Status = groupPosition.Status,
 
-                Skills = groupPosition.Skills?
-                    .Select(s => new SkillDto
-                    {
-                        Id = s.Id,
-                        Name = s.Name,
-                        Type = s.Type
-                    }).ToList() ?? []
+                Skills = (groupPosition.Skills != null) ? 
+                    groupPosition.Skills.Select(s => s.ToDto()).ToList() : new List<SkillDto?>()
             };
         }
     }
