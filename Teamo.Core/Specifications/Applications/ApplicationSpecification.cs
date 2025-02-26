@@ -21,6 +21,9 @@ namespace Teamo.Core.Specifications.Applications
             AddInclude(x => x.Group);
             AddInclude(x => x.Student);
             AddInclude(x => x.GroupPosition);
+
+            ApplyPaging(appParams.PageSize * (appParams.PageIndex - 1),
+                appParams.PageSize);
             
             if(!string.IsNullOrEmpty(appParams.Sort))
             {

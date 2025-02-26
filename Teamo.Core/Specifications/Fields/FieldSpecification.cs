@@ -17,6 +17,8 @@ namespace Teamo.Core.Specifications.Fields
                 || x.Name.ToLower().Contains(fieldParams.Search)
                 || x.Description.ToLower().Contains(fieldParams.Search))
         {
+            ApplyPaging(fieldParams.PageSize * (fieldParams.PageIndex - 1),
+                fieldParams.PageSize);
         }
     }
 }
