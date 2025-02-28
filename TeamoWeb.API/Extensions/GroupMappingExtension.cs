@@ -118,6 +118,11 @@ namespace TeamoWeb.API.Extensions
             groupPosition.Name = string.IsNullOrEmpty(groupPositionDto.Name) ? groupPosition.Name : groupPositionDto.Name;
             groupPosition.Count = groupPositionDto.Count ?? groupPosition.Count;
             groupPosition.Status = groupPositionDto.Status ?? groupPosition.Status;
+            groupPosition.GroupPositionSkills = groupPositionDto.SkillIds?
+                                                      .Select(sId => new GroupPositionSkill
+                                                      {
+                                                          SkillId = sId
+                                                      }).ToList() ?? groupPosition.GroupPositionSkills;
             return groupPosition;
         }
 
@@ -173,8 +178,7 @@ namespace TeamoWeb.API.Extensions
                 Count = groupPosition.Count,
                 Status = groupPosition.Status,
 
-                Skills = (groupPosition.Skills != null) ? 
-                    groupPosition.Skills.Select(s => s.ToDto()).ToList() : new List<SkillDto?>()
+                Skills = groupPosition.GroupPositionSkills?.Select(gps => gps.Skill.ToDto()).ToList() ?? []
             };
         }
     }

@@ -91,7 +91,7 @@ namespace Teamo.Infrastructure.Services
         public async Task RemoveGroupPositionAsync(GroupPosition groupPosition)
         {
             var groupMemberPositions = await _unitOfWork.Repository<GroupMemberPosition>()
-                .ListAsync(new GroupMemberPositionSpecification(null, groupPosition.Id));
+                .ListAsync(new GroupMemberPositionSpecification(groupPositionId: groupPosition.Id));
             if(groupMemberPositions.Count() > 0)
             {
                 throw new InvalidOperationException("You cannot remove this position because there are still members assigned to it.");
