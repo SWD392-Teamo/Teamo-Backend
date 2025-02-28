@@ -140,6 +140,11 @@ namespace TeamoWeb.API.Extensions
                 };
             }
             groupMember.Role = groupMemberToAddDto.Role ?? groupMember.Role;
+            groupMember.GroupMemberPositions = groupMemberToAddDto.GroupPositionIds?
+                                                      .Select(gpId => new GroupMemberPosition
+                                                      {
+                                                          GroupPositionId = gpId
+                                                      }).ToList() ?? groupMember.GroupMemberPositions;
             return groupMember;
         }
 
@@ -153,7 +158,7 @@ namespace TeamoWeb.API.Extensions
                 StudentName = groupMember.Student.FirstName + " " + groupMember.Student.LastName,
                 StudentEmail = groupMember.Student.Email,
                 ImgUrl = groupMember.Student.ImgUrl,
-                Positions = groupMember.GroupPositions?.Select(gp => gp.Name) ?? [],
+                Positions = groupMember.GroupMemberPositions?.Select(gp => gp.GroupPosition.Name) ?? [],
                 Role = groupMember.Role
             };
         }
