@@ -56,20 +56,11 @@ namespace Teamo.Infrastructure.Services
             _unitOfWork.Repository<GroupMember>().Add(groupMember);
             await _unitOfWork.Repository<GroupMember>().SaveAllAsync();
 
-            //foreach (var memberPosition in groupMember.GroupMemberPositions)
-            //{
-            //    var memberPositions = await _unitOfWork.Repository<GroupMemberPosition>()
-            //        .ListAsync(new GroupMemberPositionSpecification(memberPosition.GroupPositionId));
-            //    var totalMemberPositions = memberPositions.Count();
-            //    if (totalMemberPositions >= memberPosition.GroupPosition.Count)
-            //    {
-            //        memberPosition.GroupPosition.Status = GroupPositionStatus.Closed;
-            //        _unitOfWork.Repository<GroupMemberPosition>().Update(memberPosition);
-            //    }
-            //}
-            
-            //await _unitOfWork.Repository<GroupMemberPosition>().SaveAllAsync();
-
+            // update status of group position
+            foreach (var groupPositionId in groupMember.GroupMemberPositions.Select(mp => mp.GroupPositionId))
+            {
+                await UpdateGroupPositionStatus(groupPositionId);
+            }
         }
 
         public async Task CreateGroupAsync(Group group, int createdUserId)
@@ -100,7 +91,7 @@ namespace Teamo.Infrastructure.Services
         public async Task RemoveGroupPositionAsync(GroupPosition groupPosition)
         {
             var groupMemberPositions = await _unitOfWork.Repository<GroupMemberPosition>()
-                .ListAsync(new GroupMemberPositionSpecification(null, groupPosition.Id));
+                .ListAsync(new GroupMemberPositionSpecification(groupPositionId: groupPosition.Id));
             if(groupMemberPositions.Count() > 0)
             {
                 throw new InvalidOperationException("You cannot remove this position because there are still members assigned to it.");
@@ -112,8 +103,18 @@ namespace Teamo.Infrastructure.Services
 
         public async Task RemoveMemberFromGroup(GroupMember groupMember)
         {
+            var affectedGroupPositionIds = (await _unitOfWork.Repository<GroupMemberPosition>()
+                                            .ListAsync(new GroupMemberPositionSpecification(groupMemberId: groupMember.Id)))
+                                            .Select(mp => mp.GroupPositionId);
+
             _unitOfWork.Repository<GroupMember>().Delete(groupMember);
             await _unitOfWork.Repository<GroupMember>().SaveAllAsync();
+
+            // update status of group position
+            foreach (var groupPositionId in affectedGroupPositionIds)
+            {
+                await UpdateGroupPositionStatus(groupPositionId);
+            }
         }
 
         public async Task<Group> GetGroupByIdAsync(int id)
@@ -149,54 +150,54 @@ namespace Teamo.Infrastructure.Services
             await _unitOfWork.Repository<Group>().SaveAllAsync();
         }
 
-        public async Task UpdateGroupMemberAsync(GroupMember groupMember, IEnumerable<int> groupPositionIds)
+        public async Task UpdateGroupMemberAsync(GroupMember groupMember)
         {
-            var existingMemberPositions = groupMember.GroupMemberPositions;
-            var existingMemberPositionIds = existingMemberPositions.Select(s => s.GroupPositionId).ToList();
-
-            var positionsToAdd = groupPositionIds.Except(existingMemberPositionIds)
-                              .Select(positionId => new GroupMemberPosition
-                              {
-                                  GroupMemberId = groupMember.Id,
-                                  GroupPositionId = positionId
-                              });
-            var positionsToRemove = existingMemberPositions.Where(s => !groupPositionIds.Contains(s.GroupPositionId));
-
+            var affectedGroupPositionIds = groupMember.GroupMemberPositions
+                .Select(mp => mp.GroupPositionId)
+                .Concat((await _unitOfWork.Repository<GroupMemberPosition>()
+                    .ListAsync(new GroupMemberPositionSpecification(groupMemberId: groupMember.Id)))
+                    .Select(mp => mp.GroupPositionId))
+                .Distinct()
+                .ToList();
+            
             // update Group Member
             _unitOfWork.Repository<GroupMember>().Update(groupMember);
-            // update Group Member Position
-            _unitOfWork.Repository<GroupMemberPosition>().AddRange(positionsToAdd);
-            _unitOfWork.Repository<GroupMemberPosition>().DeleteRange(positionsToRemove);
-            await _unitOfWork.Repository<GroupMemberPosition>().SaveAllAsync();
+            await _unitOfWork.Repository<GroupMember>().SaveAllAsync(); 
+            
+            // update status of group position
+            foreach(var groupPositionId in affectedGroupPositionIds)
+            {
+                await UpdateGroupPositionStatus(groupPositionId);
+            }  
         }
 
-        public async Task UpdateGroupPositionAsync(GroupPosition groupPosition, IEnumerable<int> skillIds)
+        public async Task UpdateGroupPositionAsync(GroupPosition groupPosition)
         {
-            var existingSkills = await _unitOfWork.Repository<GroupPositionSkill>()
-                                                  .ListAsync(new GroupPositionSkillSpecification(groupPosition.Id));
-            var existingSkillIds = existingSkills.Select(s => s.SkillId).ToList();
-
-            var skillsToAdd = skillIds.Except(existingSkillIds)
-                              .Select(skillId => new GroupPositionSkill
-                              {
-                                  GroupPositionId = groupPosition.Id,
-                                  SkillId = skillId
-                              });
-            var skillsToRemove = existingSkills.Where(s => !skillIds.Contains(s.SkillId));
-
-
             // update GroupPosition
             _unitOfWork.Repository<GroupPosition>().Update(groupPosition);
             await _unitOfWork.Repository<GroupPosition>().SaveAllAsync();
+        }
+        /// <summary>
+        /// Updates the status of a GroupPosition based on the current number of assigned members.
+        /// If the number of assigned members reaches the maximum allowed, the status is set to "Closed".
+        /// Otherwise, the status remains "Open".
+        /// </summary>
+        /// <param name="positionId">The ID of the GroupPosition to update.</param>
+        private async Task UpdateGroupPositionStatus(int positionId)
+        {
 
-            // add GroupPositionSkill
-            if (skillsToAdd.Count() > 0) 
-                _unitOfWork.Repository<GroupPositionSkill>().AddRange(skillsToAdd);
-            if(skillsToRemove.Count() > 0) 
-                _unitOfWork.Repository<GroupPositionSkill>().DeleteRange(skillsToRemove);
+            var assignedMemberPositions = await _unitOfWork.Repository<GroupMemberPosition>()
+                .ListAsync(new GroupMemberPositionSpecification(groupPositionId: positionId));
+            var totalAssignedMembers = assignedMemberPositions.Count();
 
-            await _unitOfWork.Repository<GroupPositionSkill>().SaveAllAsync();
+            var groupPosition = await _unitOfWork.Repository<GroupPosition>().GetByIdAsync(positionId);
+            var maxAllowedMembers = groupPosition.Count;
 
+            groupPosition.Status = totalAssignedMembers >= maxAllowedMembers
+                                    ? GroupPositionStatus.Closed
+                                    : GroupPositionStatus.Open;
+
+            await UpdateGroupPositionAsync(groupPosition);
         }
     }
 }

@@ -171,7 +171,7 @@ namespace TeamoWeb.API.Controllers
 
             groupPosition = updateDto.ToEntity(groupPosition);
             groupPosition.GroupId = groupId;
-            await _groupService.UpdateGroupPositionAsync(groupPosition, updateDto.SkillIds);
+            await _groupService.UpdateGroupPositionAsync(groupPosition);
 
             groupPosition = await _groupService.GetGroupPositionAsync(positionId);
             return Ok(groupPosition.ToDto());
@@ -220,7 +220,7 @@ namespace TeamoWeb.API.Controllers
                 return NotFound(new ApiErrorResponse(404, "Group Member not found!"));
             }
             groupMember = gmDto.ToEntity(groupMember);
-            await _groupService.UpdateGroupMemberAsync(groupMember, gmDto.GroupPositionIds);
+            await _groupService.UpdateGroupMemberAsync(groupMember);
 
             groupMember = await _groupService.GetGroupMemberAsync(groupId, studentId);
             return Ok(groupMember.ToDto());
