@@ -118,6 +118,11 @@ namespace TeamoWeb.API.Extensions
             groupPosition.Name = string.IsNullOrEmpty(groupPositionDto.Name) ? groupPosition.Name : groupPositionDto.Name;
             groupPosition.Count = groupPositionDto.Count ?? groupPosition.Count;
             groupPosition.Status = groupPositionDto.Status ?? groupPosition.Status;
+            groupPosition.GroupPositionSkills = groupPositionDto.SkillIds?
+                                                      .Select(sId => new GroupPositionSkill
+                                                      {
+                                                          SkillId = sId
+                                                      }).ToList() ?? groupPosition.GroupPositionSkills;
             return groupPosition;
         }
 
@@ -140,6 +145,11 @@ namespace TeamoWeb.API.Extensions
                 };
             }
             groupMember.Role = groupMemberToAddDto.Role ?? groupMember.Role;
+            groupMember.GroupMemberPositions = groupMemberToAddDto.GroupPositionIds?
+                                                      .Select(gpId => new GroupMemberPosition
+                                                      {
+                                                          GroupPositionId = gpId
+                                                      }).ToList() ?? groupMember.GroupMemberPositions;
             return groupMember;
         }
 
@@ -153,7 +163,7 @@ namespace TeamoWeb.API.Extensions
                 StudentName = groupMember.Student.FirstName + " " + groupMember.Student.LastName,
                 StudentEmail = groupMember.Student.Email,
                 ImgUrl = groupMember.Student.ImgUrl,
-                Positions = groupMember.GroupPositions?.Select(gp => gp.Name) ?? [],
+                Positions = groupMember.GroupMemberPositions?.Select(gp => gp.GroupPosition.Name) ?? [],
                 Role = groupMember.Role
             };
         }
@@ -168,8 +178,7 @@ namespace TeamoWeb.API.Extensions
                 Count = groupPosition.Count,
                 Status = groupPosition.Status,
 
-                Skills = (groupPosition.Skills != null) ? 
-                    groupPosition.Skills.Select(s => s.ToDto()).ToList() : new List<SkillDto?>()
+                Skills = groupPosition.GroupPositionSkills?.Select(gps => gps.Skill.ToDto()).ToList() ?? []
             };
         }
     }
