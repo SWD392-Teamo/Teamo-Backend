@@ -1,4 +1,3 @@
-using Microsoft.VisualBasic;
 using Teamo.Core.Entities;
 using Teamo.Core.Enums;
 using Teamo.Core.Interfaces;
@@ -25,11 +24,13 @@ namespace Teamo.Infrastructure.Services
 
         public async Task<IReadOnlyList<Application>> GetSentApplicationsAsync(ApplicationSpecification appSpec)
         {
-            return await _unitOfWork.Repository<Application>().ListAsync(appSpec);
+            await AutoDeleteRequestedApplicationsAsync();
+            return await _unitOfWork.Repository<Application>().ListAsync(appSpec);;
         }
 
         public async Task<IReadOnlyList<Application>> GetGroupApplicationsAsync(ApplicationGroupSpecification appSpec)
         {
+            await AutoDeleteRequestedApplicationsAsync();
             return await _unitOfWork.Repository<Application>().ListAsync(appSpec);
         }
 
@@ -109,6 +110,17 @@ namespace Teamo.Infrastructure.Services
         public async Task<int> CountAsync(ApplicationGroupSpecification appSpec)
         {
             return await _unitOfWork.Repository<Application>().CountAsync(appSpec);
+        }
+
+        //Delete applications that have been requested (and unanswered) for 7 days
+        public async Task<bool> AutoDeleteRequestedApplicationsAsync()
+        {
+            var applications = await _unitOfWork.Repository<Application>().ListAllAsync();
+            var applicationsToDelete = applications.Where(a => 
+                ((DateTime.Now - a.RequestTime).TotalDays >= 7) &&
+                (a.Status == ApplicationStatus.Requested)).ToList();
+            _unitOfWork.Repository<Application>().DeleteRange(applicationsToDelete);
+            return await _unitOfWork.Complete();
         }
     }
 }
