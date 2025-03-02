@@ -127,63 +127,6 @@ namespace TeamoWeb.API.Controllers
             groupMember = await _groupService.GetGroupMemberAsync(groupMember.GroupId, groupMember.StudentId);
             return Ok(groupMember.ToDto());
         }
-        /// <summary>
-        /// Add position to group
-        /// </summary>
-        [HttpPost("{id}/positions")]
-        [Authorize(Roles = "Student")]
-        public async Task<IActionResult> AddGroupPosition (int id, GroupPositionToUpsertDto groupPositionDto)
-        {
-            var group = await _groupService.GetGroupByIdAsync(id);
-            if (group == null)
-                return NotFound(new ApiErrorResponse(404, "Group not found!"));
-
-            var groupPosition = groupPositionDto.ToEntity();
-            groupPosition.GroupId = id;
-            await _groupService.AddGroupPosition(groupPosition);
-
-            groupPosition = await _groupService.GetGroupPositionAsync(groupPosition.Id);
-            return Ok(groupPosition.ToDto());
-
-        }
-
-        /// <summary>
-        /// Update group position
-        /// </summary>
-        [HttpPatch("{groupId}/positions/{positionId}")]
-        [Authorize(Roles = "Student")]
-        public async Task<IActionResult> UpdateGroupPosition(int groupId, int positionId, GroupPositionToUpsertDto updateDto)
-        {           
-            var groupPosition = await _groupService.GetGroupPositionAsync(positionId);
-            if (groupPosition == null)
-            {
-                return NotFound(new ApiErrorResponse(404, "Group position not found."));
-            }
-
-            groupPosition = updateDto.ToEntity(groupPosition);
-            groupPosition.GroupId = groupId;
-            await _groupService.UpdateGroupPositionAsync(groupPosition);
-
-            groupPosition = await _groupService.GetGroupPositionAsync(positionId);
-            return Ok(groupPosition.ToDto());
-        }
-
-        /// <summary>
-        /// Removes a group position.
-        /// </summary>
-        [HttpDelete("{groupId}/positions/{positionId}")]
-        [Authorize(Roles = "Student")]
-        public async Task<IActionResult> DeleteGroupPosition(int positionId)
-        {
-            var groupPosition = await _groupService.GetGroupPositionAsync(positionId);
-            if (groupPosition == null)
-            {
-                return NotFound(new ApiErrorResponse(404, "Group position not found."));
-            }
-
-            await _groupService.RemoveGroupPositionAsync(groupPosition);
-            return Ok("Deleted successfully");
-        }
 
         /// <summary>
         /// Removes a member from a group.

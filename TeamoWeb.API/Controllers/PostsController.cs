@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Teamo.Core.Interfaces.Services;
 using Teamo.Core.Specifications.Posts;
 using TeamoWeb.API.Dtos;
-using TeamoWeb.API.Errors;
 using TeamoWeb.API.Extensions;
 using TeamoWeb.API.RequestHelpers;
 
