@@ -1,4 +1,5 @@
 ﻿using Teamo.Core.Entities;
+using Teamo.Core.Enums;
 using Teamo.Core.Interfaces;
 using Teamo.Core.Interfaces.Services;
 using Teamo.Core.Specifications.Posts;
@@ -19,9 +20,15 @@ namespace Teamo.Infrastructure.Services
             return await GetPostByIdAsync(post.Id); 
         }
 
-        public Task DeletePost(Post post)
+        public async Task DeletePost(Post post, int userId)
         {
-            throw new NotImplementedException();
+            if (post.GroupMemberId != userId)
+            {
+                throw new UnauthorizedAccessException("You do not have permission to delete this post.");
+            }
+            post.Status = PostStatus.Deleted;
+            _unitOfWork.Repository<Post>().Update(post);
+            await _unitOfWork.Repository<Post>().SaveAllAsync();
         }
 
         public async Task<Post> GetPostByIdAsync(int id)

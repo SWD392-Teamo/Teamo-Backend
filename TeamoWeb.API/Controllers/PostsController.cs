@@ -44,7 +44,7 @@ namespace TeamoWeb.API.Controllers
         {
             var user = await _userService.GetUserByClaims(HttpContext.User);
             if (user == null)
-                return Unauthorized(new ApiErrorResponse(401, "Unauthorize"));
+                return Unauthorized();
 
             var post = postDto.ToEntity();
             post.GroupMemberId = user.Id;   
@@ -52,16 +52,31 @@ namespace TeamoWeb.API.Controllers
             return Ok(post.ToDto());    
         }
 
-        [HttpPatch]
-        public async Task<ActionResult<PostDto>> UpdatePostAsync(PostToUpsertDto postDto)
+        [HttpPatch("{id}")]
+        public async Task<ActionResult<PostDto>> UpdatePostAsync(int id, PostToUpsertDto postDto)
         {
+            var post = await _postService.GetPostByIdAsync(id);
+            if(post == null) return NotFound(); 
             var user = await _userService.GetUserByClaims(HttpContext.User);
             if (user == null)
-                return Unauthorized(new ApiErrorResponse(401, "Unauthorize"));
+                return Unauthorized();
 
-            var post = postDto.ToEntity();
+            post = postDto.ToEntity();
             post = await _postService.UpdatePost(post, user.Id);
             return Ok(post.ToDto());
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> DeletePostAsync(int id)
+        {
+            var post = await _postService.GetPostByIdAsync(id);
+            if (post == null) return NotFound();
+            var user = await _userService.GetUserByClaims(HttpContext.User);
+            if (user == null)
+                return Unauthorized();
+
+            await _postService.DeletePost(post, user.Id);
+            return Ok("Successfully delete this post");
         }
     }
 }

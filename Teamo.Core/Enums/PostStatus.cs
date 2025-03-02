@@ -10,5 +10,7 @@ namespace Teamo.Core.Enums
         Posted,
         [EnumMember(Value = "Edited")]
         Edited,
+        [EnumMember(Value = "Deleted")]
+        Deleted,
     }
 }

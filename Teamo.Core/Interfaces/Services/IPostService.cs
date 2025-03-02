@@ -9,6 +9,6 @@ namespace Teamo.Core.Interfaces.Services
         Task<Post> GetPostByIdAsync(int id); 
         Task<Post> CreatePost(Post post);
         Task<Post> UpdatePost(Post post, int updatedByUserId);
-        Task DeletePost(Post post);
+        Task DeletePost(Post post, int userId);
     }
 }
