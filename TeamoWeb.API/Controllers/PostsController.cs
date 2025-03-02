@@ -48,7 +48,7 @@ namespace TeamoWeb.API.Controllers
                 return Unauthorized();
 
             var post = postDto.ToEntity();
-            post.GroupMemberId = user.Id;   
+            post.StudentId = user.Id;   
             post = await _postService.CreatePost(post, user.Id);   
             return Ok(post.ToDto());    
         }

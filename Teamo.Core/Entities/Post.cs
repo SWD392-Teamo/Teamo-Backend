@@ -4,8 +4,10 @@ namespace Teamo.Core.Entities
 {
     public class Post : BaseEntity
     {
-        public int GroupMemberId { get; set; }
-        public GroupMember GroupMember { get; set; }
+        public int StudentId { get; set; }
+        public Student Student { get; set; }
+        public int GroupId { get; set; }
+        public Group Group { get; set; }
         public string Content { get; set; }
         public PostStatus Status { get; set; } = PostStatus.Posted;
         public PostPrivacy Privacy { get; set; } = PostPrivacy.Public;

@@ -12,9 +12,10 @@ namespace TeamoWeb.API.Extensions
             return new PostDto
             {
                 Id = post.Id,
-                GroupMemberId = post.GroupMemberId,
-                GroupMemberName = $"{post.GroupMember.Student.FirstName} {post.GroupMember.Student.LastName}",
-                GroupMemberImgUrl = post.GroupMember.Student.ImgUrl,
+                GroupId = post.GroupId,
+                StudentId = post.StudentId,
+                GroupMemberName = $"{post.Student.FirstName} {post.Student.LastName}",
+                GroupMemberImgUrl = post.Student.ImgUrl,
                 Content = post.Content,
                 CreatedAt = post.CreatedAt,
                 UpdatedAt = post.UpdatedAt,

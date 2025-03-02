@@ -13,9 +13,12 @@ namespace Teamo.Infrastructure.Configs
 
             builder.Property(o => o.Content).HasColumnType("nvarchar(1000)");
 
-            builder.HasOne(o => o.GroupMember)
+            builder.HasOne(o => o.Student)
                 .WithMany()
-                .HasForeignKey(o => o.GroupMemberId);
+                .HasForeignKey(o => o.StudentId);
+            builder.HasOne(o => o.Group)
+                .WithMany(o => o.Posts)
+                .HasForeignKey(o => o.GroupId);
 
             builder.Property(o => o.Status)
                 .HasConversion(

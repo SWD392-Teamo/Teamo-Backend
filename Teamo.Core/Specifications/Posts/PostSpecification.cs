@@ -8,11 +8,11 @@ namespace Teamo.Core.Specifications.Posts
     public class PostSpecification : BaseSpecification<Post>
     {
         public PostSpecification(PostParams postParams, bool? isApplyPaging = true)
-            : base(x => (!postParams.GroupId.HasValue || postParams.GroupId.Value == x.GroupMember.GroupId) &&
+            : base(x => (!postParams.GroupId.HasValue || postParams.GroupId.Value == x.GroupId) &&
             x.Status != PostStatus.Deleted)
         {
             {
-                AddThenInclude(p => p.Include(p => p.GroupMember).ThenInclude(gm => gm.Student));
+                AddInclude(p => p.Student);
                 if (isApplyPaging == true)
                 {
                     ApplyPaging(postParams.PageSize * (postParams.PageIndex - 1),
@@ -40,7 +40,7 @@ namespace Teamo.Core.Specifications.Posts
             : base(p => p.Id == id && p.Status != PostStatus.Deleted)
         {
             {
-                AddThenInclude(p => p.Include(p => p.GroupMember).ThenInclude(gm => gm.Student));
+                AddInclude(p => p.Student);
             }
         }
     } 

@@ -24,5 +24,6 @@ namespace Teamo.Core.Entities
 		public List<GroupMember> GroupMembers { get; set; } = new List<GroupMember>();
 		public List<GroupPosition> GroupPositions { get; set; } = new List<GroupPosition>();	
 		public List<Application> Applications { get; set; } = new List<Application>();
+		public List<Post> Posts { get; set; } = new List<Post>();
 	}
 }

@@ -22,7 +22,7 @@ namespace Teamo.Infrastructure.Services
 
         public async Task DeletePost(Post post, int userId)
         {
-            if (post.GroupMemberId != userId)
+            if (post.StudentId != userId)
             {
                 throw new UnauthorizedAccessException("You do not have permission to delete this post.");
             }
@@ -45,7 +45,7 @@ namespace Teamo.Infrastructure.Services
 
         public async Task<Post> UpdatePost(Post post, int updatedByUserId)
         {
-            if (post.GroupMemberId != updatedByUserId)
+            if (post.StudentId != updatedByUserId)
             {
                 throw new UnauthorizedAccessException("You do not have permission to edit this post.");
             }
