@@ -28,7 +28,7 @@ namespace TeamoWeb.API.Controllers
             var posts = await _postService.GetPostsAsync(spec);
             var countSpec = new PostSpecification(postParams, false);
             var totalPosts = (await _postService.GetPostsAsync(countSpec)).Count();
-            var postDtos = posts.Any() ? posts.Select(p => p.ToDto()).ToList() : new List<PostDto>();
+            var postDtos = posts.Any() ? posts.Select(p => p.ToDto()).ToList() : new List<PostDto?>();
             var pagination = new Pagination<PostDto>(postParams.PageIndex, postParams.PageSize, totalPosts, postDtos);
             return Ok(pagination);
         }

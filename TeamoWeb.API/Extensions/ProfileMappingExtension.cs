@@ -27,10 +27,11 @@ namespace TeamoWeb.API.Extensions
             };
         }
 
-        //Update description
+        //Update description (profile image and description)
         public static User UpdateDescription(this ProfileDto profileDto, User user)
         {
-            user.Description = profileDto.Description;
+            user.ImgUrl = string.IsNullOrEmpty(profileDto.ImgUrl) ? user.ImgUrl : profileDto.ImgUrl;
+            user.Description = string.IsNullOrEmpty(profileDto.Description) ? user.Description : profileDto.Description;
             return user;
         }
     }
