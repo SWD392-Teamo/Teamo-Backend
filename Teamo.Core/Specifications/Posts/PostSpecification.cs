@@ -1,13 +1,15 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Teamo.Core.Constants;
 using Teamo.Core.Entities;
+using Teamo.Core.Enums;
 
 namespace Teamo.Core.Specifications.Posts
 {
     public class PostSpecification : BaseSpecification<Post>
     {
         public PostSpecification(PostParams postParams, bool? isApplyPaging = true)
-            : base(x => (!postParams.GroupId.HasValue || postParams.GroupId.Value == x.GroupMember.GroupId))
+            : base(x => (!postParams.GroupId.HasValue || postParams.GroupId.Value == x.GroupMember.GroupId) &&
+            x.Status != PostStatus.Deleted)
         {
             {
                 AddThenInclude(p => p.Include(p => p.GroupMember).ThenInclude(gm => gm.Student));
@@ -35,7 +37,7 @@ namespace Teamo.Core.Specifications.Posts
         }
 
         public PostSpecification(int id)
-            : base(p => p.Id == id)
+            : base(p => p.Id == id && p.Status != PostStatus.Deleted)
         {
             {
                 AddThenInclude(p => p.Include(p => p.GroupMember).ThenInclude(gm => gm.Student));
