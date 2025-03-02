@@ -3,52 +3,52 @@
     "Name": "YACK",
     "Title": "UpHub - Internship Connection",
     "SemesterId": 3,
-    "Desciption": "",
+    "Description": "UpHub is an innovative platform that seeks to bridge the gap between fresh graduates and the demands of employers. \nThe platform helps interns who often struggle with securing positions due to the high experience requirements set by companies. \nBy providing a space for them to connect with suitable job opportunities that match their current skills, UpHub simplifies the job search process and offers valuable resources for career development. \n\nOur vision is to create a network of talented interns and forward-thinking companies, fostering growth for both sides. \nWe aim to empower graduates to kickstart their careers and help companies discover young talents who can contribute to their success. If you're looking for an opportunity to grow, join UpHub and be part of something bigger.",
     "CreatedAt": "2025-01-06T00:00:00Z",
     "CreatedById": 1,
     "MaxMember": 6,
     "Status": "Recruiting",
     "FieldId": 13,
     "SubjectId": 2,
-    "ImgUrl": "https://asset.cloudinary.com/dao2comxx/f0812ab5c5c39c37223ea3d81595aba6"
+    "ImgUrl": "https://firebasestorage.googleapis.com/v0/b/mechat-926e4.appspot.com/o/teamo%2Fimages%2Fgroups%2FYACK.jpg"
   },
   {
     "Name": "Gemify",
     "Title": "Jewelry Store Management",
     "SemesterId": 2,
-    "Desciption": "",
+    "Description": "Gemify is a comprehensive jewelry store management system that streamlines the operations of small to medium-sized jewelry businesses. \nIt provides tools for efficient inventory tracking, sales monitoring, and customer relationship management, helping store owners optimize their business processes. \nWith an intuitive interface and robust features, Gemify ensures that managing a jewelry business becomes a more straightforward and organized process. \n\nArchived after successful implementation, the system has proven its ability to enhance business performance and customer satisfaction. \nIt is an ideal solution for those looking to digitize their operations and improve their business's efficiency while maintaining top-quality customer service.",
     "CreatedAt": "2024-08-01T00:00:00Z",
     "CreatedById": 2,
     "MaxMember": 5,
     "Status": "Archived",
     "FieldId": 22,
     "SubjectId": 4,
-    "ImgUrl": "https://asset.cloudinary.com/dao2comxx/c8ef070e60428a9a675d3de1365cdb45"
+    "ImgUrl": "https://firebasestorage.googleapis.com/v0/b/mechat-926e4.appspot.com/o/teamo%2Fimages%2Fgroups%2FGemify.jpg"
   },
   {
     "Name": "Teamo",
-    "Title": "The Ultimate Platform for Building Teams ",
+    "Title": "The Ultimate Platform for Building Teams",
     "SemesterId": 3,
-    "Desciption": "",
+    "Description": "Teamo is a dynamic platform designed to help students and professionals collaborate on various projects, be it academic or professional. \nWith its seamless interface, users can easily find and connect with potential teammates who share the same interests or skill sets. \nThe platform's goal is to simplify the process of team formation, ensuring that individuals can quickly come together to work on meaningful projects, leading to higher productivity and success. \n\nWhether you are forming a team for a school project or a startup idea, Teamo provides all the tools necessary to keep everyone in sync. \nIt offers a range of features such as project management tools, communication channels, and collaboration boards, making it the go-to platform for team building.",
     "CreatedAt": "2025-01-06T00:00:00Z",
     "CreatedById": 2,
     "MaxMember": 5,
     "Status": "Full",
     "FieldId": 13,
     "SubjectId": 5,
-    "ImgUrl": "https://asset.cloudinary.com/dao2comxx/10927c08055f234d062fb7b6c9cf75e7"
+    "ImgUrl": "https://firebasestorage.googleapis.com/v0/b/mechat-926e4.appspot.com/o/teamo%2Fimages%2Fgroups%2FTeamo.jpg"
   },
   {
     "Name": "Alice Dream's - BANANAHOUSE",
     "Title": "Short film production",
     "SemesterId": 3,
-    "Desciption": "Contestors of the annual FPTU Film Awards: Short Films Category",
+    "Description": "Alice Dream's - BANANAHOUSE is a creative team specializing in short film production, competing in the annual FPTU Film Awards. \nThe team is passionate about exploring innovative storytelling techniques through visual media, and we aim to push the boundaries of short film production. \nWith a strong belief in the power of storytelling, Alice Dream's creates films that resonate with audiences on both an emotional and intellectual level. \n\nWhether you are an experienced filmmaker or a beginner with a creative spark, our team welcomes all who are eager to bring their ideas to life. \nWe are committed to producing films that reflect our shared vision, and we believe that collaboration is the key to success. Join us to turn your film dreams into reality.",
     "CreatedAt": "2025-01-06T00:00:00Z",
     "CreatedById": 6,
     "MaxMember": 10,
     "Status": "Recruiting",
     "FieldId": 18,
     "SubjectId": 14,
-    "ImgUrl": "https://asset.cloudinary.com/dao2comxx/739b178655506cdb781085fdd7d7c8ad"
+    "ImgUrl": "https://firebasestorage.googleapis.com/v0/b/mechat-926e4.appspot.com/o/teamo%2Fimages%2Fgroups%2FBANANAHOUSE.jpg"
   }
 ]
