@@ -51,5 +51,17 @@ namespace TeamoWeb.API.Controllers
             post = await _postService.CreatePost(post);   
             return Ok(post.ToDto());    
         }
+
+        [HttpPatch]
+        public async Task<ActionResult<PostDto>> UpdatePostAsync(PostToUpsertDto postDto)
+        {
+            var user = await _userService.GetUserByClaims(HttpContext.User);
+            if (user == null)
+                return Unauthorized(new ApiErrorResponse(401, "Unauthorize"));
+
+            var post = postDto.ToEntity();
+            post = await _postService.UpdatePost(post, user.Id);
+            return Ok(post.ToDto());
+        }
     }
 }

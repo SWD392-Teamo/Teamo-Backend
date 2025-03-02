@@ -36,9 +36,16 @@ namespace Teamo.Infrastructure.Services
            return await _unitOfWork.Repository<Post>().ListAsync(spec);
         }
 
-        public Task UpdatePost(Post post)
+        public async Task<Post> UpdatePost(Post post, int updatedByUserId)
         {
-            throw new NotImplementedException();
+            if (post.GroupMemberId != updatedByUserId)
+            {
+                throw new UnauthorizedAccessException("You do not have permission to edit this post.");
+            }
+            post.UpdatedAt = DateTime.Now;
+            _unitOfWork.Repository<Post>().Update(post);
+            await _unitOfWork.Repository<Post>().SaveAllAsync();
+            return await GetPostByIdAsync(post.Id);
         }
     }
 }
