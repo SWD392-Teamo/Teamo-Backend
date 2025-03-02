@@ -1,4 +1,5 @@
 ﻿using Teamo.Core.Entities;
+using Teamo.Core.Interfaces;
 using Teamo.Core.Interfaces.Services;
 using Teamo.Core.Specifications.Posts;
 
@@ -6,6 +7,11 @@ namespace Teamo.Infrastructure.Services
 {
     public class PostService : IPostService
     {
+        private readonly IUnitOfWork _unitOfWork;
+        public PostService(IUnitOfWork unitOfWork)
+        {
+            _unitOfWork = unitOfWork;
+        }
         public Task CreatePost(Post post)
         {
             throw new NotImplementedException();
@@ -21,9 +27,9 @@ namespace Teamo.Infrastructure.Services
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<Post>> GetPostsAsync(PostSpecification spec)
+        public async Task<IEnumerable<Post>> GetPostsAsync(PostSpecification spec)
         {
-            throw new NotImplementedException();
+           return await _unitOfWork.Repository<Post>().ListAsync(spec);
         }
 
         public Task UpdatePost(Post post)
