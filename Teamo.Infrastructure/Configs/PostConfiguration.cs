@@ -15,7 +15,8 @@ namespace Teamo.Infrastructure.Configs
 
             builder.HasOne(o => o.Student)
                 .WithMany()
-                .HasForeignKey(o => o.StudentId);
+                .HasForeignKey(o => o.StudentId)
+                .OnDelete(DeleteBehavior.NoAction); 
             builder.HasOne(o => o.Group)
                 .WithMany(o => o.Posts)
                 .HasForeignKey(o => o.GroupId);

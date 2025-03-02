@@ -9,7 +9,7 @@ namespace Teamo.Core.Specifications.Groups
         public GroupMemberSpecification(GroupMemberParams groupMemberParams)
             : base(x => (!groupMemberParams.GroupId.HasValue || groupMemberParams.GroupId == x.GroupId) && 
                         (!groupMemberParams.Role.HasValue || groupMemberParams.Role == x.Role) &&
-                        (!groupMemberParams.Studentd.HasValue || groupMemberParams.Studentd == x.StudentId))
+                        (!groupMemberParams.StudentId.HasValue || groupMemberParams.StudentId == x.StudentId))
         {
             AddInclude(gm => gm.Student);           
             AddInclude(gm => gm.GroupMemberPositions);

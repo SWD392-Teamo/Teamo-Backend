@@ -85,7 +85,7 @@ namespace Teamo.Infrastructure.Services
             var memberParams = new GroupMemberParams
             {
                 GroupId = groupId,
-                Studentd = studentId
+                StudentId = studentId
             };
             var memberSpec = new GroupMemberSpecification(memberParams);
             var existMember = await _unitOfWork.Repository<GroupMember>().GetEntityWithSpec(memberSpec);

@@ -41,20 +41,19 @@ namespace TeamoWeb.API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<PostDto>> CreatePostAsync(PostToUpsertDto postDto)
+        public async Task<ActionResult<PostDto>> CreatePostAsync([FromRoute]int GroupId, PostToUpsertDto postDto)
         {
             var user = await _userService.GetUserByClaims(HttpContext.User);
             if (user == null)
                 return Unauthorized();
 
             var post = postDto.ToEntity();
-            post.StudentId = user.Id;   
-            post = await _postService.CreatePost(post, user.Id);   
+            post = await _postService.CreatePost(post, user.Id, GroupId);   
             return Ok(post.ToDto());    
         }
 
         [HttpPatch("{id}")]
-        public async Task<ActionResult<PostDto>> UpdatePostAsync(int id, PostToUpsertDto postDto)
+        public async Task<ActionResult<PostDto>> UpdatePostAsync([FromRoute]int GroupId, int id, PostToUpsertDto postDto)
         {
             var post = await _postService.GetPostByIdAsync(id);
             if(post == null) return NotFound(); 
@@ -63,12 +62,12 @@ namespace TeamoWeb.API.Controllers
                 return Unauthorized();
 
             post = postDto.ToEntity();
-            post = await _postService.UpdatePost(post, user.Id);
+            post = await _postService.UpdatePost(post, user.Id, GroupId);
             return Ok(post.ToDto());
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult> DeletePostAsync(int id)
+        public async Task<ActionResult> DeletePostAsync([FromRoute] int GroupId, int id)
         {
             var post = await _postService.GetPostByIdAsync(id);
             if (post == null) return NotFound();
@@ -76,7 +75,7 @@ namespace TeamoWeb.API.Controllers
             if (user == null)
                 return Unauthorized();
 
-            await _postService.DeletePost(post, user.Id);
+            await _postService.DeletePost(post, user.Id, GroupId);
             return Ok("Successfully delete this post");
         }
     }

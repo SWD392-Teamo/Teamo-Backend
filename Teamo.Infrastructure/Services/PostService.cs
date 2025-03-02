@@ -2,6 +2,7 @@
 using Teamo.Core.Enums;
 using Teamo.Core.Interfaces;
 using Teamo.Core.Interfaces.Services;
+using Teamo.Core.Specifications.Groups;
 using Teamo.Core.Specifications.Posts;
 
 namespace Teamo.Infrastructure.Services
@@ -13,14 +14,23 @@ namespace Teamo.Infrastructure.Services
         {
             _unitOfWork = unitOfWork;
         }
-        public async Task<Post> CreatePost(Post post, int userId)
+        public async Task<Post> CreatePost(Post post, int userId, int groupId)
         {
+            var spec = new GroupMemberSpecification(new GroupMemberParams { GroupId = groupId, StudentId = userId });
+            var groupMember = await _unitOfWork.Repository<GroupMember>().GetEntityWithSpec(spec);
+            if (groupMember == null)
+            {
+                throw new UnauthorizedAccessException("You do not have permission to up a post in this group.");
+            }
+
+            post.GroupId = groupId;
+            post.StudentId = userId;
             _unitOfWork.Repository<Post>().Add(post); 
             await _unitOfWork.Repository<Post>().SaveAllAsync();
             return await GetPostByIdAsync(post.Id); 
         }
 
-        public async Task DeletePost(Post post, int userId)
+        public async Task DeletePost(Post post, int userId, int groupId)
         {
             if (post.StudentId != userId)
             {
@@ -43,9 +53,9 @@ namespace Teamo.Infrastructure.Services
            return await _unitOfWork.Repository<Post>().ListAsync(spec);
         }
 
-        public async Task<Post> UpdatePost(Post post, int updatedByUserId)
+        public async Task<Post> UpdatePost(Post post, int userId, int groupId)
         {
-            if (post.StudentId != updatedByUserId)
+            if (post.StudentId != userId)
             {
                 throw new UnauthorizedAccessException("You do not have permission to edit this post.");
             }

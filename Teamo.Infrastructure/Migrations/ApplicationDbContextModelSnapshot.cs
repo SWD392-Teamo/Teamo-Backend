@@ -1004,10 +1004,10 @@ namespace Teamo.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Teamo.Core.Entities.Student", "Student")
+                    b.HasOne("Teamo.Core.Entities.Identity.User", "Student")
                         .WithMany()
                         .HasForeignKey("StudentId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Group");
