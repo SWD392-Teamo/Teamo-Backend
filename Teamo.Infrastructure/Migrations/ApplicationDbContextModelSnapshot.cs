@@ -557,7 +557,7 @@ namespace Teamo.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("GroupMemberId")
+                    b.Property<int>("GroupId")
                         .HasColumnType("int");
 
                     b.Property<string>("Privacy")
@@ -568,12 +568,17 @@ namespace Teamo.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("varchar(20)");
 
+                    b.Property<int>("StudentId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("GroupMemberId");
+                    b.HasIndex("GroupId");
+
+                    b.HasIndex("StudentId");
 
                     b.ToTable("Post", (string)null);
                 });
@@ -993,13 +998,21 @@ namespace Teamo.Infrastructure.Migrations
 
             modelBuilder.Entity("Teamo.Core.Entities.Post", b =>
                 {
-                    b.HasOne("Teamo.Core.Entities.GroupMember", "GroupMember")
-                        .WithMany()
-                        .HasForeignKey("GroupMemberId")
+                    b.HasOne("Teamo.Core.Entities.Group", "Group")
+                        .WithMany("Posts")
+                        .HasForeignKey("GroupId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("GroupMember");
+                    b.HasOne("Teamo.Core.Entities.Identity.User", "Student")
+                        .WithMany()
+                        .HasForeignKey("StudentId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Group");
+
+                    b.Navigation("Student");
                 });
 
             modelBuilder.Entity("Teamo.Core.Entities.StudentSkill", b =>
@@ -1058,6 +1071,8 @@ namespace Teamo.Infrastructure.Migrations
                     b.Navigation("GroupMembers");
 
                     b.Navigation("GroupPositions");
+
+                    b.Navigation("Posts");
                 });
 
             modelBuilder.Entity("Teamo.Core.Entities.GroupMember", b =>

@@ -1,5 +1,6 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
+using Teamo.Core.Constants;
 using Teamo.Core.Entities;
 using Teamo.Core.Enums;
 
@@ -28,7 +29,22 @@ namespace Teamo.Core.Specifications.Groups
             AddThenInclude(q => q.Include(x => x.GroupMembers).ThenInclude(u => u.GroupPositions));
             ApplyPaging(groupParams.PageSize * (groupParams.PageIndex - 1),
                 groupParams.PageSize);
-            
+            if (!string.IsNullOrEmpty(groupParams.Sort))
+            {
+                switch (groupParams.Sort)
+                {
+                    case SortOptions.DateAsc:
+                        AddOrderBy(x => x.CreatedAt);
+                        break;
+                    case SortOptions.DateDesc:
+                        AddOrderByDescending(x => x.CreatedAt);
+                        break;
+                    default:
+                        AddOrderByDescending(x => x.CreatedAt);
+                        break;
+                }
+            }
+
         }
         public GroupSpecification(int id)
             : base(x => x.Id == id && x.Status != GroupStatus.Deleted)

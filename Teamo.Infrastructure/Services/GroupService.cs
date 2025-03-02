@@ -27,7 +27,7 @@ namespace Teamo.Infrastructure.Services
         {
             var spec = new GroupMemberSpecification(new GroupMemberParams
             {
-                Studentd = groupMember.StudentId,
+                StudentId = groupMember.StudentId,
                 GroupId = groupMember.GroupId
             });
 
@@ -128,7 +128,7 @@ namespace Teamo.Infrastructure.Services
             var spec = new GroupMemberSpecification(new GroupMemberParams
             {
                 GroupId = groupId,
-                Studentd = studentId
+                StudentId = studentId
             });
             return await _unitOfWork.Repository<GroupMember>().GetEntityWithSpec(spec);
         }
