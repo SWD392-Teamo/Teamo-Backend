@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Teamo.Core.Constants;
 using Teamo.Core.Entities;
 
 namespace Teamo.Core.Specifications.Posts
@@ -14,6 +15,21 @@ namespace Teamo.Core.Specifications.Posts
                 {
                     ApplyPaging(postParams.PageSize * (postParams.PageIndex - 1),
                                 postParams.PageSize);
+                }
+                if(!string.IsNullOrEmpty(postParams.Sort))
+                {
+                    switch (postParams.Sort)
+                    {
+                        case SortOptions.DateAsc:
+                            AddOrderBy(p => p.CreatedAt);
+                            break;
+                        case SortOptions.DateDesc:
+                            AddOrderByDescending(p => p.CreatedAt);
+                            break;
+                        default:
+                            AddOrderByDescending(p => p.CreatedAt);
+                            break;
+                    }
                 }
             }
         }

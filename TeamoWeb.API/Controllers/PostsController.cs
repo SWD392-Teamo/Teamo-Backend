@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Teamo.Core.Interfaces.Services;
 using Teamo.Core.Specifications.Posts;
 using TeamoWeb.API.Dtos;
+using TeamoWeb.API.Errors;
 using TeamoWeb.API.Extensions;
 using TeamoWeb.API.RequestHelpers;
 
@@ -11,9 +12,12 @@ namespace TeamoWeb.API.Controllers
     public class PostsController : BaseApiController
     {
         private readonly IPostService _postService;
-        public PostsController(IPostService postService)
+        private readonly IUserService _userService;
+
+        public PostsController(IPostService postService, IUserService userService)
         {
             _postService = postService;
+            _userService = userService;
         }
         [HttpGet]
         [Authorize]
@@ -33,6 +37,19 @@ namespace TeamoWeb.API.Controllers
             var post = await _postService.GetPostByIdAsync(id);
             if (post == null) return NotFound();    
             return Ok(post.ToDto());
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<PostDto>> CreatePostAsync(PostToUpsertDto postDto)
+        {
+            var user = await _userService.GetUserByClaims(HttpContext.User);
+            if (user == null)
+                return Unauthorized(new ApiErrorResponse(401, "Unauthorize"));
+
+            var post = postDto.ToEntity();
+            post.GroupMemberId = user.Id;   
+            post = await _postService.CreatePost(post);   
+            return Ok(post.ToDto());    
         }
     }
 }

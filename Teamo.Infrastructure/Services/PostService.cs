@@ -12,9 +12,11 @@ namespace Teamo.Infrastructure.Services
         {
             _unitOfWork = unitOfWork;
         }
-        public Task CreatePost(Post post)
+        public async Task<Post> CreatePost(Post post)
         {
-            throw new NotImplementedException();
+            _unitOfWork.Repository<Post>().Add(post); 
+            await _unitOfWork.Repository<Post>().SaveAllAsync();
+            return await GetPostByIdAsync(post.Id); 
         }
 
         public Task DeletePost(Post post)

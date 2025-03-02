@@ -22,5 +22,24 @@ namespace TeamoWeb.API.Extensions
                 Status = post.Status,
             };
         }
+
+        public static Post ToEntity(this PostToUpsertDto postToUpsertDto, Post? post = null)
+        {
+            if(post == null)
+            {
+                if (string.IsNullOrEmpty(postToUpsertDto.Content))
+                    throw new ArgumentException("Content cannot be empty when creating a new post.");
+                return new Post
+                {
+                    Content = postToUpsertDto.Content,
+                    Privacy = postToUpsertDto.Privacy
+                };
+            }
+
+            post.Content = string.IsNullOrEmpty(postToUpsertDto.Content) ? post.Content : postToUpsertDto.Content;
+            post.Privacy = postToUpsertDto?.Privacy ?? post.Privacy;
+            post.UpdatedAt = DateTime.Now;
+            return post;
+        }
     }
 }

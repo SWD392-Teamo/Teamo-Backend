@@ -7,7 +7,7 @@ namespace Teamo.Core.Interfaces.Services
     {
         Task<IEnumerable<Post>> GetPostsAsync(PostSpecification spec);
         Task<Post> GetPostByIdAsync(int id); 
-        Task CreatePost(Post post);
+        Task<Post> CreatePost(Post post);
         Task UpdatePost(Post post);
         Task DeletePost(Post post);
     }
