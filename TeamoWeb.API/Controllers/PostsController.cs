@@ -9,6 +9,7 @@ using TeamoWeb.API.RequestHelpers;
 
 namespace TeamoWeb.API.Controllers
 {
+    [Route("api/groups/{groupId}/posts")]
     public class PostsController : BaseApiController
     {
         private readonly IPostService _postService;
@@ -21,7 +22,7 @@ namespace TeamoWeb.API.Controllers
         }
         [HttpGet]
         [Authorize]
-        public async Task<ActionResult<Pagination<PostDto>>> GetPostsAsync(PostParams postParams)
+        public async Task<ActionResult<Pagination<PostDto>>> GetPostsAsync([FromQuery]PostParams postParams)
         {
             var spec = new PostSpecification(postParams);
             var posts = await _postService.GetPostsAsync(spec);
@@ -48,7 +49,7 @@ namespace TeamoWeb.API.Controllers
 
             var post = postDto.ToEntity();
             post.GroupMemberId = user.Id;   
-            post = await _postService.CreatePost(post);   
+            post = await _postService.CreatePost(post, user.Id);   
             return Ok(post.ToDto());    
         }
 

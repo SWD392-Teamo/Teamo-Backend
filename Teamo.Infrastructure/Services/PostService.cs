@@ -13,7 +13,7 @@ namespace Teamo.Infrastructure.Services
         {
             _unitOfWork = unitOfWork;
         }
-        public async Task<Post> CreatePost(Post post)
+        public async Task<Post> CreatePost(Post post, int userId)
         {
             _unitOfWork.Repository<Post>().Add(post); 
             await _unitOfWork.Repository<Post>().SaveAllAsync();
