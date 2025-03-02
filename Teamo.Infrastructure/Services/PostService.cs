@@ -22,9 +22,11 @@ namespace Teamo.Infrastructure.Services
             throw new NotImplementedException();
         }
 
-        public Task<Post> GetPostByIdAsync(int id)
+        public async Task<Post> GetPostByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            var spec = new PostSpecification(id);
+            var post = await _unitOfWork.Repository<Post>().GetEntityWithSpec(spec);
+            return post;
         }
 
         public async Task<IEnumerable<Post>> GetPostsAsync(PostSpecification spec)

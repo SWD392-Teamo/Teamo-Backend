@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Teamo.Core.Entities;
-using Teamo.Core.Specifications.Groups;
 
 namespace Teamo.Core.Specifications.Posts
 {
@@ -16,6 +15,14 @@ namespace Teamo.Core.Specifications.Posts
                     ApplyPaging(postParams.PageSize * (postParams.PageIndex - 1),
                                 postParams.PageSize);
                 }
+            }
+        }
+
+        public PostSpecification(int id)
+            : base(p => p.Id == id)
+        {
+            {
+                AddThenInclude(p => p.Include(p => p.GroupMember).ThenInclude(gm => gm.Student));
             }
         }
     } 
