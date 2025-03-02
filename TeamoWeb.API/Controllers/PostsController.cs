@@ -53,7 +53,7 @@ namespace TeamoWeb.API.Controllers
         }
 
         [HttpPatch("{id}")]
-        public async Task<ActionResult<PostDto>> UpdatePostAsync([FromRoute]int GroupId, int id, PostToUpsertDto postDto)
+        public async Task<ActionResult<PostDto>> UpdatePostAsync(int id, PostToUpsertDto postDto)
         {
             var post = await _postService.GetPostByIdAsync(id);
             if(post == null) return NotFound(); 
@@ -61,13 +61,13 @@ namespace TeamoWeb.API.Controllers
             if (user == null)
                 return Unauthorized();
 
-            post = postDto.ToEntity();
-            post = await _postService.UpdatePost(post, user.Id, GroupId);
+            post = postDto.ToEntity(post);
+            post = await _postService.UpdatePost(post, user.Id);
             return Ok(post.ToDto());
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult> DeletePostAsync([FromRoute] int GroupId, int id)
+        public async Task<ActionResult> DeletePostAsync(int id)
         {
             var post = await _postService.GetPostByIdAsync(id);
             if (post == null) return NotFound();
@@ -75,7 +75,7 @@ namespace TeamoWeb.API.Controllers
             if (user == null)
                 return Unauthorized();
 
-            await _postService.DeletePost(post, user.Id, GroupId);
+            await _postService.DeletePost(post, user.Id);
             return Ok("Successfully delete this post");
         }
     }

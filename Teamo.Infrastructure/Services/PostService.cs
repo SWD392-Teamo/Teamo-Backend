@@ -30,7 +30,7 @@ namespace Teamo.Infrastructure.Services
             return await GetPostByIdAsync(post.Id); 
         }
 
-        public async Task DeletePost(Post post, int userId, int groupId)
+        public async Task DeletePost(Post post, int userId)
         {
             if (post.StudentId != userId)
             {
@@ -53,7 +53,7 @@ namespace Teamo.Infrastructure.Services
            return await _unitOfWork.Repository<Post>().ListAsync(spec);
         }
 
-        public async Task<Post> UpdatePost(Post post, int userId, int groupId)
+        public async Task<Post> UpdatePost(Post post, int userId)
         {
             if (post.StudentId != userId)
             {
