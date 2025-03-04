@@ -8,7 +8,7 @@ namespace Teamo.Core.Entities
 	{
 		public required string Code { get; set; }
 		public required string Name { get; set; }
-		public string? ImgUrl { get; set; }
+		public string ImgUrl { get; set; }
         public DateOnly CreatedDate { get; set; } = DateOnly.FromDateTime(DateTime.Now);
 		public List<Subject> Subjects { get; set; }
 		public List<MajorSubject> MajorSubjects { get; set; }

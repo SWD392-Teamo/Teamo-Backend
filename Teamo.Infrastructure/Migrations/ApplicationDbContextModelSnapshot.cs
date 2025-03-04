@@ -233,7 +233,7 @@ namespace Teamo.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("ImgUrl")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(200)");
 
                     b.Property<int>("MaxMember")
                         .HasColumnType("int");
@@ -506,7 +506,7 @@ namespace Teamo.Infrastructure.Migrations
                         .HasColumnType("date");
 
                     b.Property<string>("ImgUrl")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(200)");
 
                     b.Property<string>("Name")
                         .HasColumnType("varchar(100)");
@@ -717,7 +717,7 @@ namespace Teamo.Infrastructure.Migrations
                         .HasColumnType("varchar(1000)");
 
                     b.Property<string>("ImgUrl")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(200)");
 
                     b.Property<string>("Name")
                         .HasColumnType("varchar(100)");

@@ -13,6 +13,7 @@ namespace Teamo.Infrastructure.Configs
             builder.Property(m => m.Code).HasColumnType("varchar(20)");
             builder.Property(m => m.Name).HasColumnType("varchar(100)");
             builder.Property(m => m.CreatedDate).HasColumnType("date");
+            builder.Property(o => o.ImgUrl).HasColumnType("varchar(200)");
 
             builder.HasMany(m => m.Subjects)
                 .WithMany()

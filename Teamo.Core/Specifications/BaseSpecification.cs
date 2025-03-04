@@ -127,9 +127,9 @@ namespace Teamo.Core.Specifications
             IsPagingEnabled = true;
         }
 
-        protected static T? ParseStatus<T>(string status) where T : struct, Enum
+        protected static E? ParseStatus<E>(string status) where E : struct, Enum
         {
-            if (Enum.TryParse<T>(status, true, out var result))
+            if (Enum.TryParse<E>(status, true, out var result))
             {
                 return result;
             }
