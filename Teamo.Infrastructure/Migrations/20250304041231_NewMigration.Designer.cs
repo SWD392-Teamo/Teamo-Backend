@@ -12,7 +12,7 @@ using Teamo.Infrastructure.Data;
 namespace Teamo.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250302104243_NewMigration")]
+    [Migration("20250304041231_NewMigration")]
     partial class NewMigration
     {
         /// <inheritdoc />
@@ -236,7 +236,7 @@ namespace Teamo.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("ImgUrl")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(200)");
 
                     b.Property<int>("MaxMember")
                         .HasColumnType("int");
@@ -509,7 +509,7 @@ namespace Teamo.Infrastructure.Migrations
                         .HasColumnType("date");
 
                     b.Property<string>("ImgUrl")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(200)");
 
                     b.Property<string>("Name")
                         .HasColumnType("varchar(100)");
@@ -720,7 +720,7 @@ namespace Teamo.Infrastructure.Migrations
                         .HasColumnType("varchar(1000)");
 
                     b.Property<string>("ImgUrl")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(200)");
 
                     b.Property<string>("Name")
                         .HasColumnType("varchar(100)");

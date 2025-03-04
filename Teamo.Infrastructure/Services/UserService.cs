@@ -73,7 +73,9 @@ namespace Teamo.Infrastructure.Services
             var query = _userManager.Users.AsQueryable();
             var students = await GetUsersInRoleAsync(_studentRoleName);
             query = query.Where(u => students.Contains(u));
-            return await ApplySpecification(query, spec).CountAsync();
+
+            query = spec.ApplyCriteria(query);
+            return await query.CountAsync();
         }
 
         public async Task<IdentityResult> UpdateUserAsync(User user)

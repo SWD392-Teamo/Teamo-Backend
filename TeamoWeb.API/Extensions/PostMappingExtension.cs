@@ -33,7 +33,7 @@ namespace TeamoWeb.API.Extensions
                 return new Post
                 {
                     Content = postToUpsertDto.Content,
-                    Privacy = postToUpsertDto.Privacy.Value
+                    Privacy = postToUpsertDto.Privacy
                 };
             }
 

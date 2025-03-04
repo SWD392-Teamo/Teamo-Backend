@@ -48,7 +48,7 @@ namespace Teamo.Infrastructure.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Code = table.Column<string>(type: "varchar(20)", nullable: true),
                     Name = table.Column<string>(type: "varchar(100)", nullable: true),
-                    ImgUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ImgUrl = table.Column<string>(type: "varchar(200)", nullable: true),
                     CreatedDate = table.Column<DateOnly>(type: "date", nullable: false),
                     Status = table.Column<string>(type: "varchar(50)", nullable: false)
                 },
@@ -117,7 +117,7 @@ namespace Teamo.Infrastructure.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Code = table.Column<string>(type: "varchar(20)", nullable: true),
                     Name = table.Column<string>(type: "varchar(100)", nullable: true),
-                    ImgUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ImgUrl = table.Column<string>(type: "varchar(200)", nullable: true),
                     Description = table.Column<string>(type: "varchar(1000)", nullable: true),
                     CreatedDate = table.Column<DateOnly>(type: "date", nullable: false),
                     Status = table.Column<string>(type: "varchar(50)", nullable: false)
@@ -334,7 +334,7 @@ namespace Teamo.Infrastructure.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(100)", nullable: true),
                     Title = table.Column<string>(type: "nvarchar(200)", nullable: true),
-                    ImgUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ImgUrl = table.Column<string>(type: "varchar(200)", nullable: true),
                     SemesterId = table.Column<int>(type: "int", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(1000)", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
