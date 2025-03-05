@@ -6,6 +6,7 @@ namespace Teamo.Core.Interfaces.Services
     {
         Task<bool> AddDeviceAsync(UserDevice device);
         Task<List<string>> GetDeviceTokensForUser(int userId);
+        Task<List<string>> GetDeviceTokensForSelectedUsers(List<int> userIds);
         Task<List<string>> GetAllDeviceTokens();
     }
 }
