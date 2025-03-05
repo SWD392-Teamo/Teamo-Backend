@@ -36,6 +36,7 @@ namespace TeamoWeb.API.Controllers
             _notiService = notiService;
             _deviceService = deviceService;
         }
+
         [HttpGet]
         [Authorize]
         public async Task<ActionResult<Pagination<PostDto>>> GetPostsAsync([FromQuery]PostParams postParams)
@@ -48,6 +49,7 @@ namespace TeamoWeb.API.Controllers
             var pagination = new Pagination<PostDto>(postParams.PageIndex, postParams.PageSize, totalPosts, postDtos);
             return Ok(pagination);
         }
+        
         [HttpGet("{id}")]
         public async Task<ActionResult<PostDto>> GetPostByIdAsync(int id)
         {

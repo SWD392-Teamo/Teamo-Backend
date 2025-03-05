@@ -209,5 +209,11 @@ namespace Teamo.Infrastructure.Services
 
             await UpdateGroupPositionAsync(groupPosition);
         }
+
+        public async Task<bool> CheckGroupLeaderAsync(int groupId, int studentId)
+        {
+            var groupMember = await GetGroupMemberAsync(groupId, studentId);
+            return groupMember != null && groupMember.Role == GroupMemberRole.Leader;
+        }
     }
 }

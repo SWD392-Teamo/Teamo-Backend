@@ -20,6 +20,6 @@ namespace Teamo.Core.Interfaces.Services
         Task DeleteGroupAsync(Group group);           
         Task RemoveGroupPositionAsync(GroupPosition groupPosition);      
         Task RemoveMemberFromGroup(GroupMember groupMember);
-        
+        Task<bool> CheckGroupLeaderAsync(int groupId, int studentId);
     }
 }

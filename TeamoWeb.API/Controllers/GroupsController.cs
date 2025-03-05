@@ -72,7 +72,7 @@ namespace TeamoWeb.API.Controllers
         [InvalidateCache("/groups")]
         [HttpPost]
         [Authorize(Roles = "Student")]
-        public async Task<ActionResult<GroupDto>> CreateGroupAsync(GroupToUpsertDto groupDto, [FromForm] IFormFile image)
+        public async Task<ActionResult<GroupDto>> CreateGroupAsync(GroupToUpsertDto groupDto)
         {
             var user = await _userService.GetUserByClaims(HttpContext.User);
             if (user == null)
@@ -97,6 +97,10 @@ namespace TeamoWeb.API.Controllers
             var group = await _groupService.GetGroupByIdAsync(id);
             if (group == null)
                 return BadRequest(new ApiErrorResponse(404, "Group not found!"));
+
+            var user = await _userService.GetUserByClaims(HttpContext.User);
+            var isLeader = await _groupService.CheckGroupLeaderAsync(id, user.Id);
+            if (!isLeader) return Unauthorized(new ApiErrorResponse(401, "Only group leader can update group."));
 
             var updatedGroup = groupDto.ToEntity(group);
             await _groupService.UpdateGroupAsync(updatedGroup);
@@ -131,6 +135,10 @@ namespace TeamoWeb.API.Controllers
         [Authorize(Roles = "Student")]
         public async Task<ActionResult> UploadGroupImage(int id, [FromForm] IFormFile image) 
         {
+            var user = await _userService.GetUserByClaims(HttpContext.User);
+            var isLeader = await _groupService.CheckGroupLeaderAsync(id, user.Id);
+            if (!isLeader) return Unauthorized(new ApiErrorResponse(401, "Only group leader can update group."));
+            
             // Check if an image was chosen
             if (image == null) return BadRequest(new ApiErrorResponse(400, "No image found"));
 
@@ -167,6 +175,10 @@ namespace TeamoWeb.API.Controllers
             if (group == null)
                 return NotFound(new ApiErrorResponse(404, "Group not found!"));
 
+            var user = await _userService.GetUserByClaims(HttpContext.User);
+            var isLeader = await _groupService.CheckGroupLeaderAsync(id, user.Id);
+            if (!isLeader) return Unauthorized(new ApiErrorResponse(401, "Only group leader can delete group."));
+
             await _groupService.DeleteGroupAsync(group);
 
             var groupMembers = await _groupService.GetAllGroupMembersAsync(id);
@@ -200,11 +212,14 @@ namespace TeamoWeb.API.Controllers
         [Authorize(Roles = "Student")]
         public async Task<IActionResult> AddMemberToGroup(int id, GroupMemberToAddDto groupMemberToAddDto)
         {
-
             var group = await _groupService.GetGroupByIdAsync(id);
             if (group == null)
                 return NotFound(new ApiErrorResponse(404, "Group not found!"));
 
+            var user = await _userService.GetUserByClaims(HttpContext.User);
+            var isLeader = await _groupService.CheckGroupLeaderAsync(id, user.Id);
+            if (!isLeader) return Unauthorized(new ApiErrorResponse(401, "Only group leader can add members."));
+            
             var groupMember = groupMemberToAddDto.ToEntity();
             groupMember.GroupId = id;
             await _groupService.AddMemberToGroup(groupMember);
@@ -221,6 +236,10 @@ namespace TeamoWeb.API.Controllers
         [Authorize(Roles = "Student")]
         public async Task<IActionResult> RemoveMemberFromGroup(int groupId, int studentId)
         {
+            var user = await _userService.GetUserByClaims(HttpContext.User);
+            var isLeader = await _groupService.CheckGroupLeaderAsync(groupId, user.Id);
+            if (!isLeader) return Unauthorized(new ApiErrorResponse(401, "Only group leader can remove members."));
+            
             var groupMember = await _groupService.GetGroupMemberAsync(groupId, studentId);
             if (groupMember == null)
             {
@@ -254,6 +273,10 @@ namespace TeamoWeb.API.Controllers
         [Authorize(Roles = "Student")]
         public async Task<IActionResult> UpdateGroupMember (int groupId, int studentId, GroupMemberToAddDto gmDto)
         {
+            var user = await _userService.GetUserByClaims(HttpContext.User);
+            var isLeader = await _groupService.CheckGroupLeaderAsync(groupId, user.Id);
+            if (!isLeader) return Unauthorized(new ApiErrorResponse(401, "Only group leader can update members."));
+            
             var groupMember = await _groupService.GetGroupMemberAsync(groupId, studentId);
             if (groupMember == null)
             {
