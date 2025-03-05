@@ -133,6 +133,15 @@ namespace Teamo.Infrastructure.Services
             return await _unitOfWork.Repository<GroupMember>().GetEntityWithSpec(spec);
         }
 
+        public async Task<IReadOnlyList<GroupMember>> GetAllGroupMembersAsync(int groupId)
+        {
+            var spec = new GroupMemberSpecification(new GroupMemberParams
+            {
+                GroupId = groupId
+            });
+            return await _unitOfWork.Repository<GroupMember>().ListAsync(spec);
+        }
+
         public async Task<GroupPosition> GetGroupPositionAsync(int positionId)
         {
             var spec = new GroupPositionSpecification(positionId);
