@@ -13,13 +13,12 @@ namespace Teamo.Core.Interfaces.Services
         Task CreateGroupAsync(Group group, int createdUserId);
         Task AddMemberToGroup(GroupMember groupMember);
         Task AddGroupPosition(GroupPosition groupPosition);
-        Task UpdateGroupAsync(Group group);
+        Task<bool> UpdateGroupAsync(Group group);
         Task UpdateGroupPositionAsync(GroupPosition groupPosition);
         Task UpdateGroupMemberAsync(GroupMember groupMember);
         Task DeleteGroupAsync(Group group);           
         Task RemoveGroupPositionAsync(GroupPosition groupPosition);      
         Task RemoveMemberFromGroup(GroupMember groupMember);
-        
         
     }
 }

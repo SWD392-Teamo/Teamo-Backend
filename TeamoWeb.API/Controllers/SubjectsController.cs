@@ -1,10 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Teamo.Core.Entities;
 using Teamo.Core.Enums;
-using Teamo.Core.Interfaces;
 using Teamo.Core.Interfaces.Services;
-using Teamo.Core.Specifications.Majors;
 using Teamo.Core.Specifications.Subjects;
 using TeamoWeb.API.Dtos;
 using TeamoWeb.API.Errors;
@@ -16,10 +13,15 @@ namespace TeamoWeb.API.Controllers
     public class SubjectsController : BaseApiController
     {
         private readonly ISubjectService _subjectService;
+        private readonly IUploadService _uploadService;
+        private readonly IConfiguration _config;
 
-        public SubjectsController(ISubjectService subjectService)
+        public SubjectsController(ISubjectService subjectService, 
+            IUploadService uploadService, IConfiguration config)
         {
             _subjectService = subjectService;
+            _uploadService = uploadService;
+            _config = config;
         }
 
         //Get subjects with spec
@@ -82,6 +84,33 @@ namespace TeamoWeb.API.Controllers
 
             if(!result) return BadRequest(new ApiErrorResponse(400, "Failed to update subject."));
             else return Ok(new ApiErrorResponse(200, "Updated subject successfully."));
+        }
+
+        [HttpPost("{id}/image")]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult> UploadSubjectImage(int id, [FromForm] IFormFile image)
+        {
+            // Check if an image was chosen
+            if (image == null) return BadRequest(new ApiErrorResponse(400, "No image found"));
+
+            var subject = await _subjectService.GetSubjectByIdAsync(id);
+            if (subject == null) return NotFound();
+
+            // Upload and get download url
+            var imgUrl = await _uploadService.UploadFileAsync(
+                image.OpenReadStream(),
+                image.FileName,
+                image.ContentType,
+                _config["Firebase:SubjectImagesUrl"]);
+
+            // Update image url
+            subject.ImgUrl = imgUrl;
+
+            var result = await _subjectService.UpdateSubjectAsync(subject);
+
+            if (!result) return BadRequest(new ApiErrorResponse(400, "Failed to upload image."));
+
+            return Ok(new ApiErrorResponse(200, "Image uploaded successfully.", imgUrl));
         }
 
         //Delete subject, change subject status to inactive

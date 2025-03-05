@@ -203,7 +203,7 @@ namespace TeamoWeb.API.Controllers
         [Authorize(Roles = "Student")]
         public async Task<ActionResult> UploadProfileImage(int userId, [FromForm] IFormFile image) 
         {
-            var currentUser = await _userService.GetUserByClaims(HttpContext.User);
+            var currentUser = await _userService.GetUserByIdAsync(userId);
             if(currentUser == null) return Unauthorized(new ApiErrorResponse(401, "Unauthorized"));
             if(image == null) return BadRequest(new ApiErrorResponse(400, "No image found"));
 
@@ -213,7 +213,7 @@ namespace TeamoWeb.API.Controllers
                 image.ContentType,
                 _config["Firebase:ProfileImagesUrl"]);
 
-                currentUser.ImgUrl = imgUrl;
+            currentUser.ImgUrl = imgUrl;
 
             var result = await _userService.UpdateUserAsync(currentUser);
             

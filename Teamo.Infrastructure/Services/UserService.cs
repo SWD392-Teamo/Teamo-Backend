@@ -4,6 +4,7 @@ using System.Security.Claims;
 using Teamo.Core.Entities.Identity;
 using Teamo.Core.Interfaces.Services;
 using Teamo.Core.Specifications;
+using Teamo.Core.Specifications.Users;
 using Teamo.Infrastructure.Data;
 
 namespace Teamo.Infrastructure.Services
@@ -53,6 +54,12 @@ namespace Teamo.Infrastructure.Services
         public async Task<User> GetUserByClaims(ClaimsPrincipal principal)
         {
             return await _userManager.GetUserAsync(principal);
+        }
+
+        public async Task<User> GetUserByIdAsync(int id)
+        {
+            var spec = new UserSpecification(id);
+            return await GetUserWithSpec(spec);
         }
 
         public async Task<IList<Claim>> GetUserClaims(User user)
