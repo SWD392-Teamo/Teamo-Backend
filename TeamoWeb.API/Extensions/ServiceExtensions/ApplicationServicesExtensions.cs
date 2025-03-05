@@ -1,4 +1,7 @@
-﻿using Infrastructure.Data;
+﻿using FirebaseAdmin;
+using Google.Apis.Auth.OAuth2;
+using Google.Cloud.Storage.V1;
+using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Teamo.Core.Interfaces;
@@ -31,6 +34,24 @@ namespace TeamoWeb.API.Extensions
             services.AddScoped<IFieldService, FieldService>();
             services.AddScoped<IDeviceService, DeviceService>();
             services.AddScoped<INotificationService, NotificationService>();
+            services.AddScoped<IUploadService, UploadService>();
+
+            // Initialize Firebase App
+            var credential = GoogleCredential.FromFile(config["Firebase:FirebaseSDKPath"]);
+            if (FirebaseApp.DefaultInstance == null)
+            {
+                FirebaseApp.Create(new AppOptions
+                {
+                    Credential = credential
+                });
+            }
+
+            // Register Firebase services
+            services.AddSingleton(provider =>
+            {   
+                return StorageClient.Create(credential);
+            });
+
             services.AddDataProtection();
 
             services.AddRouting(opt => opt.LowercaseUrls = true);
