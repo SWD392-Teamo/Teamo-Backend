@@ -25,6 +25,15 @@ namespace TeamoWeb.API.Extensions
             return role;
         }
 
+        // Get id of the current user from ClaimsPrincipal
+        public static int GetId(this ClaimsPrincipal user)
+        {
+            var id = user.FindFirstValue(ClaimTypes.NameIdentifier)
+                ?? throw new AuthenticationException("Name identifier claim of the current user not found");
+
+            return int.Parse(id);
+        }
+
         //Display user info
         public static UserDto? ToDto(this User? user)
         {

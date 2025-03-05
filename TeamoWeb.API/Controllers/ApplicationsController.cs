@@ -35,6 +35,7 @@ namespace TeamoWeb.API.Controllers
         }
 
         //Get application by id
+        [Cache(1000)]
         [HttpGet("{id}")]
         [Authorize(Roles = "Student")]
         public async Task<ActionResult<ApplicationDto?>> GetApplicationById(int id)
@@ -45,6 +46,7 @@ namespace TeamoWeb.API.Controllers
         }
 
         //Get group's applications with spec
+        [Cache(1000)]
         [HttpGet]
         [Authorize(Roles = "Student")]
         public async Task<ActionResult<IReadOnlyList<ApplicationDto>>> GetGroupApplications(int groupId, [FromQuery] ApplicationParams appParams)
@@ -69,6 +71,7 @@ namespace TeamoWeb.API.Controllers
         }
 
         //Approve or reject application
+        [InvalidateCache("/applications")]
         [HttpPatch("{id}")]
         [Authorize(Roles = "Student")]
         public async Task<ActionResult> ReviewApplication(int groupId, int id, [FromBody] ApplicationToUpsertDto appDto)
@@ -116,6 +119,7 @@ namespace TeamoWeb.API.Controllers
         }
 
         //Create and send an application
+        [InvalidateCache("/applications")]
         [HttpPost]
         [Authorize(Roles = "Student")]
         public async Task<ActionResult<ApplicationDto>> CreateNewApplication(int groupId, [FromBody] ApplicationToUpsertDto appDto)     
@@ -157,6 +161,7 @@ namespace TeamoWeb.API.Controllers
         }
 
         //Delete application (recall unanswered application)
+        [InvalidateCache("/applications")]
         [HttpDelete("{id}")]
         [Authorize(Roles = "Student")]
         public async Task<ActionResult> DeleteApplication(int id)
@@ -177,8 +182,8 @@ namespace TeamoWeb.API.Controllers
             return Ok(new ApiErrorResponse(200, "Application deleted successfully."));
         }
 
-
         //Get user's sent applications with spec
+        [Cache(1000)]
         [HttpGet("/api/applications")]
         [Authorize(Roles = "Student")]
         public async Task<ActionResult<IReadOnlyList<ApplicationDto>>> GetSentApplications([FromQuery] ApplicationParams appParams)

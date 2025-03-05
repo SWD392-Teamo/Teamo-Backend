@@ -4,6 +4,7 @@ using Teamo.Core.Interfaces.Services;
 using TeamoWeb.API.Dtos;
 using TeamoWeb.API.Errors;
 using TeamoWeb.API.Extensions;
+using TeamoWeb.API.RequestHelpers;
 
 
 namespace TeamoWeb.API.Controllers
@@ -20,6 +21,7 @@ namespace TeamoWeb.API.Controllers
         /// <summary>
         /// Add position to group
         /// </summary>
+        [InvalidateCache("/groups")]
         [HttpPost]
         [Authorize(Roles = "Student")]
         public async Task<IActionResult> AddGroupPosition([FromRoute]int groupId, GroupPositionToUpsertDto groupPositionDto)
@@ -39,6 +41,7 @@ namespace TeamoWeb.API.Controllers
         /// <summary>
         /// Update group position
         /// </summary>
+        [InvalidateCache("/groups")]
         [HttpPatch("{positionId}")]
         [Authorize(Roles = "Student")]
         public async Task<IActionResult> UpdateGroupPosition([FromRoute]int groupId, int positionId, GroupPositionToUpsertDto updateDto)
@@ -60,6 +63,7 @@ namespace TeamoWeb.API.Controllers
         /// <summary>
         /// Removes a group position.
         /// </summary>
+        [InvalidateCache("/groups")]
         [HttpDelete("{positionId}")]
         [Authorize(Roles = "Student")]
         public async Task<IActionResult> DeleteGroupPosition(int positionId)

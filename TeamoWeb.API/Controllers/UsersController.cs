@@ -32,6 +32,7 @@ namespace TeamoWeb.API.Controllers
         }
 
         //Get all users with spec
+        [Cache(1000)]
         [HttpGet]
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult<IReadOnlyList<ProfileDto>>> GetUsers([FromQuery] UserSpecParams userSpecParams)
@@ -45,6 +46,7 @@ namespace TeamoWeb.API.Controllers
         }
 
         //Get user by id
+        [Cache(1000)]
         [HttpGet("{id}")]
         [Authorize(Roles = "Admin,Student")]
         public async Task<ActionResult<ProfileDto?>> GetUserById (int id)
@@ -57,6 +59,7 @@ namespace TeamoWeb.API.Controllers
         }
 
         //Ban user
+        [InvalidateCache("/users")]
         [HttpDelete("{id}")]
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult<ProfileDto>> BanUser (int id)
@@ -75,12 +78,12 @@ namespace TeamoWeb.API.Controllers
         }
 
         //Display current user's profile
+        [Cache(1000)]
         [HttpGet("{userId}/profile")]
         [Authorize(Roles = "Student")]
         public async Task<ActionResult<UserDto>> GetProfile(int userId)
         {
-            var user = await _userService.GetUserByClaims(HttpContext.User);
-            if (user == null) return Unauthorized(new ApiErrorResponse(401, "Unauthorized"));
+            if (User.GetId() != userId) return Unauthorized(new ApiErrorResponse(401, "Unauthorized"));
             
             var userProfile = await _profileService.GetProfileAsync(userId);
 
@@ -89,6 +92,7 @@ namespace TeamoWeb.API.Controllers
         }
 
         //Update description in user profile
+        [InvalidateCache("/profile")]
         [HttpPatch("{userId}/profile/descriptions")]
         [Authorize(Roles = "Student")]
         public async Task<ActionResult> UpdateProfileDescription([FromBody] ProfileDto profile)
@@ -105,6 +109,7 @@ namespace TeamoWeb.API.Controllers
         }
 
         //Add a new skill to user profile
+        [InvalidateCache("/profile")]
         [HttpPost("{userId}/profile/skills")]
         [Authorize(Roles = "Student")]
         public async Task<ActionResult> AddProfileSkill([FromBody] StudentSkillToUpsertDto studentSkillDto)
@@ -121,6 +126,7 @@ namespace TeamoWeb.API.Controllers
         }
 
         //Update a skill level in user profile
+        [InvalidateCache("/profile")]
         [HttpPatch("{userId}/profile/skills/{studentSkillId}")]
         [Authorize(Roles = "Student")]
         public async Task<ActionResult> UpdateProfileSkill(int studentSkillId, [FromBody] StudentSkillToUpsertDto studentSkillDto)
@@ -137,6 +143,7 @@ namespace TeamoWeb.API.Controllers
         }
 
         //Delete a skill in user profile
+        [InvalidateCache("/profile")]
         [HttpDelete("{userId}/profile/skills/{studentSkillId}")]
         [Authorize(Roles = "Student")]
         public async Task<ActionResult> DeleteProfileSkill(int studentSkillId)
@@ -151,6 +158,7 @@ namespace TeamoWeb.API.Controllers
         }
 
         //Add a new link to user profile
+        [InvalidateCache("/profile")]
         [HttpPost("{userId}/profile/links")]
         [Authorize(Roles = "Student")]
         public async Task<ActionResult> AddProfileLink([FromBody] LinkToUpsertDto linkDto)
@@ -171,6 +179,7 @@ namespace TeamoWeb.API.Controllers
         }
 
         //Update a link in user profile
+        [InvalidateCache("/profile")]
         [HttpPatch("{userId}/profile/links/{linkId}")]
         [Authorize(Roles = "Student")]
         public async Task<ActionResult> UpdateProfileLink(int linkId, [FromBody] LinkToUpsertDto linkDto)
@@ -186,6 +195,7 @@ namespace TeamoWeb.API.Controllers
         }
 
         //Remove a link from user profile
+        [InvalidateCache("/profile")]
         [HttpDelete("{userId}/profile/links/{linkId}")]
         [Authorize(Roles = "Student")]
         public async Task<ActionResult> RemoveProfileLink(int linkId)
@@ -198,7 +208,8 @@ namespace TeamoWeb.API.Controllers
             if(!result) return BadRequest(new ApiErrorResponse(400, "Failed to remove link from profile"));
             return Ok(new ApiErrorResponse(200, "Link removed from profile successfully."));
         }
-
+        // Update profile image
+        [InvalidateCache("/profile")]
         [HttpPost("{userId}/profile/image")]
         [Authorize(Roles = "Student")]
         public async Task<ActionResult> UploadProfileImage(int userId, [FromForm] IFormFile image) 
