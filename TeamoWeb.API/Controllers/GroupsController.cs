@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
+using Teamo.Core.Entities;
 using Teamo.Core.Interfaces.Services;
 using Teamo.Core.Specifications.Groups;
 using TeamoWeb.API.Dtos;
@@ -16,17 +18,24 @@ namespace TeamoWeb.API.Controllers
         private readonly IUserService _userService;
         private readonly IUploadService _uploadService;
         private readonly IConfiguration _config;
+        private readonly INotificationService _notiService;
+        private readonly IDeviceService _deviceService;
+
         public GroupsController(
             IGroupService groupService, 
             IUserService userService,
             IUploadService uploadService,
-            IConfiguration config
+            IConfiguration config,
+            INotificationService notiService,
+            IDeviceService deviceService
         )
         {
             _groupService = groupService;
             _userService = userService;
             _uploadService = uploadService;
             _config = config;
+            _notiService = notiService;
+            _deviceService = deviceService;
         }
 
         /// <summary>
@@ -88,6 +97,27 @@ namespace TeamoWeb.API.Controllers
             var updatedGroup = groupDto.ToEntity(group);
             await _groupService.UpdateGroupAsync(updatedGroup);
             updatedGroup = await _groupService.GetGroupByIdAsync(group.Id);
+
+            var groupMembers = await _groupService.GetAllGroupMembersAsync(group.Id);
+            var groupMembersIds = groupMembers.Select(g => g.StudentId).ToList();
+
+            // Get all members' devices
+            var deviceTokens = await _deviceService.GetDeviceTokensForSelectedUsers(groupMembersIds);
+
+            if (!deviceTokens.IsNullOrEmpty())
+            {
+                var status = updatedGroup.Status.ToString().ToLower();
+
+                // Generate notification contents
+                FCMessage message = CreateUpdatedGroupMessage(deviceTokens, updatedGroup, status);
+
+                var notiResult = await _notiService.SendNotificationAsync(message);
+                if (!notiResult) 
+                    return Ok(new ApiErrorResponse(200, 
+                        "Group updated successfully, " +
+                        "but failed to send notifications to some devices."));
+            }
+
             var updatedGroupDto = updatedGroup.ToDto();
             return Ok(updatedGroupDto);
         }
@@ -132,6 +162,27 @@ namespace TeamoWeb.API.Controllers
                 return NotFound(new ApiErrorResponse(404, "Group not found!"));
 
             await _groupService.DeleteGroupAsync(group);
+
+            var groupMembers = await _groupService.GetAllGroupMembersAsync(id);
+            var groupMembersIds = groupMembers.Select(g => g.StudentId).ToList();
+
+            // Get all members' devices
+            var deviceTokens = await _deviceService.GetDeviceTokensForSelectedUsers(groupMembersIds);
+
+            if (!deviceTokens.IsNullOrEmpty())
+            {
+                var status = group.Status.ToString().ToLower();
+
+                // Generate notification contents
+                FCMessage message = CreateDeletedGroupMessage(deviceTokens, group.Name, group.Id, status);
+
+                var notiResult = await _notiService.SendNotificationAsync(message);
+                if (!notiResult) 
+                    return Ok(new ApiErrorResponse(200, 
+                        "Group deleted successfully, " +
+                        "but failed to send notifications to some devices."));
+            }
+
             return Ok("Successfully deleted a group");
         }
 
@@ -167,7 +218,26 @@ namespace TeamoWeb.API.Controllers
             {
                 return NotFound(new ApiErrorResponse(404, "Group Member not found!"));
             }
+
+            var groupName = groupMember.Group.Name;
+
             await _groupService.RemoveMemberFromGroup(groupMember);
+
+            // Get removed member's devices
+            var deviceTokens = await _deviceService.GetDeviceTokensForUser(studentId);
+
+            if (!deviceTokens.IsNullOrEmpty())
+            {
+                // Generate notification contents
+                FCMessage message = CreateRemovedMemberMessage(deviceTokens, groupId, groupName);
+
+                var notiResult = await _notiService.SendNotificationAsync(message);
+                if (!notiResult) 
+                    return Ok(new ApiErrorResponse(200, 
+                        "Member removed successfully, " +
+                        "but failed to send notifications to some devices."));
+            }
+
             return Ok("Delete Successfully");
         }
 
@@ -184,7 +254,94 @@ namespace TeamoWeb.API.Controllers
             await _groupService.UpdateGroupMemberAsync(groupMember);
 
             groupMember = await _groupService.GetGroupMemberAsync(groupId, studentId);
+
+            var groupName = groupMember.Group.Name;
+
+            // Get updated member's devices
+            var deviceTokens = await _deviceService.GetDeviceTokensForUser(studentId);
+
+            if (!deviceTokens.IsNullOrEmpty())
+            {
+                // Generate notification contents
+                FCMessage message = CreateUpdatedMemberMessage(deviceTokens, groupId, groupName);
+
+                var notiResult = await _notiService.SendNotificationAsync(message);
+                if (!notiResult) 
+                    return Ok(new ApiErrorResponse(200, 
+                        "Member updated successfully, " +
+                        "but failed to send notifications to some devices."));
+            }
+
             return Ok(groupMember.ToDto());
+        }
+
+        private static FCMessage CreateUpdatedGroupMessage(List<string> tokens, 
+            Group group, string status)
+        {
+            return new FCMessage
+            {
+                tokens = tokens,
+                title = "Group Update",
+                body = $"{group.Name} has been updated recently.",
+                data = new Dictionary<string, string>
+                {
+                    { "type", "updated_group" },
+                    { "groupId", group.Id.ToString() },
+                    { "status", status }
+                }
+            };
+        }
+
+        private static FCMessage CreateDeletedGroupMessage(List<string> tokens, 
+            string groupName, int groupId, string status)
+        {
+            return new FCMessage
+            {
+                tokens = tokens,
+                title = "Delete group",
+                body = $"{groupName} has been deleted.",
+                data = new Dictionary<string, string>
+                {
+                    { "type", "deleted_group" },
+                    { "groupName", groupName },
+                    { "groupId", groupId.ToString() },
+                    { "status", status }
+                }
+            };
+        }
+
+        private static FCMessage CreateRemovedMemberMessage(List<string> tokens, 
+            int groupId, string groupName)
+        {
+            return new FCMessage
+            {
+                tokens = tokens,
+                title = "Member Removal",
+                body = $"You have been removed from {groupName}",
+                data = new Dictionary<string, string>
+                {
+                    { "type", "removed_member" },
+                    { "groupId", groupId.ToString() },
+                    { "groupName", groupName }
+                }
+            };
+        }
+
+        private static FCMessage CreateUpdatedMemberMessage(List<string> tokens, 
+            int groupId, string groupName)
+        {
+            return new FCMessage
+            {
+                tokens = tokens,
+                title = "Member Update",
+                body = $"Your positions in {groupName} have been updated.",
+                data = new Dictionary<string, string>
+                {
+                    { "type", "updated_member" },
+                    { "groupId", groupId.ToString() },
+                    { "groupName", groupName }
+                }
+            };
         }
     }
 }

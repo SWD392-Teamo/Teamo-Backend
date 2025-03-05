@@ -20,21 +20,18 @@ namespace TeamoWeb.API.Controllers
         private readonly INotificationService _notiService;
         private readonly IDeviceService _deviceService;
         private readonly IUserService _userService;
-        private readonly IGroupService _groupService;
 
         public ApplicationsController(
             IApplicationService appService, 
             IUserService userService, 
             INotificationService notiService,
-            IDeviceService deviceService,
-            IGroupService groupService
+            IDeviceService deviceService
         )
         {
             _appService = appService;
             _userService = userService;
             _notiService = notiService;
             _deviceService = deviceService;
-            _groupService = groupService;
         }
 
         //Get application by id
