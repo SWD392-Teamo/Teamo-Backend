@@ -66,7 +66,6 @@ namespace TeamoWeb.API.Controllers
             var post = postDto.ToEntity();
             post = await _postService.CreatePost(post, user.Id, GroupId);
 
-            var group = await _groupService.GetGroupByIdAsync(GroupId);
             var groupMembers = await _groupService.GetAllGroupMembersAsync(GroupId);
             var groupMembersIds = groupMembers.Select(g => g.StudentId).ToList();
 
@@ -78,7 +77,7 @@ namespace TeamoWeb.API.Controllers
                 var status = post.Status.ToString().ToLower();
 
                 // Generate notification contents
-                FCMessage message = CreateNewPostMessage(deviceTokens, group, post.Id, user, status);
+                FCMessage message = CreateNewPostMessage(deviceTokens, post.Group, post.Id, user, status);
 
                 var notiResult = await _notiService.SendNotificationAsync(message);
                 if (!notiResult) 
@@ -102,8 +101,7 @@ namespace TeamoWeb.API.Controllers
             post = postDto.ToEntity(post);
             post = await _postService.UpdatePost(post, user.Id);
 
-            var group = await _groupService.GetGroupByIdAsync(post.GroupId);
-            var groupMembers = await _groupService.GetAllGroupMembersAsync(group.Id);
+            var groupMembers = await _groupService.GetAllGroupMembersAsync(post.GroupId);
             var groupMembersIds = groupMembers.Select(g => g.StudentId).ToList();
 
             // Get all members' devices
@@ -114,7 +112,7 @@ namespace TeamoWeb.API.Controllers
                 var status = post.Status.ToString().ToLower();
 
                 // Generate notification contents
-                FCMessage message = CreateUpdatedPostMessage(deviceTokens, group, post.Id, user, status);
+                FCMessage message = CreateUpdatedPostMessage(deviceTokens, post.Group, post.Id, user, status);
 
                 var notiResult = await _notiService.SendNotificationAsync(message);
                 if (!notiResult) 
