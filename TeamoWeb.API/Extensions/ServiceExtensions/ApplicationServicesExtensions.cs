@@ -4,6 +4,7 @@ using Google.Cloud.Storage.V1;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using StackExchange.Redis;
 using Teamo.Core.Interfaces;
 using Teamo.Core.Interfaces.Services;
 using Teamo.Infrastructure.Data;
@@ -21,6 +22,8 @@ namespace TeamoWeb.API.Extensions
             {
                 opt.UseSqlServer(config.GetConnectionString("DefaultConnection"));
             });
+
+            // Registers app services
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<ITokenService, TokenService>();
@@ -51,6 +54,19 @@ namespace TeamoWeb.API.Extensions
             {   
                 return StorageClient.Create(credential);
             });
+
+            // Register redis server
+            services.AddSingleton<IConnectionMultiplexer>(redisConfig =>
+            {
+                var connectionString = config.GetConnectionString("Redis") 
+                    ?? throw new Exception("Failed to get redis connection string");
+                var configuration = ConfigurationOptions.Parse(connectionString, true);
+                return ConnectionMultiplexer.Connect(configuration);
+            });
+
+            // Register cache service
+            services.AddSingleton<IApiResponseCacheService, ApiResponseCacheService>();
+
 
             services.AddDataProtection();
 

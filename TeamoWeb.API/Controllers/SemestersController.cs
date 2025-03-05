@@ -1,19 +1,14 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Teamo.Core.Entities;
-using Teamo.Core.Enums;
 using Teamo.Core.Interfaces;
-using Teamo.Core.Specifications.Majors;
 using Teamo.Core.Specifications.Semesters;
 using TeamoWeb.API.Dtos;
-using TeamoWeb.API.Errors;
 using TeamoWeb.API.Extensions;
+using TeamoWeb.API.RequestHelpers;
 
 namespace TeamoWeb.API.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
     public class SemestersController : BaseApiController
     {
         private readonly IGenericRepository<Semester> _semesterRepo;
@@ -22,6 +17,7 @@ namespace TeamoWeb.API.Controllers
             _semesterRepo = semesterRepo;
         }
 
+        [Cache(1000)]
         [HttpGet]
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult<IReadOnlyList<Semester>>> GetSemesters([FromQuery] SemesterParams semesterParams)
@@ -30,6 +26,8 @@ namespace TeamoWeb.API.Controllers
             return await CreatePagedResult(_semesterRepo, spec, semesterParams.PageIndex,
                 semesterParams.PageSize, s => s.ToDto());
         }
+
+        [Cache(1000)]
         [HttpGet("{id}")]
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult<Semester>> GetSemesterById(int id)
@@ -42,6 +40,7 @@ namespace TeamoWeb.API.Controllers
             return Ok(semester.ToDto());
         }
 
+        [InvalidateCache("/semesters")]
         [HttpPost]
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult<Semester>> CreateSemester(SemesterToUpsertDto semesterDto)
@@ -52,6 +51,7 @@ namespace TeamoWeb.API.Controllers
             return Ok(semester.ToDto());
         }
 
+        [InvalidateCache("/semesters")]
         [HttpPatch("{id}")]
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult<Semester>> UpdateSemester(int id, SemesterToUpsertDto semesterDto)

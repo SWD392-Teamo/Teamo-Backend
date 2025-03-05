@@ -8,6 +8,7 @@ using Teamo.Core.Specifications.Majors;
 using TeamoWeb.API.Dtos;
 using TeamoWeb.API.Errors;
 using TeamoWeb.API.Extensions;
+using TeamoWeb.API.RequestHelpers;
 
 namespace TeamoWeb.API.Controllers
 {
@@ -26,6 +27,7 @@ namespace TeamoWeb.API.Controllers
         }
 
         //Get list of majors with spec
+        [Cache(1000)]
         [HttpGet]
         [Authorize(Roles = "Admin,Student")]
         public async Task<ActionResult<IReadOnlyList<MajorDto>>> GetMajors([FromQuery] MajorSpecParams majorSpecParams)
@@ -36,6 +38,7 @@ namespace TeamoWeb.API.Controllers
         }
 
         //Get major by Id
+        [Cache(1000)]
         [HttpGet("{id}")]
         [Authorize(Roles = "Admin,Student")]
         public async Task<ActionResult<MajorDto?>> GetMajorById(int id)
@@ -48,6 +51,7 @@ namespace TeamoWeb.API.Controllers
             return Ok(major.ToDto());
         }
 
+        [InvalidateCache("/majors")]
         [HttpPost]
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult<MajorDto>> CreateMajor(MajorToUpsertDto majorDto)
@@ -65,6 +69,7 @@ namespace TeamoWeb.API.Controllers
             }           
         }
 
+        [InvalidateCache("/majors")]
         [HttpPatch("{id}")]
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult<MajorDto>> UpdateMajor(int id, MajorToUpsertDto majorDto)
@@ -85,6 +90,7 @@ namespace TeamoWeb.API.Controllers
             }
         }
 
+        [InvalidateCache("/majors")]
         [HttpPost("{id}/image")]
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult> UploadMajorImage(int id, [FromForm] IFormFile image)
@@ -113,6 +119,7 @@ namespace TeamoWeb.API.Controllers
             return Ok(new ApiErrorResponse(200, "Image uploaded successfully.", imgUrl));
         }
 
+        [InvalidateCache("/majors")]
         [HttpDelete("{id}")]
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult<MajorDto>> DeleteMajor(int id)

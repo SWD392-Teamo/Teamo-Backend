@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Teamo.Core.Entities;
 using Teamo.Core.Interfaces;
@@ -7,6 +6,7 @@ using Teamo.Core.Specifications.Skills;
 using TeamoWeb.API.Dtos;
 using TeamoWeb.API.Errors;
 using TeamoWeb.API.Extensions;
+using TeamoWeb.API.RequestHelpers;
 
 namespace TeamoWeb.API.Controllers
 {
@@ -19,6 +19,7 @@ namespace TeamoWeb.API.Controllers
             _skillService = skillService;
         }
 
+        [Cache(1000)]
         [HttpGet("{id}")]
         [Authorize]
         public async Task<ActionResult<Skill>> GetSkillById(int id)
@@ -29,6 +30,7 @@ namespace TeamoWeb.API.Controllers
             return Ok(skill.ToDto());
         }
 
+        [Cache(1000)]
         [HttpGet]
         [Authorize]
         public async Task<ActionResult<IReadOnlyList<Skill>>> GetSkills([FromQuery] SkillParams skillParams)
@@ -38,6 +40,7 @@ namespace TeamoWeb.API.Controllers
             return Ok(skillsToDtos);
         }
 
+        [InvalidateCache("/skills")]
         [HttpPost]
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult> CreateSkill([FromBody] SkillDto skill)
