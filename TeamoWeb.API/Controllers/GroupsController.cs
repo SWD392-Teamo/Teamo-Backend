@@ -32,6 +32,7 @@ namespace TeamoWeb.API.Controllers
         /// <summary>
         /// Retrieves a list of groups with pagination.
         /// </summary>
+        [Cache(1000)]
         [HttpGet]
         [Authorize]
         public async Task<ActionResult<IReadOnlyList<GroupDto>>> GetGroupsAsync([FromQuery] GroupParams groupParams)
@@ -46,6 +47,7 @@ namespace TeamoWeb.API.Controllers
         /// <summary>
         /// Retrieves group details by ID.
         /// </summary>
+        [Cache(1000)]
         [HttpGet("{id}")]
         [Authorize]
         public async Task<ActionResult<GroupDto>> GetGroupByIdAsync(int id)
@@ -58,6 +60,7 @@ namespace TeamoWeb.API.Controllers
         /// <summary>
         /// Creates a new group 
         /// </summary>
+        [InvalidateCache("/groups")]
         [HttpPost]
         [Authorize(Roles = "Student")]
         public async Task<ActionResult<GroupDto>> CreateGroupAsync(GroupToUpsertDto groupDto, [FromForm] IFormFile image)
@@ -77,6 +80,7 @@ namespace TeamoWeb.API.Controllers
         /// <summary>
         /// Updates an existing group by ID.
         /// </summary>
+        [InvalidateCache("/groups")]
         [HttpPatch("{id}")]
         [Authorize(Roles = "Student")]
         public async Task<ActionResult<GroupDto>> UpdateGroupAsync(int id, GroupToUpsertDto groupDto)
@@ -92,6 +96,7 @@ namespace TeamoWeb.API.Controllers
             return Ok(updatedGroupDto);
         }
 
+        [InvalidateCache("/groups")]
         [HttpPost("{id}/image")]
         [Authorize(Roles = "Student")]
         public async Task<ActionResult> UploadGroupImage(int id, [FromForm] IFormFile image) 
@@ -123,6 +128,7 @@ namespace TeamoWeb.API.Controllers
         /// <summary>
         /// Deletes a group by ID.
         /// </summary>
+        [InvalidateCache("/groups")]
         [HttpDelete("{id}")]
         [Authorize(Roles = "Student")]
         public async Task<ActionResult<GroupDto>> DeleteGroupAsync(int id)
@@ -138,6 +144,7 @@ namespace TeamoWeb.API.Controllers
         /// <summary>
         /// Adds a member to a group.
         /// </summary>
+        [InvalidateCache("/groups")]
         [HttpPost("{id}/members")]
         [Authorize(Roles = "Student")]
         public async Task<IActionResult> AddMemberToGroup(int id, GroupMemberToAddDto groupMemberToAddDto)
@@ -158,6 +165,7 @@ namespace TeamoWeb.API.Controllers
         /// <summary>
         /// Removes a member from a group.
         /// </summary>
+        [InvalidateCache("/groups")]
         [HttpDelete("{groupId}/members/{studentId}")]
         [Authorize(Roles = "Student")]
         public async Task<IActionResult> RemoveMemberFromGroup(int groupId, int studentId)
@@ -171,6 +179,7 @@ namespace TeamoWeb.API.Controllers
             return Ok("Delete Successfully");
         }
 
+        [InvalidateCache("/groups")]
         [HttpPatch("{groupId}/members/{studentId}")]
         [Authorize(Roles = "Student")]
         public async Task<IActionResult> UpdateGroupMember (int groupId, int studentId, GroupMemberToAddDto gmDto)

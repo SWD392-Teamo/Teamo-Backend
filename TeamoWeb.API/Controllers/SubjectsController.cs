@@ -25,6 +25,7 @@ namespace TeamoWeb.API.Controllers
         }
 
         //Get subjects with spec
+        [Cache(1000)]
         [HttpGet]
         [Authorize]
         public async Task<ActionResult<IReadOnlyList<SubjectDto>>> GetSubjects([FromQuery] SubjectParams subjectParams)
@@ -38,6 +39,7 @@ namespace TeamoWeb.API.Controllers
         }
 
         //Get subject by id
+        [Cache(1000)]
         [HttpGet("{id}")]
         [Authorize]
         public async Task<ActionResult<SubjectDto?>> GetSubjectById(int id)
@@ -52,6 +54,7 @@ namespace TeamoWeb.API.Controllers
 
 
         //Create a new subject
+        [InvalidateCache("/subjects")]
         [HttpPost]
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult> CreateNewSubject([FromBody] SubjectDto subjectDto)
@@ -71,6 +74,7 @@ namespace TeamoWeb.API.Controllers
         }
 
         //Update subject, update name or description only
+        [InvalidateCache("/subjects")]
         [HttpPatch("{id}")]
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult> UpdateSubject(int id, [FromBody] SubjectDto subjectDto)
@@ -86,6 +90,7 @@ namespace TeamoWeb.API.Controllers
             else return Ok(new ApiErrorResponse(200, "Updated subject successfully."));
         }
 
+        [InvalidateCache("/subjects")]
         [HttpPost("{id}/image")]
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult> UploadSubjectImage(int id, [FromForm] IFormFile image)
@@ -114,6 +119,7 @@ namespace TeamoWeb.API.Controllers
         }
 
         //Delete subject, change subject status to inactive
+        [InvalidateCache("/subjects")]
         [HttpDelete("{id}")]
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult> DeleteSubject(int id)

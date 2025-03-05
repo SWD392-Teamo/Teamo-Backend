@@ -1,11 +1,8 @@
-using System.Xml;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Teamo.Core.Entities;
-using Teamo.Core.Interfaces;
 using Teamo.Core.Interfaces.Services;
 using Teamo.Core.Specifications.Fields;
-using Teamo.Core.Specifications.SubjectFields;
 using TeamoWeb.API.Dtos;
 using TeamoWeb.API.Errors;
 using TeamoWeb.API.Extensions;
@@ -23,6 +20,7 @@ namespace TeamoWeb.API.Controllers
         }
 
         //Get fields
+        [Cache(1000)]
         [HttpGet]
         [Authorize]
         public async Task<ActionResult<IReadOnlyList<Field>>> GetFields([FromQuery] FieldParams fieldParams)
@@ -35,6 +33,7 @@ namespace TeamoWeb.API.Controllers
         }
 
         //Get field by id
+        [Cache(1000)]
         [HttpGet("{id}")]
         public async Task<ActionResult<Field>> GetFieldById(int id)
         {
@@ -44,6 +43,7 @@ namespace TeamoWeb.API.Controllers
         }
 
         //Create new field
+        [InvalidateCache("/fields")]
         [HttpPost]
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult<Field>> CreateField([FromBody] FieldDto field)
@@ -61,6 +61,7 @@ namespace TeamoWeb.API.Controllers
         }
 
         //Delete field
+        [InvalidateCache("/fields")]
         [HttpDelete("{id}")]
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult> DeleteField(int id)
