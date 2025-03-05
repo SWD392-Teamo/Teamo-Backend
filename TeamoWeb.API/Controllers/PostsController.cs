@@ -37,8 +37,8 @@ namespace TeamoWeb.API.Controllers
             _deviceService = deviceService;
         }
 
+        [Cache(1000)]
         [HttpGet]
-        [Authorize]
         public async Task<ActionResult<Pagination<PostDto>>> GetPostsAsync([FromQuery]PostParams postParams)
         {
             var spec = new PostSpecification(postParams);
@@ -49,7 +49,8 @@ namespace TeamoWeb.API.Controllers
             var pagination = new Pagination<PostDto>(postParams.PageIndex, postParams.PageSize, totalPosts, postDtos);
             return Ok(pagination);
         }
-        
+
+        [Cache(1000)]
         [HttpGet("{id}")]
         public async Task<ActionResult<PostDto>> GetPostByIdAsync(int id)
         {
@@ -58,7 +59,9 @@ namespace TeamoWeb.API.Controllers
             return Ok(post.ToDto());
         }
 
+        [InvalidateCache("/posts")]
         [HttpPost]
+        [Authorize(Roles = "Student")]
         public async Task<ActionResult<PostDto>> CreatePostAsync([FromRoute]int GroupId, PostToUpsertDto postDto)
         {
             var user = await _userService.GetUserByClaims(HttpContext.User);
@@ -91,11 +94,13 @@ namespace TeamoWeb.API.Controllers
             return Ok(post.ToDto());    
         }
 
+        [InvalidateCache("/posts")]
         [HttpPatch("{id}")]
+        [Authorize(Roles = "Student")]
         public async Task<ActionResult<PostDto>> UpdatePostAsync(int id, PostToUpsertDto postDto)
         {
             var post = await _postService.GetPostByIdAsync(id);
-            if(post == null) return NotFound(); 
+            if(post == null) return NotFound(new ApiErrorResponse(404, "Post not found.")); 
             var user = await _userService.GetUserByClaims(HttpContext.User);
             if (user == null)
                 return Unauthorized();
@@ -126,11 +131,13 @@ namespace TeamoWeb.API.Controllers
             return Ok(post.ToDto());
         }
 
+        [InvalidateCache("/posts")]
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Student")]
         public async Task<ActionResult> DeletePostAsync(int id)
         {
             var post = await _postService.GetPostByIdAsync(id);
-            if (post == null) return NotFound();
+            if (post == null) return NotFound(new ApiErrorResponse(404, "Post not found."));
             var user = await _userService.GetUserByClaims(HttpContext.User);
             if (user == null)
                 return Unauthorized();
