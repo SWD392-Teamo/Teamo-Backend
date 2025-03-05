@@ -17,12 +17,6 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddApplicationServices(builder.Configuration);
 builder.Services.AddIdentityServices(builder.Configuration);
 
-// Add firebase initialization
-var firebaseApp = FirebaseApp.Create(new AppOptions
-{
-    Credential = GoogleCredential.FromFile("firebase.json")
-});
-
 builder.Services.AddSingleton(TimeProvider.System);
 
 var app = builder.Build();

@@ -16,11 +16,19 @@ namespace TeamoWeb.API.Controllers
     {
         private readonly IUserService _userService;
         private readonly IProfileService _profileService;
+        private readonly IUploadService _uploadService;
+        private readonly IConfiguration _config;
 
-        public UsersController(IUserService userService, IProfileService profileService)
+        public UsersController(
+            IUserService userService, 
+            IProfileService profileService, 
+            IUploadService uploadService,
+            IConfiguration config)
         {
             _userService = userService;
             _profileService = profileService;
+            _uploadService = uploadService;
+            _config = config;
         }
 
         //Get all users with spec
@@ -189,6 +197,29 @@ namespace TeamoWeb.API.Controllers
             
             if(!result) return BadRequest(new ApiErrorResponse(400, "Failed to remove link from profile"));
             return Ok(new ApiErrorResponse(200, "Link removed from profile successfully."));
+        }
+
+        [HttpPost("{userId}/profile/image")]
+        [Authorize(Roles = "Student")]
+        public async Task<ActionResult> UploadProfileImage(int userId, [FromForm] IFormFile image) 
+        {
+            var currentUser = await _userService.GetUserByIdAsync(userId);
+            if(currentUser == null) return Unauthorized(new ApiErrorResponse(401, "Unauthorized"));
+            if(image == null) return BadRequest(new ApiErrorResponse(400, "No image found"));
+
+            var imgUrl = await _uploadService.UploadFileAsync(
+                image.OpenReadStream(), 
+                image.FileName, 
+                image.ContentType,
+                _config["Firebase:ProfileImagesUrl"]);
+
+            currentUser.ImgUrl = imgUrl;
+
+            var result = await _userService.UpdateUserAsync(currentUser);
+            
+            if (!result.Succeeded) return BadRequest(new ApiErrorResponse(400, "Failed to upload image."));
+
+            return Ok(new ApiErrorResponse(200, "Image uploaded successfully."));
         }
     }
 }

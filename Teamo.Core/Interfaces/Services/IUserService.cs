@@ -16,6 +16,7 @@ namespace Teamo.Core.Interfaces.Services
         Task<IdentityResult> CreateUserAsync(User user);
         Task<IdentityResult> UpdateUserAsync(User user);
         Task<User> GetUserByClaims(ClaimsPrincipal principal);
+        Task<User> GetUserByIdAsync(int id);
         Task<IList<Claim>> GetUserClaims(User user);
     }
 }

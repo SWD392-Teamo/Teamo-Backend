@@ -1,11 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using Teamo.Core.Entities;
-using Teamo.Core.Entities.Identity;
-using Teamo.Core.Enums;
 using Teamo.Core.Interfaces.Services;
-using Teamo.Core.Specifications.Applications;
 using Teamo.Core.Specifications.Groups;
 using TeamoWeb.API.Dtos;
 using TeamoWeb.API.Errors;
@@ -19,13 +14,19 @@ namespace TeamoWeb.API.Controllers
     {
         private readonly IGroupService _groupService;
         private readonly IUserService _userService;
+        private readonly IUploadService _uploadService;
+        private readonly IConfiguration _config;
         public GroupsController(
             IGroupService groupService, 
-            IUserService userService
+            IUserService userService,
+            IUploadService uploadService,
+            IConfiguration config
         )
         {
             _groupService = groupService;
             _userService = userService;
+            _uploadService = uploadService;
+            _config = config;
         }
 
         /// <summary>
@@ -59,9 +60,8 @@ namespace TeamoWeb.API.Controllers
         /// </summary>
         [HttpPost]
         [Authorize(Roles = "Student")]
-        public async Task<ActionResult<GroupDto>> CreateGroupAsync(GroupToUpsertDto groupDto)
+        public async Task<ActionResult<GroupDto>> CreateGroupAsync(GroupToUpsertDto groupDto, [FromForm] IFormFile image)
         {
-
             var user = await _userService.GetUserByClaims(HttpContext.User);
             if (user == null)
                 return Unauthorized(new ApiErrorResponse(401, "Unauthorize"));
@@ -72,7 +72,6 @@ namespace TeamoWeb.API.Controllers
             group = await _groupService.GetGroupByIdAsync(group.Id);
             var createdGroupDto = group.ToDto();
             return Ok(createdGroupDto);
-
         }
 
         /// <summary>
@@ -91,6 +90,34 @@ namespace TeamoWeb.API.Controllers
             updatedGroup = await _groupService.GetGroupByIdAsync(group.Id);
             var updatedGroupDto = updatedGroup.ToDto();
             return Ok(updatedGroupDto);
+        }
+
+        [HttpPost("{id}/image")]
+        [Authorize(Roles = "Student")]
+        public async Task<ActionResult> UploadGroupImage(int id, [FromForm] IFormFile image) 
+        {
+            // Check if an image was chosen
+            if (image == null) return BadRequest(new ApiErrorResponse(400, "No image found"));
+
+            var group = await _groupService.GetGroupByIdAsync(id);
+            if (group == null)
+                return BadRequest(new ApiErrorResponse(404, "Group not found!"));
+
+            // Upload and get download Url
+            var imgUrl = await _uploadService.UploadFileAsync(
+                image.OpenReadStream(), 
+                image.FileName, 
+                image.ContentType,
+                _config["Firebase:GroupImagesUrl"]);
+
+            // Update image url
+            group.ImgUrl = imgUrl;
+
+            var result = await _groupService.UpdateGroupAsync(group);
+            
+            if (!result) return BadRequest(new ApiErrorResponse(400, "Failed to upload image."));
+
+            return Ok(new ApiErrorResponse(200, "Image uploaded successfully.", imgUrl));
         }
 
         /// <summary>

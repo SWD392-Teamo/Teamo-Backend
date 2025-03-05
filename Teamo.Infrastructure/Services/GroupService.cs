@@ -144,10 +144,11 @@ namespace Teamo.Infrastructure.Services
             return await _unitOfWork.Repository<Group>().ListAsync(spec);
         }
 
-        public async Task UpdateGroupAsync(Group group)
+        public async Task<bool> UpdateGroupAsync(Group group)
         {
             _unitOfWork.Repository<Group>().Update(group);
-            await _unitOfWork.Repository<Group>().SaveAllAsync();
+            var result = await _unitOfWork.Repository<Group>().SaveAllAsync();
+            return result;
         }
 
         public async Task UpdateGroupMemberAsync(GroupMember groupMember)
