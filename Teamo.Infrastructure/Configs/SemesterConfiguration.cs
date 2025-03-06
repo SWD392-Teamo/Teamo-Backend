@@ -10,6 +10,9 @@ namespace Teamo.Infrastructure.Configs
         public void Configure(EntityTypeBuilder<Semester> builder)
         {
             builder.ToTable("Semester");
+
+            builder.HasIndex(o => o.Code).IsUnique();
+            
             builder.Property(o => o.Name).HasColumnType("nvarchar(100)");
             builder.Property(o => o.Code).HasColumnType("varchar(20)");
             builder.Property(o => o.StartDate).HasColumnType("date");

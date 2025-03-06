@@ -10,6 +10,9 @@ namespace Teamo.Infrastructure.Configs
         public void Configure(EntityTypeBuilder<Subject> builder)
         {
             builder.ToTable("Subject");
+
+            builder.HasIndex(o => o.Code).IsUnique();
+
             builder.Property(o => o.Code).HasColumnType("varchar(20)");   
             builder.Property(o => o.Name).HasColumnType("varchar(100)");
             builder.Property(o => o.Description).HasColumnType("varchar(1000)");
