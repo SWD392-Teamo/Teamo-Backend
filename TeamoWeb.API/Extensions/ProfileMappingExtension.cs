@@ -19,7 +19,7 @@ namespace TeamoWeb.API.Extensions
                 Dob = user.Dob,
                 ImgUrl = user.ImgUrl ?? null,
                 Description = user.Description ?? null,
-                MajorCode = user.Major.Code ?? null,
+                MajorCode = user.Major == null ? null : user.Major.Code,
                 Links = (user.Links != null) ? 
                     user.Links.Select(l => l.ToDto()).ToList() : new List<LinkDto?>(),
                 StudentSkills = (user.StudentSkills != null) ? 
