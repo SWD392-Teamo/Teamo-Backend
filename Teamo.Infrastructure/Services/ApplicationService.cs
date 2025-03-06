@@ -40,10 +40,11 @@ namespace Teamo.Infrastructure.Services
             return await _unitOfWork.Complete();
         }
 
-        public async Task<bool> CreateNewApplicationAsync(Application newAapp)
+        public async Task<Application> CreateNewApplicationAsync(Application newAapp)
         {
             _unitOfWork.Repository<Application>().Add(newAapp);
-            return await _unitOfWork.Complete();            
+            await _unitOfWork.Complete();
+            return await GetApplicationByIdAsync(newAapp.Id);            
         }
 
         public async Task<bool> DeleteApplicationAsync(Application app)

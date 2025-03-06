@@ -53,6 +53,17 @@ namespace Teamo.Infrastructure.Services
             return deviceTokens;
         }
 
+        public async Task<List<string>> GetDeviceTokensForSelectedUsers(List<int> userIds)
+        {
+            var deviceTokens = new List<string>();
+            foreach (var id in userIds)
+            {
+                var userDeviceTokens = await GetDeviceTokensForUser(id);
+                deviceTokens.AddRange(userDeviceTokens);
+            }
+            return deviceTokens;
+        }
+
         private async Task<bool> CheckExistedDevice(string token)
         {
             var spec = new DeviceSpecification(token);

@@ -78,7 +78,7 @@ namespace Teamo.Infrastructure.Data
                         Gender = Gender.Female,
                         Dob = new DateOnly(2000, 2, 1),
                         ImgUrl = "https://firebasestorage.googleapis.com/v0/b/gemify-d7e93.appspot.com/o/images%2Fusers%2Ffemale-user.png",
-                        PhoneNumber = "0034988493",
+                        PhoneNumber = "0034988494",
                         MajorID = 2
                     },"khanh123456","Student"),
                     (new User
@@ -97,7 +97,7 @@ namespace Teamo.Infrastructure.Data
                         Gender = Gender.Male,
                         Dob = new DateOnly(2000, 2, 1),
                         ImgUrl = "https://firebasestorage.googleapis.com/v0/b/gemify-d7e93.appspot.com/o/images%2Fusers%2Ffemale-user.png",
-                        PhoneNumber = "0034988493",
+                        PhoneNumber = "0034988495",
                         MajorID = 1
                     },"khanhle123456","Student"),
                     (new User
@@ -111,7 +111,7 @@ namespace Teamo.Infrastructure.Data
                         Gender = Gender.Male,
                         Dob = new DateOnly(2000, 2, 1),
                         ImgUrl = "https://firebasestorage.googleapis.com/v0/b/gemify-d7e93.appspot.com/o/images%2Fusers%2Ffemale-user.png",
-                        PhoneNumber = "0034988493",
+                        PhoneNumber = "0034988496",
                         MajorID = 7
                     },"thanh123456","Student"),
                     (new User
@@ -125,7 +125,7 @@ namespace Teamo.Infrastructure.Data
                         Gender = Gender.Female,
                         Dob = new DateOnly(2000, 2, 1),
                         ImgUrl = "https://firebasestorage.googleapis.com/v0/b/gemify-d7e93.appspot.com/o/images%2Fusers%2Ffemale-user.png",
-                        PhoneNumber = "0034988493",
+                        PhoneNumber = "0034988497",
                         MajorID = 6
                     },"hau123456","Student"),
                     (new User
@@ -139,7 +139,7 @@ namespace Teamo.Infrastructure.Data
                         Gender = Gender.Male,
                         Dob = new DateOnly(2000, 2, 1),
                         ImgUrl = "https://firebasestorage.googleapis.com/v0/b/gemify-d7e93.appspot.com/o/images%2Fusers%2Ffemale-user.png",
-                        PhoneNumber = "0034988493",
+                        PhoneNumber = "0034988498",
                         MajorID = 1
                     },"an123456","Student")
                 };

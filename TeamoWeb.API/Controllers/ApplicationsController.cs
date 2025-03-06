@@ -112,7 +112,7 @@ namespace TeamoWeb.API.Controllers
                 if (!notiResult) 
                     return Ok(new ApiErrorResponse(200, 
                         "Application reviewed successfully, " +
-                        "but some failed to send notifications to some devices."));
+                        "but failed to send notifications to some devices."));
             }
 
             return Ok(new ApiErrorResponse(200, "Application reviewed successfully."));
@@ -137,8 +137,26 @@ namespace TeamoWeb.API.Controllers
 
             var app = appDto.ToEntity();
             
-            var result = await _appService.CreateNewApplicationAsync(app);
-            if(!result) return BadRequest(new ApiErrorResponse(400, "Failed to create and send application."));
+            app = await _appService.CreateNewApplicationAsync(app);
+            if(app == null) return BadRequest(new ApiErrorResponse(400, "Failed to create and send application."));
+
+            var groupLeaderId = await _appService.GetGroupLeaderIdAsync(groupId);
+            
+            // Get group leader's devices
+            var deviceTokens = await _deviceService.GetDeviceTokensForUser(groupLeaderId);
+
+            if (!deviceTokens.IsNullOrEmpty())
+            {
+                // Generate notification contents
+                FCMessage message = CreateNewApplicationMessage(deviceTokens, app.Group, app.Id);
+
+                var notiResult = await _notiService.SendNotificationAsync(message);
+                if (!notiResult) 
+                    return Ok(new ApiErrorResponse(200, 
+                        "Application created and sent successfully, " +
+                        "but failed to send notifications to some devices."));
+            }
+
             return Ok(new ApiErrorResponse(200, "Application sent successfully."));
         }
 
@@ -198,6 +216,23 @@ namespace TeamoWeb.API.Controllers
                     { "groupId", groupId.ToString() },
                     { "applicationId", appId.ToString() },
                     { "status", status }
+                }
+            };
+        }
+
+        private static FCMessage CreateNewApplicationMessage(List<string> tokens, 
+            Group group, int appId)
+        {
+            return new FCMessage
+            {
+                tokens = tokens,
+                title = "New Application",
+                body = $"{group.Name} has received a new application.",
+                data = new Dictionary<string, string>
+                {
+                    { "type", "new_application" },
+                    { "groupId", group.Id.ToString() },
+                    { "applicationId", appId.ToString() }
                 }
             };
         }
