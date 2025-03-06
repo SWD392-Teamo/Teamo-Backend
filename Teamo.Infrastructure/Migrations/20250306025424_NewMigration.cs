@@ -711,6 +711,13 @@ namespace Teamo.Infrastructure.Migrations
                 column: "StudentId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Major_Code",
+                table: "Major",
+                column: "Code",
+                unique: true,
+                filter: "[Code] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_MajorSubject_MajorId",
                 table: "MajorSubject",
                 column: "MajorId");
@@ -731,6 +738,34 @@ namespace Teamo.Infrastructure.Migrations
                 column: "StudentId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Semester_Code",
+                table: "Semester",
+                column: "Code",
+                unique: true,
+                filter: "[Code] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Student_Code",
+                table: "Student",
+                column: "Code",
+                unique: true,
+                filter: "[Code] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Student_Email",
+                table: "Student",
+                column: "Email",
+                unique: true,
+                filter: "[Email] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Student_Phone",
+                table: "Student",
+                column: "Phone",
+                unique: true,
+                filter: "[Phone] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_StudentSkill_SkillId",
                 table: "StudentSkill",
                 column: "SkillId");
@@ -739,6 +774,13 @@ namespace Teamo.Infrastructure.Migrations
                 name: "IX_StudentSkill_StudentId",
                 table: "StudentSkill",
                 column: "StudentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Subject_Code",
+                table: "Subject",
+                column: "Code",
+                unique: true,
+                filter: "[Code] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_SubjectField_FieldId",
@@ -756,9 +798,30 @@ namespace Teamo.Infrastructure.Migrations
                 column: "NormalizedEmail");
 
             migrationBuilder.CreateIndex(
+                name: "IX_User_Code",
+                table: "User",
+                column: "Code",
+                unique: true,
+                filter: "[Code] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_User_Email",
+                table: "User",
+                column: "Email",
+                unique: true,
+                filter: "[Email] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_User_MajorID",
                 table: "User",
                 column: "MajorID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_User_PhoneNumber",
+                table: "User",
+                column: "PhoneNumber",
+                unique: true,
+                filter: "[PhoneNumber] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "UserNameIndex",

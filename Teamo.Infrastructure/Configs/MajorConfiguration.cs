@@ -10,6 +10,9 @@ namespace Teamo.Infrastructure.Configs
         public void Configure(EntityTypeBuilder<Major> builder)
         {
             builder.ToTable("Major");
+
+            builder.HasIndex(o => o.Code).IsUnique();
+
             builder.Property(m => m.Code).HasColumnType("varchar(20)");
             builder.Property(m => m.Name).HasColumnType("varchar(100)");
             builder.Property(m => m.CreatedDate).HasColumnType("date");
