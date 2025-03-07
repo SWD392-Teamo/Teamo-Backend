@@ -42,14 +42,14 @@ namespace TeamoWeb.API.Controllers
         [Cache(1000)]
         [HttpGet("{id}")]
         [Authorize]
-        public async Task<ActionResult<SubjectDto?>> GetSubjectById(int id)
+        public async Task<ActionResult<SubjectDto>> GetSubjectById(int id)
         {
             var subject = await _subjectService.GetSubjectByIdAsync(id);
 
             if (subject == null) 
                 return NotFound(new ApiErrorResponse(404, "Subject not found"));
 
-            return subject.ToDto();
+            return Ok(subject.ToDto());
         }
 
 
@@ -57,7 +57,7 @@ namespace TeamoWeb.API.Controllers
         [InvalidateCache("/subjects")]
         [HttpPost]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult> CreateNewSubject([FromBody] SubjectDto subjectDto)
+        public async Task<ActionResult<SubjectDto>> CreateNewSubject([FromBody] SubjectDto subjectDto)
         {
             if(string.IsNullOrEmpty(subjectDto.Name) || string.IsNullOrEmpty(subjectDto.Code))
                 return BadRequest(new ApiErrorResponse(400, "Please input all required fields."));
@@ -67,27 +67,27 @@ namespace TeamoWeb.API.Controllers
             
             var subject = subjectDto.ToEntity();
 
-            var result = await _subjectService.CreateSubjectAsync(subject);
+            var newSubject = await _subjectService.CreateSubjectAsync(subject);
 
-            if(!result) return BadRequest(new ApiErrorResponse(400, "Failed to create new subject."));
-            else return Ok(new ApiErrorResponse(200, "Created new subject successfully."));
+            if(newSubject == null) return BadRequest(new ApiErrorResponse(400, "Failed to create new subject."));
+            else return Ok(newSubject.ToDto());
         }
 
         //Update subject, update name or description only
         [InvalidateCache("/subjects")]
         [HttpPatch("{id}")]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult> UpdateSubject(int id, [FromBody] SubjectDto subjectDto)
+        public async Task<ActionResult<SubjectDto>> UpdateSubject(int id, [FromBody] SubjectDto subjectDto)
         {
             var subject = await _subjectService.GetSubjectByIdAsync(id);
             if(subject == null) return NotFound(new ApiErrorResponse(404, "Subject not found."));
 
             subject = subjectDto.ToEntity(subject);
 
-            var result = await _subjectService.UpdateSubjectAsync(subject);
+            var updatedSubject = await _subjectService.UpdateSubjectAsync(subject);
 
-            if(!result) return BadRequest(new ApiErrorResponse(400, "Failed to update subject."));
-            else return Ok(new ApiErrorResponse(200, "Updated subject successfully."));
+            if(updatedSubject == null) return BadRequest(new ApiErrorResponse(400, "Failed to update subject."));
+            else return Ok(updatedSubject.ToDto());
         }
 
         [InvalidateCache("/subjects")]
@@ -111,9 +111,9 @@ namespace TeamoWeb.API.Controllers
             // Update image url
             subject.ImgUrl = imgUrl;
 
-            var result = await _subjectService.UpdateSubjectAsync(subject);
+            var updatedSubject = await _subjectService.UpdateSubjectAsync(subject);
 
-            if (!result) return BadRequest(new ApiErrorResponse(400, "Failed to upload image."));
+            if (updatedSubject == null) return BadRequest(new ApiErrorResponse(400, "Failed to upload image."));
 
             return Ok(new ApiErrorResponse(200, "Image uploaded successfully.", imgUrl));
         }

@@ -16,13 +16,22 @@ namespace TeamoWeb.API.Extensions
             };
         }
 
-        public static Field ToEntity(this FieldDto fieldDto)
+        public static Field ToEntity(this FieldDto fieldDto, Field? field = null)
         {
             //Add field
-            return new Field{
-                Name = fieldDto.Name,
-                Description = fieldDto.Description
-            };
+            if(field == null)
+            {
+                return new Field{
+                    Name = fieldDto.Name,
+                    Description = fieldDto.Description
+                };
+            }
+
+            //Update field
+            field.Name = string.IsNullOrEmpty(fieldDto.Name) ? field.Name : fieldDto.Name;
+            field.Description = string.IsNullOrEmpty(fieldDto.Description) ? field.Description : fieldDto.Description;
+
+            return field;
         }
     }
 }

@@ -47,16 +47,18 @@ namespace Teamo.Infrastructure.Services
             return subjects;          
         }
 
-        public async Task<bool> CreateSubjectAsync(Subject subject)
+        public async Task<Subject> CreateSubjectAsync(Subject subject)
         {
             _unitOfWork.Repository<Subject>().Add(subject);
-            return await _unitOfWork.Complete();
+            await _unitOfWork.Complete();
+            return await GetSubjectByIdAsync(subject.Id);
         }
 
-        public async Task<bool> UpdateSubjectAsync(Subject subject)
+        public async Task<Subject> UpdateSubjectAsync(Subject subject)
         {
             _unitOfWork.Repository<Subject>().Update(subject);
-            return await _unitOfWork.Complete();
+            await _unitOfWork.Complete();
+            return await GetSubjectByIdAsync(subject.Id);
         }
 
         public async Task<bool> DeleteSubjectAsync(Subject subject)

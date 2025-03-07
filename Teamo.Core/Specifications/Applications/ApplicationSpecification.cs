@@ -1,3 +1,4 @@
+using Teamo.Core.Constants;
 using Teamo.Core.Entities;
 using Teamo.Core.Enums;
 
@@ -21,7 +22,6 @@ namespace Teamo.Core.Specifications.Applications
             AddInclude(x => x.Group);
             AddInclude(x => x.Student);
             AddInclude(x => x.GroupPosition);
-            AddOrderByDescending(x => x.RequestTime);
 
             ApplyPaging(appParams.PageSize * (appParams.PageIndex - 1),
                 appParams.PageSize);
@@ -30,10 +30,10 @@ namespace Teamo.Core.Specifications.Applications
             {
                 switch (appParams.Sort)
                 {
-                    case "dateAsc":
+                    case SortOptions.DateAsc:
                         AddOrderBy(x => x.RequestTime);
                         break;
-                    case "dateDesc":
+                    case SortOptions.DateDesc:
                         AddOrderByDescending(x => x.RequestTime);
                         break;
                     default:
