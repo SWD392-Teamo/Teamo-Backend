@@ -114,7 +114,7 @@ namespace Teamo.Infrastructure.Services
         }
 
         //Delete applications that have been requested (and unanswered) for 7 days
-        public async Task<bool> AutoDeleteRequestedApplicationsAsync()
+        private async Task<bool> AutoDeleteRequestedApplicationsAsync()
         {
             var applications = await _unitOfWork.Repository<Application>().ListAllAsync();
             var applicationsToDelete = applications.Where(a => 

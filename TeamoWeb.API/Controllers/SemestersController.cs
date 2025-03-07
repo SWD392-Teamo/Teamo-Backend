@@ -4,6 +4,7 @@ using Teamo.Core.Entities;
 using Teamo.Core.Interfaces;
 using Teamo.Core.Specifications.Semesters;
 using TeamoWeb.API.Dtos;
+using TeamoWeb.API.Errors;
 using TeamoWeb.API.Extensions;
 using TeamoWeb.API.RequestHelpers;
 
@@ -20,7 +21,7 @@ namespace TeamoWeb.API.Controllers
         [Cache(1000)]
         [HttpGet]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<IReadOnlyList<Semester>>> GetSemesters([FromQuery] SemesterParams semesterParams)
+        public async Task<ActionResult<IReadOnlyList<SemesterDto>>> GetSemesters([FromQuery] SemesterParams semesterParams)
         {
             var spec = new SemesterSpecification(semesterParams);
             return await CreatePagedResult(_semesterRepo, spec, semesterParams.PageIndex,
@@ -30,12 +31,12 @@ namespace TeamoWeb.API.Controllers
         [Cache(1000)]
         [HttpGet("{id}")]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<Semester>> GetSemesterById(int id)
+        public async Task<ActionResult<SemesterDto>> GetSemesterById(int id)
         {
             var semester = await _semesterRepo.GetByIdAsync(id);
             if (semester == null)
             {
-                return NotFound();
+                return NotFound(new ApiErrorResponse(404, "Semester not found"));
             }
             return Ok(semester.ToDto());
         }
@@ -43,7 +44,7 @@ namespace TeamoWeb.API.Controllers
         [InvalidateCache("/semesters")]
         [HttpPost]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<Semester>> CreateSemester(SemesterToUpsertDto semesterDto)
+        public async Task<ActionResult<SemesterDto>> CreateSemester(SemesterToUpsertDto semesterDto)
         {
             var semester = semesterDto.ToEntity();
             _semesterRepo.Add(semester);
@@ -54,7 +55,7 @@ namespace TeamoWeb.API.Controllers
         [InvalidateCache("/semesters")]
         [HttpPatch("{id}")]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<Semester>> UpdateSemester(int id, SemesterToUpsertDto semesterDto)
+        public async Task<ActionResult<SemesterDto>> UpdateSemester(int id, SemesterToUpsertDto semesterDto)
         {
 
             var semester = await _semesterRepo.GetByIdAsync(id);

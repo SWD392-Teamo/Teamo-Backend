@@ -38,7 +38,7 @@ namespace TeamoWeb.API.Controllers
         [Cache(1000)]
         [HttpGet("{id}")]
         [Authorize(Roles = "Student")]
-        public async Task<ActionResult<ApplicationDto?>> GetApplicationById(int id)
+        public async Task<ActionResult<ApplicationDto>> GetApplicationById(int id)
         {
             var app = await _appService.GetApplicationByIdAsync(id);
             if(app == null) return NotFound(new ApiErrorResponse(404, "Application not found"));
@@ -122,7 +122,7 @@ namespace TeamoWeb.API.Controllers
         [InvalidateCache("/applications")]
         [HttpPost]
         [Authorize(Roles = "Student")]
-        public async Task<ActionResult<ApplicationDto>> CreateNewApplication(int groupId, [FromBody] ApplicationToUpsertDto appDto)     
+        public async Task<ActionResult> CreateNewApplication(int groupId, [FromBody] ApplicationToUpsertDto appDto)     
         {            
             var user = await _userService.GetUserByClaims(HttpContext.User);
             if (user == null)

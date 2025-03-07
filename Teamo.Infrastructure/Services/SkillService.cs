@@ -1,5 +1,6 @@
 using Teamo.Core.Entities;
 using Teamo.Core.Interfaces;
+using Teamo.Core.Specifications.Groups;
 using Teamo.Core.Specifications.Skills;
 using Teamo.Core.Specifications.StudentSkills;
 
@@ -46,9 +47,33 @@ namespace Teamo.Infrastructure.Services
             return skills;
         }
 
-        public async Task<bool> CreateSkillAsync(Skill skill)
+        public async Task<Skill> CreateSkillAsync(Skill skill)
         {
             _unitOfWork.Repository<Skill>().Add(skill);
+            await _unitOfWork.Complete();
+            return await GetSkillByIdAsync(skill.Id);
+        }
+
+        public async Task<Skill> UpdateSkillAsync(Skill skill)
+        {
+            _unitOfWork.Repository<Skill>().Update(skill);
+            await _unitOfWork.Complete();
+            return await GetSkillByIdAsync(skill.Id);
+        }
+
+        public async Task<bool> DeleteSkillAsync(Skill skill)
+        {
+            //Check if skill is used in students' profile
+            var studentSkillSpec = new StudentSkillSpecification(skill.Id);
+            var studentSkill = await _unitOfWork.Repository<StudentSkill>().GetEntityWithSpec(studentSkillSpec);
+
+            //Check if skill is used in group positions
+            var positionSkillSpec = new GroupPositionSkillBySkillIdSpecification(skill.Id);
+            var positionSkill = await _unitOfWork.Repository<GroupPositionSkill>().GetEntityWithSpec(positionSkillSpec);
+
+            if(studentSkill != null || positionSkill != null) return false;
+
+            _unitOfWork.Repository<Skill>().Delete(skill);
             return await _unitOfWork.Complete();
         }
 

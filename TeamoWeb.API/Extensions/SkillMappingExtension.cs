@@ -16,13 +16,22 @@ namespace TeamoWeb.API.Extensions
             };
         } 
         
-        public static Skill ToEntity(this SkillDto skillDto)
+        public static Skill ToEntity(this SkillDto skillDto, Skill? skill = null)
         {
             //Add skill
-            return new Skill{
-                Name = skillDto.Name,
-                Type = skillDto.Type
-            };
+            if(skill == null)
+            {
+                return new Skill{
+                    Name = skillDto.Name,
+                    Type = skillDto.Type
+                };
+            }
+
+            //Update skill
+            skill.Name = string.IsNullOrEmpty(skillDto.Name) ? skill.Name : skillDto.Name;
+            skill.Type = string.IsNullOrEmpty(skillDto.Type) ? skill.Type : skillDto.Type;
+
+            return skill;
         }
     }
 }

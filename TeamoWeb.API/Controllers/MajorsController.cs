@@ -131,7 +131,7 @@ namespace TeamoWeb.API.Controllers
 
                 major.Status = MajorStatus.Inactive;
                 _majorRepo.Update(major);
-                return Ok();
+                return Ok(new ApiErrorResponse(200, "Major deleted successfully."));
             }
             catch (Exception ex)
             {
