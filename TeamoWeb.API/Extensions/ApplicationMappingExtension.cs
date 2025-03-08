@@ -18,7 +18,9 @@ namespace TeamoWeb.API.Extensions
                 ImgUrl= application.Student.ImgUrl,
                 RequestTime = application.RequestTime,
                 RequestContent = application.RequestContent,
-                GroupPositionName = application.GroupPosition.Name,
+                DocumentUrl = application.DocumentUrl,
+                GroupPositionName = (application.GroupPosition == null) ? null 
+                    : application.GroupPosition.Name,
                 Status = application.Status.ToString()
             };
         }
@@ -33,6 +35,7 @@ namespace TeamoWeb.API.Extensions
                     StudentId = appDto.StudentId,
                     RequestTime = appDto.RequestTime,
                     RequestContent = appDto.RequestContent ?? "I would like to become a member of this group.",
+                    DocumentUrl = appDto.DocumentUrl,
                     GroupPositionId = appDto.GroupPositionId,
                     Status = ApplicationStatus.Requested
                 };

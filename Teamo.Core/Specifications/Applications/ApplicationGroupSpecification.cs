@@ -8,8 +8,9 @@ namespace Teamo.Core.Specifications.Applications
 
         public ApplicationGroupSpecification(ApplicationParams appParams)
             : base(x => (x.GroupId == appParams.GroupId)
-                    &&(string.IsNullOrEmpty(appParams.Status)
-                    || x.Status == ParseStatus<ApplicationStatus>(appParams.Status)))
+                    && (string.IsNullOrEmpty(appParams.Status) 
+                    ? x.Status == ApplicationStatus.Requested 
+                    : x.Status == ParseStatus<ApplicationStatus>(appParams.Status)))
         {
             AddInclude(x => x.Group);
             AddInclude(x => x.Student);

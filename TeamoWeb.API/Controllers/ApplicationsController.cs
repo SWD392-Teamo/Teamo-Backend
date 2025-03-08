@@ -6,6 +6,7 @@ using Teamo.Core.Entities.Identity;
 using Teamo.Core.Enums;
 using Teamo.Core.Interfaces.Services;
 using Teamo.Core.Specifications.Applications;
+using Teamo.Infrastructure.Services;
 using TeamoWeb.API.Dtos;
 using TeamoWeb.API.Errors;
 using TeamoWeb.API.Extensions;
@@ -20,32 +21,62 @@ namespace TeamoWeb.API.Controllers
         private readonly INotificationService _notiService;
         private readonly IDeviceService _deviceService;
         private readonly IUserService _userService;
+        private readonly IUploadService _uploadService;
+        private readonly IConfiguration _config;
 
         public ApplicationsController(
             IApplicationService appService, 
             IUserService userService, 
             INotificationService notiService,
-            IDeviceService deviceService
+            IDeviceService deviceService,
+            IUploadService uploadService,
+            IConfiguration config
         )
         {
             _appService = appService;
             _userService = userService;
             _notiService = notiService;
             _deviceService = deviceService;
+            _uploadService = uploadService;
+            _config = config;
         }
 
-        //Get application by id
+        // Get application by id
         [Cache(1000)]
         [HttpGet("{id}")]
         [Authorize(Roles = "Student")]
-        public async Task<ActionResult<ApplicationDto?>> GetApplicationById(int id)
+        public async Task<ActionResult<ApplicationDto?>> GetGroupApplicationById(int id)
         {
             var app = await _appService.GetApplicationByIdAsync(id);
-            if(app == null) return NotFound(new ApiErrorResponse(404, "Application not found"));
+
+            if (app == null) return NotFound(new ApiErrorResponse(404, "Application not found"));
+
+            // Check if the student viewing the application is the
+            // leader of the group that the application is sent to
+            if (app.Group.CreatedById != User.GetId())
+                return BadRequest(new ApiErrorResponse(400, "You are not allowed to view this application"));
+
             return Ok(app.ToDto());
         }
 
-        //Get group's applications with spec
+        // Get application by id
+        [Cache(1000)]
+        [HttpGet("/api/applications/{id}")]
+        [Authorize(Roles = "Student")]
+        public async Task<ActionResult<ApplicationDto?>> GetUserApplicationById(int id)
+        {
+            var app = await _appService.GetApplicationByIdAsync(id);
+            if (app == null) 
+                return NotFound(new ApiErrorResponse(404, "Application not found"));
+
+            // Check if the sender is the one viewing the applications
+            if (app.StudentId != User.GetId()) 
+                return BadRequest(new ApiErrorResponse(400, "You are not this application's sender"));
+
+            return Ok(app.ToDto());
+        }
+
+        // Get group's applications with spec
         [Cache(1000)]
         [HttpGet]
         [Authorize(Roles = "Student")]
@@ -70,7 +101,7 @@ namespace TeamoWeb.API.Controllers
             return Ok(pagination);
         }
 
-        //Approve or reject application
+        // Approve or reject application
         [InvalidateCache("/applications")]
         [HttpPatch("{id}")]
         [Authorize(Roles = "Student")]
@@ -118,7 +149,7 @@ namespace TeamoWeb.API.Controllers
             return Ok(new ApiErrorResponse(200, "Application reviewed successfully."));
         }
 
-        //Create and send an application
+        // Create and send an application
         [InvalidateCache("/applications")]
         [HttpPost]
         [Authorize(Roles = "Student")]
@@ -160,7 +191,7 @@ namespace TeamoWeb.API.Controllers
             return Ok(new ApiErrorResponse(200, "Application sent successfully."));
         }
 
-        //Delete application (recall unanswered application)
+        // Delete application (recall unanswered application)
         [InvalidateCache("/applications")]
         [HttpDelete("{id}")]
         [Authorize(Roles = "Student")]
@@ -182,7 +213,7 @@ namespace TeamoWeb.API.Controllers
             return Ok(new ApiErrorResponse(200, "Application deleted successfully."));
         }
 
-        //Get user's sent applications with spec
+        // Get user's sent applications with spec
         [Cache(1000)]
         [HttpGet("/api/applications")]
         [Authorize(Roles = "Student")]
@@ -200,6 +231,28 @@ namespace TeamoWeb.API.Controllers
             var appsToDto = apps.Select(a => a.ToDto()).ToList();
             var pagination = new Pagination<ApplicationDto>(appParams.PageIndex,appParams.PageSize,count,appsToDto);
             return Ok(pagination);
+        }
+
+        [InvalidateCache("/applications")]
+        [HttpPost("/api/applications/document")]
+        [Authorize(Roles = "Student")]
+        public async Task<ActionResult> UploadApplicationDocument([FromForm] IFormFile document)
+        {
+            // Check if an image was chosen
+            if (document == null) 
+                return BadRequest(new ApiErrorResponse(400, "No document found"));
+
+            // Upload and get download Url
+            var docUrl = await _uploadService.UploadFileAsync(
+                document.OpenReadStream(),
+                document.FileName,
+                document.ContentType,
+                _config["Firebase:ApplicationDocumentsUrl"]);
+
+            if (docUrl == null) 
+                return BadRequest(new ApiErrorResponse(400, "Failed to upload document."));
+
+            return Ok(new ApiErrorResponse(200, "Document uploaded successfully.", docUrl));
         }
 
         private static FCMessage CreateApplicationReviewMessage(List<string> tokens, 
