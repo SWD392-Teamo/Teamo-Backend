@@ -1,3 +1,4 @@
+using Teamo.Core.Constants;
 using Teamo.Core.Entities;
 using Teamo.Core.Enums;
 
@@ -23,10 +24,10 @@ namespace Teamo.Core.Specifications.Applications
             {
                 switch (appParams.Sort)
                 {
-                    case "dateAsc":
+                    case SortOptions.DateAsc:
                         AddOrderBy(x => x.RequestTime);
                         break;
-                    case "dateDesc":
+                    case SortOptions.DateDesc:
                         AddOrderByDescending(x => x.RequestTime);
                         break;
                     default:

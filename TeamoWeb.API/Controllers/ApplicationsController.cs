@@ -153,7 +153,7 @@ namespace TeamoWeb.API.Controllers
         [InvalidateCache("/applications")]
         [HttpPost]
         [Authorize(Roles = "Student")]
-        public async Task<ActionResult<ApplicationDto>> CreateNewApplication(int groupId, [FromBody] ApplicationToUpsertDto appDto)     
+        public async Task<ActionResult> CreateNewApplication(int groupId, [FromBody] ApplicationToUpsertDto appDto)     
         {            
             var user = await _userService.GetUserByClaims(HttpContext.User);
             if (user == null)

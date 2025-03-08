@@ -10,5 +10,9 @@ namespace Teamo.Core.Specifications.StudentSkills
             AddInclude(x => x.Skill);
             AddInclude(x => x.Student);
         }
+
+        public StudentSkillSpecification(int skillId) : base(x => x.SkillId == skillId)
+        {
+        }
     }
 }

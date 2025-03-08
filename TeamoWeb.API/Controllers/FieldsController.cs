@@ -23,7 +23,7 @@ namespace TeamoWeb.API.Controllers
         [Cache(1000)]
         [HttpGet]
         [Authorize]
-        public async Task<ActionResult<IReadOnlyList<Field>>> GetFields([FromQuery] FieldParams fieldParams)
+        public async Task<ActionResult<IReadOnlyList<FieldDto>>> GetFields([FromQuery] FieldParams fieldParams)
         {
             var fields = await _fieldService.GetFieldsWithSpecAsync(fieldParams);
             var fieldsToDtos = fields.Select(f => f.ToDto()).ToList();
@@ -35,7 +35,7 @@ namespace TeamoWeb.API.Controllers
         //Get field by id
         [Cache(1000)]
         [HttpGet("{id}")]
-        public async Task<ActionResult<Field>> GetFieldById(int id)
+        public async Task<ActionResult<FieldDto>> GetFieldById(int id)
         {
             var field = await _fieldService.GetFieldByIdAsync(id);
             if(field == null) return NotFound(new ApiErrorResponse(404, "Field not found."));
@@ -46,7 +46,7 @@ namespace TeamoWeb.API.Controllers
         [InvalidateCache("/fields")]
         [HttpPost]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<Field>> CreateField([FromBody] FieldDto field)
+        public async Task<ActionResult<FieldDto>> CreateField([FromBody] FieldDto field)
         {
             if(field == null || string.IsNullOrEmpty(field.Name))
                 return BadRequest(new ApiErrorResponse(400, "Please input all required fields."));
@@ -54,10 +54,31 @@ namespace TeamoWeb.API.Controllers
             var existField = await _fieldService.CheckDuplicateNameField(field.Name);
             if(!existField) return BadRequest(new ApiErrorResponse(400, "Already exists field with this name."));
 
-            var result = await _fieldService.CreateFieldAsync(field.ToEntity());
+            var newField = await _fieldService.CreateFieldAsync(field.ToEntity());
 
-            if(!result) return BadRequest(new ApiErrorResponse(400, "Failed to create new field."));
-            return Ok(new ApiErrorResponse(200, "Created new field successfully."));
+            if(newField == null) return BadRequest(new ApiErrorResponse(400, "Failed to create new field."));
+            return Ok(newField.ToDto());
+        }
+
+        [InvalidateCache("/fields")]
+        [HttpPatch("{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<FieldDto>> UpdateField(int id, [FromBody] FieldDto fieldDto)
+        {
+            var field = await _fieldService.GetFieldByIdAsync(id);
+            if(field == null) return NotFound(new ApiErrorResponse(404, "Field not found."));
+
+            if(!string.IsNullOrEmpty(fieldDto.Name))
+            {
+                var check = await _fieldService.CheckDuplicateNameField(fieldDto.Name);
+                if(!check) return BadRequest(new ApiErrorResponse(400, "Already exists field with this name."));
+            }
+
+            field = fieldDto.ToEntity(field);
+            var updatedField = await _fieldService.UpdateFieldAsync(field);
+
+            if(updatedField == null) return BadRequest(new ApiErrorResponse(400, "Failed to update skill."));
+            else return Ok(updatedField.ToDto());
         }
 
         //Delete field
