@@ -29,7 +29,6 @@ namespace TeamoWeb.API.Controllers
         //Get list of majors with spec
         [Cache(1000)]
         [HttpGet]
-        [Authorize(Roles = "Admin,Student")]
         public async Task<ActionResult<IReadOnlyList<MajorDto>>> GetMajors([FromQuery] MajorSpecParams majorSpecParams)
         {
             var majorSpec = new MajorSpecification(majorSpecParams);
@@ -40,7 +39,6 @@ namespace TeamoWeb.API.Controllers
         //Get major by Id
         [Cache(1000)]
         [HttpGet("{id}")]
-        [Authorize(Roles = "Admin,Student")]
         public async Task<ActionResult<MajorDto?>> GetMajorById(int id)
         {
             var majorSpec = new MajorSpecification(id);
