@@ -1,4 +1,5 @@
 ﻿using Teamo.Core.Entities;
+using Teamo.Core.Enums;
 using Teamo.Core.Specifications.Majors;
 
 namespace Teamo.Core.Specifications.Semesters
@@ -12,6 +13,9 @@ namespace Teamo.Core.Specifications.Semesters
         {
             ApplyPaging(semesterParams.PageSize * (semesterParams.PageIndex - 1),
                 semesterParams.PageSize);
+        }
+
+        public SemesterSpecification() : base (x => x.Status == SemesterStatus.Ongoing){
         }
     }
 }
