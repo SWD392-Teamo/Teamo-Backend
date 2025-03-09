@@ -43,7 +43,6 @@ namespace TeamoWeb.API.Controllers
         /// </summary>
         [Cache(1000)]
         [HttpGet]
-        [Authorize]
         public async Task<ActionResult<IReadOnlyList<GroupDto>>> GetGroupsAsync([FromQuery] GroupParams groupParams)
         {
             var spec = new GroupSpecification(groupParams);
@@ -78,7 +77,6 @@ namespace TeamoWeb.API.Controllers
         /// </summary>
         [Cache(1000)]
         [HttpGet("{id}")]
-        [Authorize]
         public async Task<ActionResult<GroupDto>> GetGroupByIdAsync(int id)
         {
             var group = await _groupService.GetGroupByIdAsync(id);
