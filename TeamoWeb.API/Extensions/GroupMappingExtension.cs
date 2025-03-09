@@ -49,6 +49,27 @@ namespace TeamoWeb.API.Extensions
         }
 
         /**
+         * Mapping Group to GroupSuggestionDto
+         */
+        public static GroupSuggestionDto? ToSuggestionDto (this Group? group)
+        {
+            if (group == null) return null;
+            var groupDto = new GroupSuggestionDto
+            {
+                Id = group.Id,
+                Name = group.Name,
+                Title = group.Title,
+                Description = group.Description,
+                FieldName = group.Field.Name,
+                GroupPositions = group.GroupPositions?
+                .Where(gp => gp.Status != GroupPositionStatus.Deleted)
+                .Select(gp => gp.ToDto()).ToList() ?? new List<GroupPositionDto>(),
+            };
+
+            return groupDto;    
+        }
+
+        /**
          * Mapping GroupToUpsertDto to Group
          */
         public static Group ToEntity (this GroupToUpsertDto groupDto, Group? group = null)

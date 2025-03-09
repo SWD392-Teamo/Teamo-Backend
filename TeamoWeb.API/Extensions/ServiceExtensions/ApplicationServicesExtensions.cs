@@ -38,6 +38,8 @@ namespace TeamoWeb.API.Extensions
             services.AddScoped<IDeviceService, DeviceService>();
             services.AddScoped<INotificationService, NotificationService>();
             services.AddScoped<IUploadService, UploadService>();
+            services.AddHttpClient<IAgentService, AgentService>();
+            services.AddScoped<IAgentService, AgentService>();
 
             // Initialize Firebase App
             var credential = GoogleCredential.FromFile(config["Firebase:FirebaseSDKPath"]);
