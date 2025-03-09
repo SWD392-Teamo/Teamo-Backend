@@ -28,7 +28,7 @@ namespace Teamo.Infrastructure.Services
         {
             var prompt = $@"{SYSTEM_CONTEXT}
                 As a team formation advisor for an FPT University student project:
-                Project Description and Required Skills: {userPrompt} - [User answer here, check for relevancy]
+                Project Description and Required Skills: {userPrompt} - [User prompt here, check for relevancy]
                 
                 Please provide detailed recommendations for:
                 1. Optimal team size considering the project scope and FPT University's typical project requirements
@@ -45,7 +45,7 @@ namespace Teamo.Infrastructure.Services
         {
             var prompt = $@"{SYSTEM_CONTEXT}
                 Based on an FPT University student's profile:
-                Skills and Interests: {userPrompt} - [User answer here, check for relevancy]
+                Skills and Interests: {userPrompt} - [User prompt here, check for relevancy]
                 User's skills found in profile that might be relevant to the interest: {string.Join(", ", currentSkills)}
                 
                 Available Groups/Projects: {groups}
@@ -66,14 +66,14 @@ namespace Teamo.Infrastructure.Services
         public async Task<string> GenerateSkillImprovementPlanAsync(string userPrompt, IReadOnlyList<string> currentSkills)
         {
             var prompt = $@"{SYSTEM_CONTEXT}
-                Create a skill development plan for an FPT University student:
-                Skills and Target Role: {userPrompt} - [User answer here, check for relevancy]
+                Create a skill development plan for the user prompting who is an FPT University student:
+                Skills and Target Role: {userPrompt} - [User prompt here, check for relevancy]
                 User's skills found in profile that might be relevant to the target: {string.Join(", ", currentSkills)}
                 
                 Provide:
                 1. Skills gap analysis based on industry and academic requirements
                 2. Learning priorities aligned with FPT University's curriculum
-                3. Recommended learning resources, including university resources, online courses and external materials (with links)
+                3. Recommended learning resources, including university resources, online courses and external materials (include links for docs or courses)
                 4. Timeline estimation considering academic semester schedule
                 
                 Focus on both technical and soft skills needed for effective team collaboration.";
