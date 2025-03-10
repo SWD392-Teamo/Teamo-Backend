@@ -10,7 +10,7 @@
     "Status": "Recruiting",
     "FieldId": 13,
     "SubjectId": 2,
-    "ImgUrl": "https://firebasestorage.googleapis.com/v0/b/mechat-926e4.appspot.com/o/teamo%2Fimages%2Fgroups%2FYACK.jpg"
+    "ImgUrl": "https://firebasestorage.googleapis.com/v0/b/mechat-926e4.appspot.com/o/teamo%2Fimages%2Fgroups%2FYACK.jpg?alt=media"
   },
   {
     "Name": "Gemify",
@@ -23,7 +23,7 @@
     "Status": "Archived",
     "FieldId": 22,
     "SubjectId": 4,
-    "ImgUrl": "https://firebasestorage.googleapis.com/v0/b/mechat-926e4.appspot.com/o/teamo%2Fimages%2Fgroups%2FGemify.jpg"
+    "ImgUrl": "https://firebasestorage.googleapis.com/v0/b/mechat-926e4.appspot.com/o/teamo%2Fimages%2Fgroups%2FGemify.jpg?alt=media"
   },
   {
     "Name": "Teamo",
@@ -36,7 +36,7 @@
     "Status": "Full",
     "FieldId": 13,
     "SubjectId": 5,
-    "ImgUrl": "https://firebasestorage.googleapis.com/v0/b/mechat-926e4.appspot.com/o/teamo%2Fimages%2Fgroups%2FTeamo.jpg"
+    "ImgUrl": "https://firebasestorage.googleapis.com/v0/b/mechat-926e4.appspot.com/o/teamo%2Fimages%2Fgroups%2FTeamo.jpg?alt=media"
   },
   {
     "Name": "Alice Dream's - BANANAHOUSE",
@@ -49,6 +49,6 @@
     "Status": "Recruiting",
     "FieldId": 18,
     "SubjectId": 14,
-    "ImgUrl": "https://firebasestorage.googleapis.com/v0/b/mechat-926e4.appspot.com/o/teamo%2Fimages%2Fgroups%2FBANANAHOUSE.jpg"
+    "ImgUrl": "https://firebasestorage.googleapis.com/v0/b/mechat-926e4.appspot.com/o/teamo%2Fimages%2Fgroups%2FBANANAHOUSE.jpg?alt=media"
   }
 ]

@@ -63,7 +63,7 @@ namespace Teamo.Infrastructure.Data
                         UserName = "my@test.com",
                         Gender = Gender.Female,
                         Dob = new DateOnly(2000, 2, 1),
-                        ImgUrl = "https://firebasestorage.googleapis.com/v0/b/gemify-d7e93.appspot.com/o/images%2Fusers%2Ffemale-user.png",
+                        ImgUrl = "https://firebasestorage.googleapis.com/v0/b/mechat-926e4.appspot.com/o/teamo%2Fimages%2Fplaceholders%2Ffemale-user.jpg?alt=media",
                         PhoneNumber = "0034988493",
                         MajorID = 1
                     },"my123456","Student"),
@@ -77,7 +77,7 @@ namespace Teamo.Infrastructure.Data
                         UserName = "khanhcnp@test.com",
                         Gender = Gender.Female,
                         Dob = new DateOnly(2000, 2, 1),
-                        ImgUrl = "https://firebasestorage.googleapis.com/v0/b/gemify-d7e93.appspot.com/o/images%2Fusers%2Ffemale-user.png",
+                        ImgUrl = "https://firebasestorage.googleapis.com/v0/b/mechat-926e4.appspot.com/o/teamo%2Fimages%2Fplaceholders%2Ffemale-user.jpg?alt=media",
                         PhoneNumber = "0034988494",
                         MajorID = 2
                     },"khanh123456","Student"),
@@ -96,7 +96,7 @@ namespace Teamo.Infrastructure.Data
                         UserName = "khanhlq@test.com",
                         Gender = Gender.Male,
                         Dob = new DateOnly(2000, 2, 1),
-                        ImgUrl = "https://firebasestorage.googleapis.com/v0/b/gemify-d7e93.appspot.com/o/images%2Fusers%2Ffemale-user.png",
+                        ImgUrl = "https://firebasestorage.googleapis.com/v0/b/mechat-926e4.appspot.com/o/teamo%2Fimages%2Fplaceholders%2Fmale-user.jpg?alt=media",
                         PhoneNumber = "0034988495",
                         MajorID = 1
                     },"khanhle123456","Student"),
@@ -110,7 +110,7 @@ namespace Teamo.Infrastructure.Data
                         UserName = "thanhcq@test.com",
                         Gender = Gender.Male,
                         Dob = new DateOnly(2000, 2, 1),
-                        ImgUrl = "https://firebasestorage.googleapis.com/v0/b/gemify-d7e93.appspot.com/o/images%2Fusers%2Ffemale-user.png",
+                        ImgUrl = "https://firebasestorage.googleapis.com/v0/b/mechat-926e4.appspot.com/o/teamo%2Fimages%2Fplaceholders%2Fmale-user.jpg?alt=media",
                         PhoneNumber = "0034988496",
                         MajorID = 7
                     },"thanh123456","Student"),
@@ -124,7 +124,7 @@ namespace Teamo.Infrastructure.Data
                         UserName = "haudtn@test.com",
                         Gender = Gender.Female,
                         Dob = new DateOnly(2000, 2, 1),
-                        ImgUrl = "https://firebasestorage.googleapis.com/v0/b/gemify-d7e93.appspot.com/o/images%2Fusers%2Ffemale-user.png",
+                        ImgUrl = "https://firebasestorage.googleapis.com/v0/b/mechat-926e4.appspot.com/o/teamo%2Fimages%2Fplaceholders%2Ffemale-user.jpg?alt=media",
                         PhoneNumber = "0034988497",
                         MajorID = 6
                     },"hau123456","Student"),
@@ -138,7 +138,7 @@ namespace Teamo.Infrastructure.Data
                         UserName = "ant@test.com",
                         Gender = Gender.Male,
                         Dob = new DateOnly(2000, 2, 1),
-                        ImgUrl = "https://firebasestorage.googleapis.com/v0/b/gemify-d7e93.appspot.com/o/images%2Fusers%2Ffemale-user.png",
+                        ImgUrl = "https://firebasestorage.googleapis.com/v0/b/mechat-926e4.appspot.com/o/teamo%2Fimages%2Fplaceholders%2Fmale-user.jpg?alt=media",
                         PhoneNumber = "0034988498",
                         MajorID = 1
                     },"an123456","Student")
