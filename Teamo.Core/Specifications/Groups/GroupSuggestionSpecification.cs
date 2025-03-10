@@ -14,6 +14,7 @@ namespace Teamo.Core.Specifications.Groups
             (!semesterId.HasValue || semesterId == x.SemesterId))          
         {
             AddInclude(x => x.Field);
+            AddInclude(x => x.Subject);
             AddThenInclude(q => q.Include(x => x.GroupPositions).ThenInclude(a => a.Skills));
         }
     }

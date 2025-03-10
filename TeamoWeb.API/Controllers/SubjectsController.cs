@@ -27,7 +27,6 @@ namespace TeamoWeb.API.Controllers
         //Get subjects with spec
         [Cache(1000)]
         [HttpGet]
-        [Authorize]
         public async Task<ActionResult<IReadOnlyList<SubjectDto>>> GetSubjects([FromQuery] SubjectParams subjectParams)
         {
             var subjects = await _subjectService.GetSubjectsAsync(subjectParams);
@@ -41,7 +40,6 @@ namespace TeamoWeb.API.Controllers
         //Get subject by id
         [Cache(1000)]
         [HttpGet("{id}")]
-        [Authorize]
         public async Task<ActionResult<SubjectDto>> GetSubjectById(int id)
         {
             var subject = await _subjectService.GetSubjectByIdAsync(id);
