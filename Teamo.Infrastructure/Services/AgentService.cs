@@ -49,6 +49,7 @@ namespace Teamo.Infrastructure.Services
                 User's skills found in profile that might be relevant to the interest: {string.Join(", ", currentSkills)}
                 
                 Available Groups/Projects: {groups}
+                Remember to check if the user mentioned about the Subject or Field the project should be in.
 
                 Suggest suitable projects that would:
                 1. Match their current skill level in the context of FPT University courses

@@ -61,6 +61,7 @@ namespace TeamoWeb.API.Extensions
                 Title = group.Title,
                 Description = group.Description,
                 FieldName = group.Field.Name,
+                SubjectCode = group.Subject.Code,
                 GroupPositions = group.GroupPositions?
                 .Where(gp => gp.Status != GroupPositionStatus.Deleted)
                 .Select(gp => gp.ToDto()).ToList() ?? new List<GroupPositionDto>(),
