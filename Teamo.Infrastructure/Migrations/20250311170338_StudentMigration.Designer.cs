@@ -12,7 +12,7 @@ using Teamo.Infrastructure.Data;
 namespace Teamo.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250311164750_StudentMigration")]
+    [Migration("20250311170338_StudentMigration")]
     partial class StudentMigration
     {
         /// <inheritdoc />
@@ -684,7 +684,7 @@ namespace Teamo.Infrastructure.Migrations
                     b.Property<string>("LastName")
                         .HasColumnType("varchar(100)");
 
-                    b.Property<string>("Major")
+                    b.Property<string>("MajorCode")
                         .HasColumnType("varchar(20)");
 
                     b.Property<string>("Phone")

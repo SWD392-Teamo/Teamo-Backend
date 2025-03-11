@@ -15,7 +15,7 @@ namespace Teamo.Infrastructure.Migrations
                 table: "Student");
 
             migrationBuilder.AddColumn<string>(
-                name: "Major",
+                name: "MajorCode",
                 table: "Student",
                 type: "varchar(20)",
                 nullable: true);
@@ -25,7 +25,7 @@ namespace Teamo.Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "Major",
+                name: "MajorCode",
                 table: "Student");
 
             migrationBuilder.AddColumn<int>(
