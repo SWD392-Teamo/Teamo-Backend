@@ -1,8 +1,9 @@
 [
     {
+        "Id": 1,
         "Code": "SE182420",
-        "FirstName": "Quang Khánh",
-        "LastName": "Lê",
+        "FirstName": "Quang Khanh",
+        "LastName": "Le",
         "UserName": "khanhlqse182420@fpt.edu.vn",
         "Email":  "khanhlqse182420@fpt.edu.vn",
         "Gender": "Male",
@@ -11,9 +12,10 @@
         "MajorCode": "SE"
     },
     {
+        "Id": 2,
         "Code": "SE180465",
-        "FirstName": "Nguyên Hậu",
-        "LastName": "Đỗ Thị",
+        "FirstName": "Thi Nguyen Hau",
+        "LastName": "Đo",
         "UserName": "haudtnse180465@fpt.edu.vn",
         "Email":  "haudtnse180465@fpt.edu.vn",
         "Gender": "Female",
@@ -22,9 +24,10 @@
         "MajorCode": "SE"
     },
     {
+        "Id": 3,
         "Code": "SE180542",
-        "FirstName": "Tiểu My",
-        "LastName": "Lâm",
+        "FirstName": "Tieu My",
+        "LastName": "Lam",
         "UserName": "myltse180542@fpt.edu.vn",
         "Email":  "myltse180542@fpt.edu.vn",
         "Gender": "Female",

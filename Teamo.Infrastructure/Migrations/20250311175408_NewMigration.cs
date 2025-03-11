@@ -92,8 +92,7 @@ namespace Teamo.Infrastructure.Migrations
                 name: "Student",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<int>(type: "int", nullable: false),
                     Code = table.Column<string>(type: "varchar(20)", nullable: true),
                     FirstName = table.Column<string>(type: "varchar(100)", nullable: true),
                     LastName = table.Column<string>(type: "varchar(100)", nullable: true),
@@ -102,7 +101,7 @@ namespace Teamo.Infrastructure.Migrations
                     Gender = table.Column<string>(type: "varchar(20)", nullable: false),
                     Phone = table.Column<string>(type: "varchar(20)", nullable: true),
                     ImgUrl = table.Column<string>(type: "varchar(200)", nullable: true),
-                    MajorId = table.Column<int>(type: "int", nullable: false)
+                    MajorCode = table.Column<string>(type: "varchar(20)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -530,6 +529,7 @@ namespace Teamo.Infrastructure.Migrations
                     StudentId = table.Column<int>(type: "int", nullable: false),
                     RequestTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     RequestContent = table.Column<string>(type: "nvarchar(1000)", nullable: true),
+                    DocumentUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     GroupPositionId = table.Column<int>(type: "int", nullable: false),
                     Status = table.Column<string>(type: "varchar(50)", nullable: false)
                 },

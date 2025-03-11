@@ -5,6 +5,7 @@ using System.Text.Json;
 using Teamo.Core.Entities.Identity;
 using Teamo.Core.Entities;
 using Teamo.Core.Enums;
+using Microsoft.EntityFrameworkCore;
 
 namespace Teamo.Infrastructure.Data
 {
@@ -345,7 +346,6 @@ namespace Teamo.Infrastructure.Data
                     .ReadAllTextAsync(path + @"/Data/SeedData/students.json");
 
                 var students = JsonSerializer.Deserialize<List<Student>>(studentsData, options);
-
 
                 if (students == null) return;
 

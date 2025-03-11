@@ -11,6 +11,8 @@ namespace Teamo.Infrastructure.Configs
         {
             builder.ToTable("Student");
 
+            builder.HasKey(u => u.Id);
+            builder.Property(u => u.Id).ValueGeneratedNever();
             builder.HasIndex(u => u.Phone).IsUnique();
             builder.HasIndex(u => u.Email).IsUnique();
             builder.HasIndex(u => u.Code).IsUnique();
