@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations.Schema;
 using Teamo.Core.Enums;
 
 namespace Teamo.Core.Entities
@@ -12,8 +11,8 @@ namespace Teamo.Core.Entities
         public required string UserName { get; set; }
         public required string Email { get; set; }
         public required Gender Gender { get; set; } 
-        public string Phone { get; set; }
+        public required string Phone { get; set; }
         public string ImgUrl { get; set; }
-        public required int MajorId { get; set; }
+        public required string Major { get; set; }
     }
 }

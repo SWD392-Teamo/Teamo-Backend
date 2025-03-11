@@ -14,6 +14,7 @@ namespace Teamo.Infrastructure.Configs
             builder.HasIndex(u => u.Phone).IsUnique();
             builder.HasIndex(u => u.Email).IsUnique();
             builder.HasIndex(u => u.Code).IsUnique();
+            builder.HasIndex(o => o.Major).IsUnique();
 
             builder.Property(u => u.UserName).HasColumnType("varchar(50)");
             builder.Property(u => u.Phone).HasColumnType("varchar(20)");
@@ -22,6 +23,7 @@ namespace Teamo.Infrastructure.Configs
             builder.Property(u => u.FirstName) .HasColumnType("varchar(100)");
             builder.Property(u => u.LastName).HasColumnType("varchar(100)");
             builder.Property(u => u.ImgUrl).HasColumnType("varchar(200)");
+            builder.Property(u => u.Major).HasColumnType("varchar(20)");
 
             builder.Property(c => c.Gender)
                 .HasConversion(
