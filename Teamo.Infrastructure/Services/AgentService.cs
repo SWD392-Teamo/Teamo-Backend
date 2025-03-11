@@ -28,7 +28,7 @@ namespace Teamo.Infrastructure.Services
         {
             var prompt = $@"{SYSTEM_CONTEXT}
                 As a team formation advisor for an FPT University student project:
-                Project Description and Required Skills: {userPrompt} - [User prompt here, check for relevancy]
+                Project Description and Required Skills: {userPrompt} - [This is the user's prompt, check for relevancy]
                 
                 Please provide detailed recommendations for:
                 1. Optimal team size considering the project scope and FPT University's typical project requirements
@@ -45,7 +45,7 @@ namespace Teamo.Infrastructure.Services
         {
             var prompt = $@"{SYSTEM_CONTEXT}
                 Based on an FPT University student's profile:
-                Skills and Interests: {userPrompt} - [User prompt here, check for relevancy]
+                Skills and Interests: {userPrompt} - [This is the user's prompt, check for relevancy]
                 User's skills found in profile that might be relevant to the interest: {string.Join(", ", currentSkills)}
                 
                 Available Groups/Projects: {groups}
@@ -68,7 +68,7 @@ namespace Teamo.Infrastructure.Services
         {
             var prompt = $@"{SYSTEM_CONTEXT}
                 Create a skill development plan for the user prompting who is an FPT University student:
-                Skills and Target Role: {userPrompt} - [User prompt here, check for relevancy]
+                Skills and Target Role: {userPrompt} - [This is the user's prompt, check for relevancy]
                 User's skills found in profile that might be relevant to the target: {string.Join(", ", currentSkills)}
                 
                 Provide:
