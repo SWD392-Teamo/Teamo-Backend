@@ -9,7 +9,7 @@ namespace Teamo.Core.Interfaces.Services
         Task<Field> GetFieldByIdAsync(int id);
         Task<Field> CreateFieldAsync(Field field);
         Task<bool> DeleteFieldAsync(Field field);
-        Task<Field> UpdateFieldAsync(Field field);
+        Task<bool> UpdateFieldAsync(Field field);
         Task<bool> CheckDuplicateNameField(string name);  
         Task<int> CountAsync(FieldParams fieldParams);
     }

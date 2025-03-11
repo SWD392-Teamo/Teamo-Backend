@@ -72,10 +72,10 @@ namespace TeamoWeb.API.Controllers
             }
 
             skill = skillDto.ToEntity(skill);
-            var updatedSkill = await _skillService.UpdateSkillAsync(skill);
+            var result = await _skillService.UpdateSkillAsync(skill);
 
-            if(updatedSkill == null) return BadRequest(new ApiErrorResponse(400, "Failed to update skill."));
-            else return Ok(updatedSkill.ToDto());
+            if(!result) return BadRequest(new ApiErrorResponse(400, "Failed to update skill."));
+            else return Ok(skill.ToDto());
         }
 
         [InvalidateCache("/skills")]

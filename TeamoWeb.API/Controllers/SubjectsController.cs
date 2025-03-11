@@ -82,10 +82,10 @@ namespace TeamoWeb.API.Controllers
 
             subject = subjectDto.ToEntity(subject);
 
-            var updatedSubject = await _subjectService.UpdateSubjectAsync(subject);
+            var result = await _subjectService.UpdateSubjectAsync(subject);
 
-            if(updatedSubject == null) return BadRequest(new ApiErrorResponse(400, "Failed to update subject."));
-            else return Ok(updatedSubject.ToDto());
+            if(!result) return BadRequest(new ApiErrorResponse(400, "Failed to update subject."));
+            else return Ok(subject.ToDto());
         }
 
         [InvalidateCache("/subjects")]
@@ -109,9 +109,9 @@ namespace TeamoWeb.API.Controllers
             // Update image url
             subject.ImgUrl = imgUrl;
 
-            var updatedSubject = await _subjectService.UpdateSubjectAsync(subject);
+            var result = await _subjectService.UpdateSubjectAsync(subject);
 
-            if (updatedSubject == null) return BadRequest(new ApiErrorResponse(400, "Failed to upload image."));
+            if (!result) return BadRequest(new ApiErrorResponse(400, "Failed to upload image."));
 
             return Ok(new ApiErrorResponse(200, "Image uploaded successfully.", imgUrl));
         }

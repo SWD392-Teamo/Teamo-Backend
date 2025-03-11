@@ -9,11 +9,11 @@ namespace Teamo.Core.Interfaces.Services
     {
         Task<User> GetProfileAsync(int id);
         Task<IdentityResult> UpdateProfileDescriptionAsync(User user);
-        Task<bool> AddProfileSkillAsync(StudentSkill newSkill);
+        Task<StudentSkill> AddProfileSkillAsync(StudentSkill newSkill);
         Task<bool> UpdateProfileSkillAsync(StudentSkill studentSkill);
         Task<bool> DeleteProfileSkillAsync(StudentSkill studentSkill);
         Task<StudentSkill> GetProfileSkillAsync(int studentSkillId);
-        Task<bool> AddProfileLinkAsync(Link newLink);
+        Task<Link> AddProfileLinkAsync(Link newLink);
         Task<bool> UpdateProfileLinkAsync(Link link);
         Task<Link> GetLinkByIdAsync(int id);
         Task<bool> RemoveProfileLinkAsync(Link link);

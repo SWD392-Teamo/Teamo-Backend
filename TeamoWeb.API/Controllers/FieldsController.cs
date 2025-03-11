@@ -75,10 +75,10 @@ namespace TeamoWeb.API.Controllers
             }
 
             field = fieldDto.ToEntity(field);
-            var updatedField = await _fieldService.UpdateFieldAsync(field);
+            var result = await _fieldService.UpdateFieldAsync(field);
 
-            if(updatedField == null) return BadRequest(new ApiErrorResponse(400, "Failed to update skill."));
-            else return Ok(updatedField.ToDto());
+            if(!result) return BadRequest(new ApiErrorResponse(400, "Failed to update skill."));
+            else return Ok(field.ToDto());
         }
 
         //Delete field

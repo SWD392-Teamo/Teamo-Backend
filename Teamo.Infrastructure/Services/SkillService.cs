@@ -54,11 +54,10 @@ namespace Teamo.Infrastructure.Services
             return await GetSkillByIdAsync(skill.Id);
         }
 
-        public async Task<Skill> UpdateSkillAsync(Skill skill)
+        public async Task<bool> UpdateSkillAsync(Skill skill)
         {
             _unitOfWork.Repository<Skill>().Update(skill);
-            await _unitOfWork.Complete();
-            return await GetSkillByIdAsync(skill.Id);
+            return await _unitOfWork.Complete();
         }
 
         public async Task<bool> DeleteSkillAsync(Skill skill)
