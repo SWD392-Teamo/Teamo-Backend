@@ -22,7 +22,7 @@ namespace Teamo.Infrastructure.Configs
             builder.Property(u => u.FirstName) .HasColumnType("varchar(100)");
             builder.Property(u => u.LastName).HasColumnType("varchar(100)");
             builder.Property(u => u.ImgUrl).HasColumnType("varchar(200)");
-            builder.Property(u => u.Major).HasColumnType("varchar(20)");
+            builder.Property(u => u.MajorCode).HasColumnType("varchar(20)");
 
             builder.Property(c => c.Gender)
                 .HasConversion(

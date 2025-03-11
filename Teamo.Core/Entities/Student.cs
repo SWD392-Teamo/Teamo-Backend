@@ -13,6 +13,6 @@ namespace Teamo.Core.Entities
         public required Gender Gender { get; set; } 
         public required string Phone { get; set; }
         public string ImgUrl { get; set; }
-        public required string Major { get; set; }
+        public required string MajorCode { get; set; }
     }
 }

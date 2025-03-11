@@ -681,7 +681,7 @@ namespace Teamo.Infrastructure.Migrations
                     b.Property<string>("LastName")
                         .HasColumnType("varchar(100)");
 
-                    b.Property<string>("Major")
+                    b.Property<string>("MajorCode")
                         .HasColumnType("varchar(20)");
 
                     b.Property<string>("Phone")
