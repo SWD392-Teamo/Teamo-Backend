@@ -12,7 +12,7 @@ using Teamo.Infrastructure.Data;
 namespace Teamo.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250311165705_StudentMigration")]
+    [Migration("20250311170338_StudentMigration")]
     partial class StudentMigration
     {
         /// <inheritdoc />
