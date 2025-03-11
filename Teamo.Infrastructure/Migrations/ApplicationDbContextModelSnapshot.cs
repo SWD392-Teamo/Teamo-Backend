@@ -700,10 +700,6 @@ namespace Teamo.Infrastructure.Migrations
                         .IsUnique()
                         .HasFilter("[Email] IS NOT NULL");
 
-                    b.HasIndex("Major")
-                        .IsUnique()
-                        .HasFilter("[Major] IS NOT NULL");
-
                     b.HasIndex("Phone")
                         .IsUnique()
                         .HasFilter("[Phone] IS NOT NULL");

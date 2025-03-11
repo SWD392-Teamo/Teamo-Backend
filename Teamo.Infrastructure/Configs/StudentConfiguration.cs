@@ -14,7 +14,6 @@ namespace Teamo.Infrastructure.Configs
             builder.HasIndex(u => u.Phone).IsUnique();
             builder.HasIndex(u => u.Email).IsUnique();
             builder.HasIndex(u => u.Code).IsUnique();
-            builder.HasIndex(o => o.Major).IsUnique();
 
             builder.Property(u => u.UserName).HasColumnType("varchar(50)");
             builder.Property(u => u.Phone).HasColumnType("varchar(20)");

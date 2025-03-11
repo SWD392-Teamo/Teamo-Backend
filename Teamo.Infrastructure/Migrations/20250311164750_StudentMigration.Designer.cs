@@ -12,7 +12,7 @@ using Teamo.Infrastructure.Data;
 namespace Teamo.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250311163836_StudentMigration")]
+    [Migration("20250311164750_StudentMigration")]
     partial class StudentMigration
     {
         /// <inheritdoc />
@@ -702,10 +702,6 @@ namespace Teamo.Infrastructure.Migrations
                     b.HasIndex("Email")
                         .IsUnique()
                         .HasFilter("[Email] IS NOT NULL");
-
-                    b.HasIndex("Major")
-                        .IsUnique()
-                        .HasFilter("[Major] IS NOT NULL");
 
                     b.HasIndex("Phone")
                         .IsUnique()

@@ -19,22 +19,11 @@ namespace Teamo.Infrastructure.Migrations
                 table: "Student",
                 type: "varchar(20)",
                 nullable: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Student_Major",
-                table: "Student",
-                column: "Major",
-                unique: true,
-                filter: "[Major] IS NOT NULL");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropIndex(
-                name: "IX_Student_Major",
-                table: "Student");
-
             migrationBuilder.DropColumn(
                 name: "Major",
                 table: "Student");
