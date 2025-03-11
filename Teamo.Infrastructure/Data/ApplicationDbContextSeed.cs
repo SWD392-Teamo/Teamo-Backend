@@ -57,7 +57,7 @@ namespace Teamo.Infrastructure.Data
                     {
                         FirstName = "My",
                         LastName = "Lâm",
-                        Code = "SE183448",
+                        Code = "SE179997",
                         Description = "I have experienced in ASPNET development",
                         Email = "my@test.com",
                         UserName = "my@test.com",
@@ -71,7 +71,7 @@ namespace Teamo.Infrastructure.Data
                     {
                         FirstName = "Khánh",
                         LastName = "Ngô",
-                        Code = "SE181509",
+                        Code = "SE179998",
                         Description = "I have experienced in React development",
                         Email = "khanhcnp@test.com",
                         UserName = "khanhcnp@test.com",
@@ -90,7 +90,7 @@ namespace Teamo.Infrastructure.Data
                     {
                         FirstName = "Khánh",
                         LastName = "Lê",
-                        Code = "SE182420",
+                        Code = "SE179999",
                         Description = "I am experienced with web app development. Languages: Java, C#, ReactJS, Angular",
                         Email = "khanhlq@test.com",
                         UserName = "khanhlq@test.com",
@@ -102,7 +102,7 @@ namespace Teamo.Infrastructure.Data
                     },"khanhle123456","Student"),
                     (new User
                     {
-                        FirstName = "Quốc Thành",
+                        FirstName = "Thành",
                         LastName = "Chu",
                         Code = "SS180001",
                         Description = "Marketing student with exceptional PR and event organization skills!",
@@ -116,8 +116,8 @@ namespace Teamo.Infrastructure.Data
                     },"thanh123456","Student"),
                     (new User
                     {
-                        FirstName = "Nguyên Hậu",
-                        LastName = "Đỗ Thị",
+                        FirstName = "Hậu",
+                        LastName = "Đỗ",
                         Code = "SE180002",
                         Description = "Specialize in event managements and video production.",
                         Email = "haudtn@test.com",
@@ -334,6 +334,22 @@ namespace Teamo.Infrastructure.Data
                 if (studentSkills == null) return;
 
                 context.StudentSkills.AddRange(studentSkills);
+
+                await context.SaveChangesAsync();
+            }
+
+            //Seed Students
+            if (!context.Students.Any())
+            {
+                var studentsData = await File
+                    .ReadAllTextAsync(path + @"/Data/SeedData/students.json");
+
+                var students = JsonSerializer.Deserialize<List<Student>>(studentsData, options);
+
+
+                if (students == null) return;
+
+                context.Students.AddRange(students);
 
                 await context.SaveChangesAsync();
             }

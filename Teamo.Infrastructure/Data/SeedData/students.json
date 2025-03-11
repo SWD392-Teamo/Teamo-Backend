@@ -1,0 +1,35 @@
+[
+    {
+        "Code": "SE182420",
+        "FirstName": "Quang Khánh",
+        "LastName": "Lê",
+        "UserName": "khanhlqse182420@fpt.edu.vn",
+        "Email":  "khanhlqse182420@fpt.edu.vn",
+        "Gender": "Male",
+        "Phone": "0799679344",
+        "ImgUrl": "",
+        "MajorCode": "SE"
+    },
+    {
+        "Code": "SE180465",
+        "FirstName": "Nguyên Hậu",
+        "LastName": "Đỗ Thị",
+        "UserName": "haudtnse180465@fpt.edu.vn",
+        "Email":  "haudtnse180465@fpt.edu.vn",
+        "Gender": "Female",
+        "Phone": "0799679345",
+        "ImgUrl": "",
+        "MajorCode": "SE"
+    },
+    {
+        "Code": "SE180542",
+        "FirstName": "Tiểu My",
+        "LastName": "Lâm",
+        "UserName": "myltse180542@fpt.edu.vn",
+        "Email":  "myltse180542@fpt.edu.vn",
+        "Gender": "Female",
+        "Phone": "0799679346",
+        "ImgUrl": "",
+        "MajorCode": "SE"
+    }
+]
