@@ -70,11 +70,10 @@ namespace Teamo.Infrastructure.Services
             return await _unitOfWork.Complete();
         }
 
-        public async Task<Field> UpdateFieldAsync(Field field)
+        public async Task<bool> UpdateFieldAsync(Field field)
         {
             _unitOfWork.Repository<Field>().Update(field);
-            await _unitOfWork.Complete();
-            return await GetFieldByIdAsync(field.Id);
+            return await _unitOfWork.Complete();
         }
 
         public async Task<bool> CheckDuplicateNameField(string name)

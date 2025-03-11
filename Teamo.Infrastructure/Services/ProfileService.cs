@@ -32,10 +32,11 @@ namespace Teamo.Infrastructure.Services
             return await _userService.UpdateUserAsync(user);
         }
 
-        public async Task<bool> AddProfileSkillAsync(StudentSkill newSkill)
+        public async Task<StudentSkill> AddProfileSkillAsync(StudentSkill newSkill)
         {
             _unitOfWork.Repository<StudentSkill>().Add(newSkill);
-            return await _unitOfWork.Complete();
+            await _unitOfWork.Complete();
+            return await _unitOfWork.Repository<StudentSkill>().GetByIdAsync(newSkill.Id);
         }
 
         public async Task<bool> UpdateProfileSkillAsync(StudentSkill studentSkill)
@@ -55,10 +56,11 @@ namespace Teamo.Infrastructure.Services
             return await _unitOfWork.Repository<StudentSkill>().GetByIdAsync(studentSkillId);
         }
 
-        public async Task<bool> AddProfileLinkAsync(Link newLink)
+        public async Task<Link> AddProfileLinkAsync(Link newLink)
         {
             _unitOfWork.Repository<Link>().Add(newLink);
-            return await _unitOfWork.Complete();
+            await _unitOfWork.Complete();
+            return await GetLinkByIdAsync(newLink.Id);
         }
 
         public async Task<bool> UpdateProfileLinkAsync(Link link)
