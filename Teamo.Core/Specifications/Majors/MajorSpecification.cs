@@ -19,5 +19,9 @@ namespace Teamo.Core.Specifications.Majors
         {
             AddInclude(x => x.Subjects);
         }
+
+        public MajorSpecification(string code) : base(x => x.Code == code)
+        {
+        }
     }
 }
