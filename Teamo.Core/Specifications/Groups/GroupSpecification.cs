@@ -8,7 +8,7 @@ namespace Teamo.Core.Specifications.Groups
 {
     public class GroupSpecification : BaseSpecification<Group>
     {
-        public GroupSpecification(GroupParams groupParams)
+        public GroupSpecification(GroupParams groupParams, bool applyPaging = true)
             : base(x => (string.IsNullOrEmpty(groupParams.Search)
             || x.GroupPositions.Any(gp => gp.Name.ToLower().Contains(groupParams.Search))
             || x.Name.ToLower().Contains(groupParams.Search)
@@ -27,8 +27,12 @@ namespace Teamo.Core.Specifications.Groups
             AddInclude(x => x.Field);
             AddThenInclude(q => q.Include(x => x.GroupMembers).ThenInclude(u => u.Student));
             AddThenInclude(q => q.Include(x => x.GroupMembers).ThenInclude(u => u.GroupPositions));
-            ApplyPaging(groupParams.PageSize * (groupParams.PageIndex - 1),
+            if(applyPaging)
+            {
+                ApplyPaging(groupParams.PageSize * (groupParams.PageIndex - 1),
                 groupParams.PageSize);
+            }
+            
             if (!string.IsNullOrEmpty(groupParams.Sort))
             {
                 switch (groupParams.Sort)
