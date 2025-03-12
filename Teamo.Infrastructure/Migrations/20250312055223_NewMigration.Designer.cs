@@ -12,7 +12,7 @@ using Teamo.Infrastructure.Data;
 namespace Teamo.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250311175408_NewMigration")]
+    [Migration("20250312055223_NewMigration")]
     partial class NewMigration
     {
         /// <inheritdoc />
@@ -660,7 +660,10 @@ namespace Teamo.Infrastructure.Migrations
             modelBuilder.Entity("Teamo.Core.Entities.Student", b =>
                 {
                     b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Code")
                         .HasColumnType("varchar(20)");

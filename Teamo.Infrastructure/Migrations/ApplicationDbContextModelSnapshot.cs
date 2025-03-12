@@ -657,7 +657,10 @@ namespace Teamo.Infrastructure.Migrations
             modelBuilder.Entity("Teamo.Core.Entities.Student", b =>
                 {
                     b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Code")
                         .HasColumnType("varchar(20)");

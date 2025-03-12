@@ -1,6 +1,5 @@
 [
     {
-        "Id": 1,
         "Code": "SE182420",
         "FirstName": "Quang Khanh",
         "LastName": "Le",
@@ -12,7 +11,6 @@
         "MajorCode": "SE"
     },
     {
-        "Id": 2,
         "Code": "SE180465",
         "FirstName": "Thi Nguyen Hau",
         "LastName": "Đo",
@@ -24,7 +22,6 @@
         "MajorCode": "SE"
     },
     {
-        "Id": 3,
         "Code": "SE180542",
         "FirstName": "Tieu My",
         "LastName": "Lam",
