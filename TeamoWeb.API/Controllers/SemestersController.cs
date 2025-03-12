@@ -20,7 +20,7 @@ namespace TeamoWeb.API.Controllers
 
         [Cache(1000)]
         [HttpGet]
-        [Authorize(Roles = "Admin")]
+        [Authorize]
         public async Task<ActionResult<IReadOnlyList<SemesterDto>>> GetSemesters([FromQuery] SemesterParams semesterParams)
         {
             var spec = new SemesterSpecification(semesterParams);

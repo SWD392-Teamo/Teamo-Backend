@@ -66,9 +66,11 @@ namespace TeamoWeb.API.Controllers
             groupParams.StudentId = user.Id;    
             var spec = new GroupSpecification(groupParams);
             var groups = await _groupService.GetGroupsAsync(spec) ?? new List<Group>();
+            var countSpec = new GroupSpecification(groupParams, false);
+            var totalGroups = (await _groupService.GetGroupsAsync(countSpec)).Count();
 
             var groupDtos = groups.Any() ? groups.Select(g => g.ToDto()).ToList() : new List<GroupDto?>();
-            var pagination = new Pagination<GroupDto>(groupParams.PageIndex, groupParams.PageSize, groups.Count(), groupDtos);
+            var pagination = new Pagination<GroupDto>(groupParams.PageIndex, groupParams.PageSize, totalGroups, groupDtos);
             return Ok(pagination);
         }
 

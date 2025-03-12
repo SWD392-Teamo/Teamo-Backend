@@ -13,6 +13,8 @@ namespace Teamo.Core.Specifications.Semesters
         {
             ApplyPaging(semesterParams.PageSize * (semesterParams.PageIndex - 1),
                 semesterParams.PageSize);
+
+            AddOrderByDescending(x => x.StartDate);
         }
 
         public SemesterSpecification() : base (x => x.Status == SemesterStatus.Ongoing){
