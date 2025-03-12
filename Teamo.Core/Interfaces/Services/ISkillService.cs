@@ -8,7 +8,7 @@ namespace Teamo.Core.Interfaces
         Task<Skill> GetSkillByIdAsync(int id);
         Task<IReadOnlyList<Skill>> GetSkillsWithSpecAsync(SkillParams skillParams);
         Task<Skill> CreateSkillAsync(Skill skill);
-        Task<Skill> UpdateSkillAsync(Skill skill);
+        Task<bool> UpdateSkillAsync(Skill skill);
         Task<bool> DeleteSkillAsync(Skill skill);
         Task<bool> CheckDuplicateSkillAsync(string name);
     }

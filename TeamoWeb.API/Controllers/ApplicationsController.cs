@@ -105,7 +105,7 @@ namespace TeamoWeb.API.Controllers
         [InvalidateCache("/applications")]
         [HttpPatch("{id}")]
         [Authorize(Roles = "Student")]
-        public async Task<ActionResult> ReviewApplication(int groupId, int id, [FromBody] ApplicationToUpsertDto appDto)
+        public async Task<ActionResult<ApplicationDto>> ReviewApplication(int groupId, int id, [FromBody] ApplicationToUpsertDto appDto)
         {
             // Get current user
             var user = await _userService.GetUserByClaims(HttpContext.User);
@@ -123,7 +123,7 @@ namespace TeamoWeb.API.Controllers
             if(app == null || app.Status != ApplicationStatus.Requested) 
                 return BadRequest(new ApiErrorResponse(400, "Unable to review this application."));
 
-            appDto.ToEntity(app);
+            app = appDto.ToEntity(app);
 
             // Update status
             var result = await _appService.ReviewApplicationAsync(app);
@@ -146,7 +146,7 @@ namespace TeamoWeb.API.Controllers
                         "but failed to send notifications to some devices."));
             }
 
-            return Ok(new ApiErrorResponse(200, "Application reviewed successfully."));
+            return Ok(app.ToDto());
         }
 
         // Create and send an application
@@ -188,7 +188,7 @@ namespace TeamoWeb.API.Controllers
                         "but failed to send notifications to some devices."));
             }
 
-            return Ok(new ApiErrorResponse(200, "Application sent successfully."));
+            return Ok(app.ToDto());
         }
 
         // Delete application (recall unanswered application)

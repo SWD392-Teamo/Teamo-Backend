@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Teamo.Core.Enums;
 using Teamo.Core.Interfaces.Services;
 using Teamo.Core.Specifications.Users;
@@ -73,7 +72,7 @@ namespace TeamoWeb.API.Controllers
             
             var result = await _userService.UpdateUserAsync(user);
             
-            if (result.Succeeded) return Ok(new ApiErrorResponse(200, "Banned user successfully."));
+            if (result.Succeeded) return Ok(user.ToProfileDto());
             else return BadRequest(new ApiErrorResponse(400, "Failed to ban user."));
         }
 
@@ -95,7 +94,7 @@ namespace TeamoWeb.API.Controllers
         [InvalidateCache("/profile")]
         [HttpPatch("{userId}/profile/descriptions")]
         [Authorize(Roles = "Student")]
-        public async Task<ActionResult> UpdateProfileDescription([FromBody] ProfileDto profile)
+        public async Task<ActionResult<ProfileDto>> UpdateProfileDescription([FromBody] ProfileDto profile)
         {
             var user = await _userService.GetUserByClaims(HttpContext.User);
             if (user == null) return Unauthorized(new ApiErrorResponse(401, "Unauthorized"));
@@ -104,7 +103,7 @@ namespace TeamoWeb.API.Controllers
 
             var result = await _profileService.UpdateProfileDescriptionAsync(user);
 
-            if(result.Succeeded) return Ok(new ApiErrorResponse(200, "Profile description added successfully."));
+            if(result.Succeeded) return Ok(user.ToProfileDto());
             else return BadRequest(new ApiErrorResponse(400, "Failed to updated profile description."));
         }
 
@@ -112,24 +111,24 @@ namespace TeamoWeb.API.Controllers
         [InvalidateCache("/profile")]
         [HttpPost("{userId}/profile/skills")]
         [Authorize(Roles = "Student")]
-        public async Task<ActionResult> AddProfileSkill([FromBody] StudentSkillToUpsertDto studentSkillDto)
+        public async Task<ActionResult<StudentSkillDto>> AddProfileSkill([FromBody] StudentSkillToUpsertDto studentSkillDto)
         {
-             var user = await _userService.GetUserByClaims(HttpContext.User);
+            var user = await _userService.GetUserByClaims(HttpContext.User);
             if (user == null) return Unauthorized(new ApiErrorResponse(401, "Unauthorized"));
             studentSkillDto.StudentId = user.Id;
 
             var studentSkill = studentSkillDto.ToEntity();
-            var result = await _profileService.AddProfileSkillAsync(studentSkill);
+            studentSkill = await _profileService.AddProfileSkillAsync(studentSkill);
 
-            if(!result) return BadRequest(new ApiErrorResponse(400, "Failed to add skill to profile."));
-            return Ok(new ApiErrorResponse(200, "Skill added to profile successfully."));
+            if(studentSkill == null) return BadRequest(new ApiErrorResponse(400, "Failed to add skill to profile."));
+            return Ok(studentSkill.ToDto());
         }
 
         //Update a skill level in user profile
         [InvalidateCache("/profile")]
         [HttpPatch("{userId}/profile/skills/{studentSkillId}")]
         [Authorize(Roles = "Student")]
-        public async Task<ActionResult> UpdateProfileSkill(int studentSkillId, [FromBody] StudentSkillToUpsertDto studentSkillDto)
+        public async Task<ActionResult<StudentSkillDto>> UpdateProfileSkill(int studentSkillId, [FromBody] StudentSkillToUpsertDto studentSkillDto)
         {
             var studentSkill = await _profileService.GetProfileSkillAsync(studentSkillId);
             if(studentSkill == null) return NotFound(new ApiErrorResponse(404, "Skill not found in profile."));
@@ -139,7 +138,7 @@ namespace TeamoWeb.API.Controllers
             var result = await _profileService.UpdateProfileSkillAsync(studentSkill);
 
             if(!result) return BadRequest(new ApiErrorResponse(400, "Failed to update skill."));
-            return Ok(new ApiErrorResponse(200, "Skill updated successfully."));
+            return Ok(studentSkill.ToDto());
         }
 
         //Delete a skill in user profile
@@ -161,7 +160,7 @@ namespace TeamoWeb.API.Controllers
         [InvalidateCache("/profile")]
         [HttpPost("{userId}/profile/links")]
         [Authorize(Roles = "Student")]
-        public async Task<ActionResult> AddProfileLink([FromBody] LinkToUpsertDto linkDto)
+        public async Task<ActionResult<LinkDto>> AddProfileLink([FromBody] LinkToUpsertDto linkDto)
         {
             var user = await _userService.GetUserByClaims(HttpContext.User);
             if (user == null) return Unauthorized(new ApiErrorResponse(401, "Unauthorized"));
@@ -172,17 +171,17 @@ namespace TeamoWeb.API.Controllers
 
             var link = linkDto.ToEntity();
 
-            var result = await _profileService.AddProfileLinkAsync(link);
+            link = await _profileService.AddProfileLinkAsync(link);
 
-            if(!result) return BadRequest(new ApiErrorResponse(400, "Failed to add link to profile."));
-            return Ok(new ApiErrorResponse(200, "Link added to profile successfully."));
+            if(link == null) return BadRequest(new ApiErrorResponse(400, "Failed to add link to profile."));
+            return Ok(link.ToDto());
         }
 
         //Update a link in user profile
         [InvalidateCache("/profile")]
         [HttpPatch("{userId}/profile/links/{linkId}")]
         [Authorize(Roles = "Student")]
-        public async Task<ActionResult> UpdateProfileLink(int linkId, [FromBody] LinkToUpsertDto linkDto)
+        public async Task<ActionResult<LinkDto>> UpdateProfileLink(int linkId, [FromBody] LinkToUpsertDto linkDto)
         {            
             var link = await _profileService.GetLinkByIdAsync(linkId);
             if(link == null) return NotFound(new ApiErrorResponse(404, "Link not found"));
@@ -191,7 +190,7 @@ namespace TeamoWeb.API.Controllers
             var result = await _profileService.UpdateProfileLinkAsync(link);
 
             if(!result) return BadRequest(new ApiErrorResponse(400, "Failed to update link in profile."));
-            return Ok(new ApiErrorResponse(200, "Link updated in profile successfully."));
+            return Ok(link.ToDto());
         }
 
         //Remove a link from user profile

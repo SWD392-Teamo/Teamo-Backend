@@ -54,11 +54,10 @@ namespace Teamo.Infrastructure.Services
             return await GetSubjectByIdAsync(subject.Id);
         }
 
-        public async Task<Subject> UpdateSubjectAsync(Subject subject)
+        public async Task<bool> UpdateSubjectAsync(Subject subject)
         {
             _unitOfWork.Repository<Subject>().Update(subject);
-            await _unitOfWork.Complete();
-            return await GetSubjectByIdAsync(subject.Id);
+            return await _unitOfWork.Complete();
         }
 
         public async Task<bool> DeleteSubjectAsync(Subject subject)

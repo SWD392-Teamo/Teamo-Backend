@@ -2,11 +2,16 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Teamo.Core.Entities;
 using Teamo.Core.Entities.Identity;
 using Teamo.Core.Enums;
+using Teamo.Core.Interfaces;
 using Teamo.Core.Interfaces.Services;
+using Teamo.Core.Specifications.Majors;
+using Teamo.Core.Specifications.Students;
 using Teamo.Core.Specifications.Users;
 using TeamoWeb.API.Dtos;
+using TeamoWeb.API.Errors;
 using TeamoWeb.API.Extensions;
 
 namespace TeamoWeb.API.Controllers
@@ -16,13 +21,15 @@ namespace TeamoWeb.API.Controllers
         private readonly IUserService _userService;
         private readonly SignInManager<User> _signInManager;
         private readonly ITokenService _tokenService;
+        private readonly IUnitOfWork _unitOfWork;
 
         public AccountController(IUserService userService, SignInManager<User> signInManager, 
-            ITokenService tokenService) 
+            ITokenService tokenService, IUnitOfWork unitOfWork) 
         {
             _userService = userService;
             _signInManager = signInManager;
             _tokenService = tokenService;
+            _unitOfWork = unitOfWork;
         }
 
         [HttpPost("login")]
@@ -32,14 +39,17 @@ namespace TeamoWeb.API.Controllers
 
             var user = await _userService.GetUserWithSpec(spec);
 
-            if (user == null) return Unauthorized();
+            if (user == null) 
+                return Unauthorized(new ApiErrorResponse(401, "Incorrect email"));
 
             // If account is closed then return unauthorized response
-            if (user.Status.Equals(UserStatus.Inactive.ToString())) return Unauthorized();
+            if (user.Status.Equals(UserStatus.Inactive.ToString())) 
+                return Unauthorized(new ApiErrorResponse(401, "User is banned, please contact the admin"));
 
             var result = await _signInManager.PasswordSignInAsync(user, loginDto.Password!, loginDto.RememberMe, false);
 
-            if (!result.Succeeded) return Unauthorized();
+            if (!result.Succeeded) 
+                return Unauthorized(new ApiErrorResponse(401, "Incorrect password"));
 
             var userRole = await _userService.GetUserRoleAsync(user);
 
@@ -70,11 +80,31 @@ namespace TeamoWeb.API.Controllers
 
                 if (user == null)
                 {
+                    // Get imported student using the email retrieved
+                    var studentSpec = new StudentSpecification(email);
+                    var importedStudent = await _unitOfWork.Repository<Student>().GetEntityWithSpec(studentSpec);
+
+                    // Check if the user uses the correct email from FPT edu
+                    if(importedStudent == null)
+                    {
+                        return Unauthorized(new ApiErrorResponse(401, "Please use the provided email from FPT education"));
+                    }
+
+                    // Get imported student's major code
+                    var majorSpec = new MajorSpecification(importedStudent.MajorCode);
+                    var major = await _unitOfWork.Repository<Major>().GetEntityWithSpec(majorSpec);
+
                     // Create new user
                     user = new User
                     {
                         Email = email,
-                        UserName = UsernameGenerator(email),
+                        UserName = email,
+                        Code = importedStudent.Code,
+                        FirstName = importedStudent.FirstName,
+                        LastName = importedStudent.LastName,
+                        Gender = importedStudent.Gender,
+                        PhoneNumber = importedStudent.Phone,
+                        MajorID = major.Id,
                         EmailConfirmed = true,
                         Status = UserStatus.Active
                     };
@@ -82,12 +112,12 @@ namespace TeamoWeb.API.Controllers
                     if (!result.Succeeded) return BadRequest(result.Errors);
 
                     // Assign default role
-                    await _userService.AddUserToRoleAsync(user, "Student");
+                    await _userService.AddUserToRoleAsync(user, UserRole.Student.ToString());
                 }
 
                 // Check if account is inactive
                 if (user.Status.Equals(UserStatus.Inactive.ToString()))
-                    return Unauthorized();
+                    return Unauthorized(new ApiErrorResponse(401, "User is banned, please contact the admin"));
 
                 // Sign in the user with Identity
                 await _signInManager.SignInAsync(user, true);
@@ -150,20 +180,6 @@ namespace TeamoWeb.API.Controllers
             string uid = decodedToken.Uid;
             string email = decodedToken.Claims["email"].ToString();
             return email;
-        }
-
-        private string UsernameGenerator(string email)
-        {
-            string username = email.Split('@')[0];
-
-            // Generate a random number between 1000 and 9999
-            Random random = new Random();
-            int randomNumber = random.Next(1000, 9999);
-
-            // Combine the username with the random number
-            string uniqueUsername = $"{username}{randomNumber}";
-
-            return uniqueUsername;
         }
     }
 }
