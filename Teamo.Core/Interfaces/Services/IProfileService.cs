@@ -10,7 +10,7 @@ namespace Teamo.Core.Interfaces.Services
         Task<User> GetProfileAsync(int id);
         Task<IdentityResult> UpdateProfileDescriptionAsync(User user);
         Task<StudentSkill> AddProfileSkillAsync(StudentSkill newSkill);
-        Task<bool> UpdateProfileSkillAsync(StudentSkill studentSkill);
+        Task<StudentSkill> UpdateProfileSkillAsync(StudentSkill studentSkill);
         Task<bool> DeleteProfileSkillAsync(StudentSkill studentSkill);
         Task<StudentSkill> GetProfileSkillAsync(int studentSkillId);
         Task<Link> AddProfileLinkAsync(Link newLink);

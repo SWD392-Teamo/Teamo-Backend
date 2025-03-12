@@ -36,13 +36,16 @@ namespace Teamo.Infrastructure.Services
         {
             _unitOfWork.Repository<StudentSkill>().Add(newSkill);
             await _unitOfWork.Complete();
-            return await _unitOfWork.Repository<StudentSkill>().GetByIdAsync(newSkill.Id);
+            var spec = new StudentSkillSpecification(newSkill.SkillId, newSkill.StudentId);
+            return await _unitOfWork.Repository<StudentSkill>().GetEntityWithSpec(spec);
         }
 
-        public async Task<bool> UpdateProfileSkillAsync(StudentSkill studentSkill)
+        public async Task<StudentSkill> UpdateProfileSkillAsync(StudentSkill studentSkill)
         {
             _unitOfWork.Repository<StudentSkill>().Update(studentSkill);
-            return await _unitOfWork.Complete();
+            await _unitOfWork.Complete();
+            var spec = new StudentSkillSpecification(studentSkill.SkillId, studentSkill.StudentId);
+            return await _unitOfWork.Repository<StudentSkill>().GetEntityWithSpec(spec);
         }
 
         public async Task<bool> DeleteProfileSkillAsync(StudentSkill studentSkill)
