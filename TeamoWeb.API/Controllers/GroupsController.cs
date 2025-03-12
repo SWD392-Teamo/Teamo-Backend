@@ -151,7 +151,7 @@ namespace TeamoWeb.API.Controllers
         [InvalidateCache("/groups")]
         [HttpPost("{id}/image")]
         [Authorize(Roles = "Student")]
-        public async Task<ActionResult> UploadGroupImage(int id, [FromForm] IFormFile image) 
+        public async Task<ActionResult> UploadGroupImage(int id, IFormFile image) 
         {
             var user = await _userService.GetUserByClaims(HttpContext.User);
             var isLeader = await _groupService.CheckGroupLeaderAsync(id, user.Id);
