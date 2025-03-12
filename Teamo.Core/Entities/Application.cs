@@ -13,6 +13,7 @@ namespace Teamo.Core.Entities
         public User Student { get; set; }
         public required DateTime RequestTime { get; set; } = DateTime.Now;
         public required string RequestContent { get; set; }
+        public string DocumentUrl { get; set; }
         public required int GroupPositionId { get; set; }
         public GroupPosition GroupPosition { get; set; }
         public required ApplicationStatus Status { get; set; }

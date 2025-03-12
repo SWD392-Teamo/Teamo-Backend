@@ -1,5 +1,6 @@
 using Teamo.Core.Entities;
 using Teamo.Core.Interfaces;
+using Teamo.Core.Specifications.Groups;
 using Teamo.Core.Specifications.Skills;
 using Teamo.Core.Specifications.StudentSkills;
 
@@ -44,6 +45,47 @@ namespace Teamo.Infrastructure.Services
             skills = skills.Where(s => !compareSkills.Contains(s)).ToList();
 
             return skills;
+        }
+
+        public async Task<Skill> CreateSkillAsync(Skill skill)
+        {
+            _unitOfWork.Repository<Skill>().Add(skill);
+            await _unitOfWork.Complete();
+            return await GetSkillByIdAsync(skill.Id);
+        }
+
+        public async Task<bool> UpdateSkillAsync(Skill skill)
+        {
+            _unitOfWork.Repository<Skill>().Update(skill);
+            return await _unitOfWork.Complete();
+        }
+
+        public async Task<bool> DeleteSkillAsync(Skill skill)
+        {
+            //Check if skill is used in students' profile
+            var studentSkillSpec = new StudentSkillSpecification(skill.Id);
+            var studentSkill = await _unitOfWork.Repository<StudentSkill>().GetEntityWithSpec(studentSkillSpec);
+
+            //Check if skill is used in group positions
+            var positionSkillSpec = new GroupPositionSkillBySkillIdSpecification(skill.Id);
+            var positionSkill = await _unitOfWork.Repository<GroupPositionSkill>().GetEntityWithSpec(positionSkillSpec);
+
+            if(studentSkill != null || positionSkill != null) return false;
+
+            _unitOfWork.Repository<Skill>().Delete(skill);
+            return await _unitOfWork.Complete();
+        }
+
+        public async Task<bool> CheckDuplicateSkillAsync(string name)
+        {
+            var result = true;
+
+            var skillSpec = new SkillSpecification(name);
+            var existSkill = await _unitOfWork.Repository<Skill>().GetEntityWithSpec(skillSpec);
+            
+            if(existSkill != null) result = false;
+
+            return result;
         }
     }
 }

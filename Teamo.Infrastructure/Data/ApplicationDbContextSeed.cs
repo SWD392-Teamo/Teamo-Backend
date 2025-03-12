@@ -5,6 +5,7 @@ using System.Text.Json;
 using Teamo.Core.Entities.Identity;
 using Teamo.Core.Entities;
 using Teamo.Core.Enums;
+using Microsoft.EntityFrameworkCore;
 
 namespace Teamo.Infrastructure.Data
 {
@@ -39,7 +40,7 @@ namespace Teamo.Infrastructure.Data
                 var maData = await File
                     .ReadAllTextAsync(path + @"/Data/SeedData/majors.json");
 
-                var majors = JsonSerializer.Deserialize<List<Major>>(maData);
+                var majors = JsonSerializer.Deserialize<List<Major>>(maData, options);
 
                 if (majors == null) return;
 
@@ -57,13 +58,13 @@ namespace Teamo.Infrastructure.Data
                     {
                         FirstName = "My",
                         LastName = "Lâm",
-                        Code = "SE183448",
+                        Code = "SE179997",
                         Description = "I have experienced in ASPNET development",
                         Email = "my@test.com",
                         UserName = "my@test.com",
                         Gender = Gender.Female,
                         Dob = new DateOnly(2000, 2, 1),
-                        ImgUrl = "https://firebasestorage.googleapis.com/v0/b/gemify-d7e93.appspot.com/o/images%2Fusers%2Ffemale-user.png",
+                        ImgUrl = "https://firebasestorage.googleapis.com/v0/b/mechat-926e4.appspot.com/o/teamo%2Fimages%2Fplaceholders%2Ffemale-user.jpg?alt=media",
                         PhoneNumber = "0034988493",
                         MajorID = 1
                     },"my123456","Student"),
@@ -71,14 +72,14 @@ namespace Teamo.Infrastructure.Data
                     {
                         FirstName = "Khánh",
                         LastName = "Ngô",
-                        Code = "SE181509",
+                        Code = "SE179998",
                         Description = "I have experienced in React development",
                         Email = "khanhcnp@test.com",
                         UserName = "khanhcnp@test.com",
                         Gender = Gender.Female,
                         Dob = new DateOnly(2000, 2, 1),
-                        ImgUrl = "https://firebasestorage.googleapis.com/v0/b/gemify-d7e93.appspot.com/o/images%2Fusers%2Ffemale-user.png",
-                        PhoneNumber = "0034988493",
+                        ImgUrl = "https://firebasestorage.googleapis.com/v0/b/mechat-926e4.appspot.com/o/teamo%2Fimages%2Fplaceholders%2Ffemale-user.jpg?alt=media",
+                        PhoneNumber = "0034988494",
                         MajorID = 2
                     },"khanh123456","Student"),
                     (new User
@@ -90,19 +91,19 @@ namespace Teamo.Infrastructure.Data
                     {
                         FirstName = "Khánh",
                         LastName = "Lê",
-                        Code = "SE182420",
+                        Code = "SE179999",
                         Description = "I am experienced with web app development. Languages: Java, C#, ReactJS, Angular",
                         Email = "khanhlq@test.com",
                         UserName = "khanhlq@test.com",
                         Gender = Gender.Male,
                         Dob = new DateOnly(2000, 2, 1),
-                        ImgUrl = "https://firebasestorage.googleapis.com/v0/b/gemify-d7e93.appspot.com/o/images%2Fusers%2Ffemale-user.png",
-                        PhoneNumber = "0034988493",
+                        ImgUrl = "https://firebasestorage.googleapis.com/v0/b/mechat-926e4.appspot.com/o/teamo%2Fimages%2Fplaceholders%2Fmale-user.jpg?alt=media",
+                        PhoneNumber = "0034988495",
                         MajorID = 1
                     },"khanhle123456","Student"),
                     (new User
                     {
-                        FirstName = "Quốc Thành",
+                        FirstName = "Thành",
                         LastName = "Chu",
                         Code = "SS180001",
                         Description = "Marketing student with exceptional PR and event organization skills!",
@@ -110,22 +111,22 @@ namespace Teamo.Infrastructure.Data
                         UserName = "thanhcq@test.com",
                         Gender = Gender.Male,
                         Dob = new DateOnly(2000, 2, 1),
-                        ImgUrl = "https://firebasestorage.googleapis.com/v0/b/gemify-d7e93.appspot.com/o/images%2Fusers%2Ffemale-user.png",
-                        PhoneNumber = "0034988493",
+                        ImgUrl = "https://firebasestorage.googleapis.com/v0/b/mechat-926e4.appspot.com/o/teamo%2Fimages%2Fplaceholders%2Fmale-user.jpg?alt=media",
+                        PhoneNumber = "0034988496",
                         MajorID = 7
                     },"thanh123456","Student"),
                     (new User
                     {
-                        FirstName = "Nguyên Hậu",
-                        LastName = "Đỗ Thị",
+                        FirstName = "Hậu",
+                        LastName = "Đỗ",
                         Code = "SE180002",
                         Description = "Specialize in event managements and video production.",
                         Email = "haudtn@test.com",
                         UserName = "haudtn@test.com",
                         Gender = Gender.Female,
                         Dob = new DateOnly(2000, 2, 1),
-                        ImgUrl = "https://firebasestorage.googleapis.com/v0/b/gemify-d7e93.appspot.com/o/images%2Fusers%2Ffemale-user.png",
-                        PhoneNumber = "0034988493",
+                        ImgUrl = "https://firebasestorage.googleapis.com/v0/b/mechat-926e4.appspot.com/o/teamo%2Fimages%2Fplaceholders%2Ffemale-user.jpg?alt=media",
+                        PhoneNumber = "0034988497",
                         MajorID = 6
                     },"hau123456","Student"),
                     (new User
@@ -138,8 +139,8 @@ namespace Teamo.Infrastructure.Data
                         UserName = "ant@test.com",
                         Gender = Gender.Male,
                         Dob = new DateOnly(2000, 2, 1),
-                        ImgUrl = "https://firebasestorage.googleapis.com/v0/b/gemify-d7e93.appspot.com/o/images%2Fusers%2Ffemale-user.png",
-                        PhoneNumber = "0034988493",
+                        ImgUrl = "https://firebasestorage.googleapis.com/v0/b/mechat-926e4.appspot.com/o/teamo%2Fimages%2Fplaceholders%2Fmale-user.jpg?alt=media",
+                        PhoneNumber = "0034988498",
                         MajorID = 1
                     },"an123456","Student")
                 };
@@ -157,7 +158,7 @@ namespace Teamo.Infrastructure.Data
                 var subData = await File
                     .ReadAllTextAsync(path + @"/Data/SeedData/subjects.json");
 
-                var subjects = JsonSerializer.Deserialize<List<Subject>>(subData);
+                var subjects = JsonSerializer.Deserialize<List<Subject>>(subData, options);
 
                 if (subjects == null) return;
 
@@ -334,6 +335,21 @@ namespace Teamo.Infrastructure.Data
                 if (studentSkills == null) return;
 
                 context.StudentSkills.AddRange(studentSkills);
+
+                await context.SaveChangesAsync();
+            }
+
+            //Seed Students
+            if (!context.Students.Any())
+            {
+                var studentsData = await File
+                    .ReadAllTextAsync(path + @"/Data/SeedData/students.json");
+
+                var students = JsonSerializer.Deserialize<List<Student>>(studentsData, options);
+
+                if (students == null) return;
+
+                context.Students.AddRange(students);
 
                 await context.SaveChangesAsync();
             }

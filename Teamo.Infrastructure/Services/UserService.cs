@@ -4,6 +4,7 @@ using System.Security.Claims;
 using Teamo.Core.Entities.Identity;
 using Teamo.Core.Interfaces.Services;
 using Teamo.Core.Specifications;
+using Teamo.Core.Specifications.Users;
 using Teamo.Infrastructure.Data;
 
 namespace Teamo.Infrastructure.Services
@@ -23,9 +24,9 @@ namespace Teamo.Infrastructure.Services
             return await _userManager.AddToRoleAsync(user, role);
         }
 
-        public async Task<IdentityResult> CreateUserAsync(User user, string password)
+        public async Task<IdentityResult> CreateUserAsync(User user)
         {
-            return await _userManager.CreateAsync(user, password);
+            return await _userManager.CreateAsync(user);
         }
 
         public async Task<string> GetUserRoleAsync(User user)
@@ -55,6 +56,12 @@ namespace Teamo.Infrastructure.Services
             return await _userManager.GetUserAsync(principal);
         }
 
+        public async Task<User> GetUserByIdAsync(int id)
+        {
+            var spec = new UserSpecification(id);
+            return await GetUserWithSpec(spec);
+        }
+
         public async Task<IList<Claim>> GetUserClaims(User user)
         {
             return await _userManager.GetClaimsAsync(user);
@@ -73,7 +80,9 @@ namespace Teamo.Infrastructure.Services
             var query = _userManager.Users.AsQueryable();
             var students = await GetUsersInRoleAsync(_studentRoleName);
             query = query.Where(u => students.Contains(u));
-            return await ApplySpecification(query, spec).CountAsync();
+
+            query = spec.ApplyCriteria(query);
+            return await query.CountAsync();
         }
 
         public async Task<IdentityResult> UpdateUserAsync(User user)

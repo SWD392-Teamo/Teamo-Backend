@@ -1,42 +1,58 @@
 [
-    {
-        "Code": "SE",
-        "Name": "Software Engineering",
-        "CreatedDate": "2023-11-19"
-    },
-    {
-        "Code": "IA",
-        "Name": "Information Assurance",
-        "CreatedDate": "2023-11-19"
-    },
-    {
-        "Code": "AI",
-        "Name": "Artificial Intelligence",
-        "CreatedDate": "2023-11-19"
-    },
-    {
-        "Code": "IS",
-        "Name": "Information System",
-        "CreatedDate": "2023-11-19"
-    },
-    {
-        "Code": "IB",
-        "Name": "Internation Business",
-        "CreatedDate": "2023-11-19"
-    },
-    {
-        "Code": "MC",
-        "Name": "Multimedia Communication",
-        "CreatedDate": "2023-11-19"
-    },
-    {
-        "Code": "MKT",
-        "Name": "Digital Marketing",
-        "CreatedDate": "2023-11-19"
-    },
-    {
-        "Code": "GD",
-        "Name": "Digital Art & Design",
-        "CreatedDate": "2023-11-19"
-    }
+  {
+    "Code": "SE",
+    "Name": "Software Engineering",
+    "CreatedDate": "2023-11-19",
+    "Status": "Active",
+    "ImgUrl": "https://firebasestorage.googleapis.com/v0/b/mechat-926e4.appspot.com/o/teamo%2Fimages%2Fmajors%2FSE.jpg?alt=media"
+  },
+  {
+    "Code": "IA",
+    "Name": "Information Assurance",
+    "CreatedDate": "2023-11-19",
+    "Status": "Active",
+    "ImgUrl": "https://firebasestorage.googleapis.com/v0/b/mechat-926e4.appspot.com/o/teamo%2Fimages%2Fmajors%2FIA.jpg?alt=media"
+  },
+  {
+    "Code": "AI",
+    "Name": "Artificial Intelligence",
+    "CreatedDate": "2023-11-19",
+    "Status": "Active",
+    "ImgUrl": "https://firebasestorage.googleapis.com/v0/b/mechat-926e4.appspot.com/o/teamo%2Fimages%2Fmajors%2FAI.jpg?alt=media"
+  },
+  {
+    "Code": "IS",
+    "Name": "Information System",
+    "CreatedDate": "2023-11-19",
+    "Status": "Active",
+    "ImgUrl": "https://firebasestorage.googleapis.com/v0/b/mechat-926e4.appspot.com/o/teamo%2Fimages%2Fmajors%2FIS.jpg?alt=media"
+  },
+  {
+    "Code": "IB",
+    "Name": "Internation Business",
+    "CreatedDate": "2023-11-19",
+    "Status": "Active",
+    "ImgUrl": "https://firebasestorage.googleapis.com/v0/b/mechat-926e4.appspot.com/o/teamo%2Fimages%2Fmajors%2FIB.jpg?alt=media"
+  },
+  {
+    "Code": "MC",
+    "Name": "Multimedia Communication",
+    "CreatedDate": "2023-11-19",
+    "Status": "Active",
+    "ImgUrl": "https://firebasestorage.googleapis.com/v0/b/mechat-926e4.appspot.com/o/teamo%2Fimages%2Fmajors%2FMC.png?alt=media"
+  },
+  {
+    "Code": "MKT",
+    "Name": "Digital Marketing",
+    "CreatedDate": "2023-11-19",
+    "Status": "Active",
+    "ImgUrl": "https://firebasestorage.googleapis.com/v0/b/mechat-926e4.appspot.com/o/teamo%2Fimages%2Fmajors%2FMKT.jpg?alt=media"
+  },
+  {
+    "Code": "GD",
+    "Name": "Digital Art & Design",
+    "CreatedDate": "2023-11-19",
+    "Status": "Active",
+    "ImgUrl": "https://firebasestorage.googleapis.com/v0/b/mechat-926e4.appspot.com/o/teamo%2Fimages%2Fmajors%2FGD.jpg?alt=media"
+  }
 ]

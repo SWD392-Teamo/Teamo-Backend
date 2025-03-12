@@ -1,12 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Identity.Client;
-using System.Text.RegularExpressions;
+using Microsoft.IdentityModel.Tokens;
 using Teamo.Core.Entities;
 using Teamo.Core.Interfaces.Services;
-using Teamo.Core.Specifications;
 using Teamo.Core.Specifications.Groups;
 using TeamoWeb.API.Dtos;
 using TeamoWeb.API.Errors;
@@ -16,23 +12,37 @@ using Group = Teamo.Core.Entities.Group;
 
 namespace TeamoWeb.API.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
     public class GroupsController : BaseApiController
     {
         private readonly IGroupService _groupService;
         private readonly IUserService _userService;
-        public GroupsController(IGroupService groupService, IUserService userService)
+        private readonly IUploadService _uploadService;
+        private readonly IConfiguration _config;
+        private readonly INotificationService _notiService;
+        private readonly IDeviceService _deviceService;
+
+        public GroupsController(
+            IGroupService groupService, 
+            IUserService userService,
+            IUploadService uploadService,
+            IConfiguration config,
+            INotificationService notiService,
+            IDeviceService deviceService
+        )
         {
             _groupService = groupService;
             _userService = userService;
+            _uploadService = uploadService;
+            _config = config;
+            _notiService = notiService;
+            _deviceService = deviceService;
         }
 
         /// <summary>
         /// Retrieves a list of groups with pagination.
         /// </summary>
+        [Cache(1000)]
         [HttpGet]
-        [Authorize]
         public async Task<ActionResult<IReadOnlyList<GroupDto>>> GetGroupsAsync([FromQuery] GroupParams groupParams)
         {
             var spec = new GroupSpecification(groupParams);
@@ -41,12 +51,32 @@ namespace TeamoWeb.API.Controllers
             var pagination = new Pagination<GroupDto>(groupParams.PageIndex, groupParams.PageSize, groups.Count(), groupDtos);
             return Ok(pagination);
         }
+        /// <summary>
+        /// Retrieves a list of user's groups with pagination.
+        /// </summary>
+        [Cache(1000)]
+        [HttpGet("me")]
+        [Authorize]
+        public async Task<ActionResult<IReadOnlyList<GroupDto>>> GetOwnGroupsAsync([FromQuery] GroupParams groupParams)
+        {
+            var user = await _userService.GetUserByClaims(HttpContext.User);
+            if (user == null)
+                return Unauthorized(new ApiErrorResponse(401, "User not authenticated."));
+
+            groupParams.StudentId = user.Id;    
+            var spec = new GroupSpecification(groupParams);
+            var groups = await _groupService.GetGroupsAsync(spec) ?? new List<Group>();
+
+            var groupDtos = groups.Any() ? groups.Select(g => g.ToDto()).ToList() : new List<GroupDto?>();
+            var pagination = new Pagination<GroupDto>(groupParams.PageIndex, groupParams.PageSize, groups.Count(), groupDtos);
+            return Ok(pagination);
+        }
 
         /// <summary>
         /// Retrieves group details by ID.
         /// </summary>
+        [Cache(1000)]
         [HttpGet("{id}")]
-        [Authorize]
         public async Task<ActionResult<GroupDto>> GetGroupByIdAsync(int id)
         {
             var group = await _groupService.GetGroupByIdAsync(id);
@@ -57,205 +87,311 @@ namespace TeamoWeb.API.Controllers
         /// <summary>
         /// Creates a new group 
         /// </summary>
+        [InvalidateCache("/groups")]
         [HttpPost]
         [Authorize(Roles = "Student")]
         public async Task<ActionResult<GroupDto>> CreateGroupAsync(GroupToUpsertDto groupDto)
-        {
-            try
-            {
-                var user = await _userService.GetUserByClaims(HttpContext.User);
-                if (user == null)
-                    return Unauthorized(new ApiErrorResponse(401, "Unauthorize"));
-
-                var group = groupDto.ToEntity();
-
-                await _groupService.CreateGroupAsync(group, user.Id);
-                group = await _groupService.GetGroupByIdAsync(group.Id);
-                var createdGroupDto = group.ToDto();
-                return Ok(createdGroupDto);
-            }
-            catch (Exception ex) 
-            {
-                return BadRequest(new ApiErrorResponse(400, ex.Message, ex.InnerException?.Message));
-            }
-        }
-
-        /// <summary>
-        /// Updates an existing group by ID.
-        /// </summary>
-        [HttpPatch("{id}")]
-        [Authorize(Roles = "Student")]
-        public async Task<ActionResult<GroupDto>> UpdateGroupAsync(int id, GroupToUpsertDto groupDto)
-        {
-            try
-            {
-                var group = await _groupService.GetGroupByIdAsync(id);
-                if (group == null)
-                    return BadRequest(new ApiErrorResponse(404, "Group not found!"));
-
-                var updatedGroup = groupDto.ToEntity(group);
-                await _groupService.UpdateGroupAsync(updatedGroup);
-                updatedGroup = await _groupService.GetGroupByIdAsync(group.Id);
-                var updatedGroupDto = updatedGroup.ToDto();
-                return Ok(updatedGroupDto);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new ApiErrorResponse(400, ex.Message, ex.InnerException?.Message));
-            }
-        }
-
-        /// <summary>
-        /// Deletes a group by ID.
-        /// </summary>
-        [HttpDelete("{id}")]
-        [Authorize(Roles = "Student")]
-        public async Task<ActionResult<GroupDto>> DeleteGroupAsync(int id)
-        {
-            try
-            {
-                var group = await _groupService.GetGroupByIdAsync(id);
-                if (group == null)
-                    return NotFound(new ApiErrorResponse(404, "Group not found!"));
-
-                await _groupService.DeleteGroupAsync(group);
-                return Ok(new ApiErrorResponse(200, "Successfully deleted a group!"));
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new ApiErrorResponse(400, ex.Message, ex.InnerException?.Message));
-            }
-        }
-
-        /// <summary>
-        /// Retrieves the groups of the currently logged-in user.
-        /// </summary>
-        [HttpGet("me")]
-        [Authorize(Roles = "Student")]
-        public async Task<ActionResult<GroupDto>> GetGroupByMemberIdAsync([FromQuery] GroupMemberParams groupMemberParams)
         {
             var user = await _userService.GetUserByClaims(HttpContext.User);
             if (user == null)
                 return Unauthorized(new ApiErrorResponse(401, "Unauthorize"));
 
-            groupMemberParams.Studentd = user.Id;
-            var spec = new GroupMemberSpecification(groupMemberParams);
-            var groups = await _groupService.GetGroupsByMemberIdAsync(spec);
-            var groupDtos = groups.Any() ? groups.Select(g => g.ToDto()).ToList() : new List<GroupDto?>();
-            var pagination = new Pagination<GroupDto>(groupMemberParams.PageIndex, groupMemberParams.PageSize, groups.Count(), groupDtos);
-            return Ok(pagination);
+            var group = groupDto.ToEntity();
+
+            await _groupService.CreateGroupAsync(group, user.Id);
+            group = await _groupService.GetGroupByIdAsync(group.Id);
+            var createdGroupDto = group.ToDto();
+            return Ok(createdGroupDto);
+        }
+
+        /// <summary>
+        /// Updates an existing group by ID.
+        /// </summary>
+        [InvalidateCache("/groups")]
+        [HttpPatch("{id}")]
+        [Authorize(Roles = "Student")]
+        public async Task<ActionResult<GroupDto>> UpdateGroupAsync(int id, GroupToUpsertDto groupDto)
+        {
+            var group = await _groupService.GetGroupByIdAsync(id);
+            if (group == null)
+                return BadRequest(new ApiErrorResponse(404, "Group not found!"));
+
+            var user = await _userService.GetUserByClaims(HttpContext.User);
+            var isLeader = await _groupService.CheckGroupLeaderAsync(id, user.Id);
+            if (!isLeader) return Unauthorized(new ApiErrorResponse(401, "Only group leader can update group."));
+
+            var updatedGroup = groupDto.ToEntity(group);
+            await _groupService.UpdateGroupAsync(updatedGroup);
+            updatedGroup = await _groupService.GetGroupByIdAsync(group.Id);
+
+            var groupMembers = await _groupService.GetAllGroupMembersAsync(group.Id);
+            var groupMembersIds = groupMembers.Select(g => g.StudentId).ToList();
+
+            // Get all members' devices
+            var deviceTokens = await _deviceService.GetDeviceTokensForSelectedUsers(groupMembersIds);
+
+            if (!deviceTokens.IsNullOrEmpty())
+            {
+                var status = updatedGroup.Status.ToString().ToLower();
+
+                // Generate notification contents
+                FCMessage message = CreateUpdatedGroupMessage(deviceTokens, updatedGroup, status);
+
+                var notiResult = await _notiService.SendNotificationAsync(message);
+                if (!notiResult) 
+                    return Ok(new ApiErrorResponse(200, 
+                        "Group updated successfully, " +
+                        "but failed to send notifications to some devices."));
+            }
+
+            var updatedGroupDto = updatedGroup.ToDto();
+            return Ok(updatedGroupDto);
+        }
+
+        [InvalidateCache("/groups")]
+        [HttpPost("{id}/image")]
+        [Authorize(Roles = "Student")]
+        public async Task<ActionResult> UploadGroupImage(int id, [FromForm] IFormFile image) 
+        {
+            var user = await _userService.GetUserByClaims(HttpContext.User);
+            var isLeader = await _groupService.CheckGroupLeaderAsync(id, user.Id);
+            if (!isLeader) return Unauthorized(new ApiErrorResponse(401, "Only group leader can update group."));
+            
+            // Check if an image was chosen
+            if (image == null) return BadRequest(new ApiErrorResponse(400, "No image found"));
+
+            var group = await _groupService.GetGroupByIdAsync(id);
+            if (group == null)
+                return BadRequest(new ApiErrorResponse(404, "Group not found!"));
+
+            // Upload and get download Url
+            var imgUrl = await _uploadService.UploadFileAsync(
+                image.OpenReadStream(), 
+                image.FileName, 
+                image.ContentType,
+                _config["Firebase:GroupImagesUrl"]);
+
+            // Update image url
+            group.ImgUrl = imgUrl;
+
+            var result = await _groupService.UpdateGroupAsync(group);
+            
+            if (!result) return BadRequest(new ApiErrorResponse(400, "Failed to upload image."));
+
+            return Ok(new ApiErrorResponse(200, "Image uploaded successfully.", imgUrl));
+        }
+
+        /// <summary>
+        /// Deletes a group by ID.
+        /// </summary>
+        [InvalidateCache("/groups")]
+        [HttpDelete("{id}")]
+        [Authorize(Roles = "Student")]
+        public async Task<ActionResult<GroupDto>> DeleteGroupAsync(int id)
+        {
+            var group = await _groupService.GetGroupByIdAsync(id);
+            if (group == null)
+                return NotFound(new ApiErrorResponse(404, "Group not found!"));
+
+            var user = await _userService.GetUserByClaims(HttpContext.User);
+            var isLeader = await _groupService.CheckGroupLeaderAsync(id, user.Id);
+            if (!isLeader) return Unauthorized(new ApiErrorResponse(401, "Only group leader can delete group."));
+
+            await _groupService.DeleteGroupAsync(group);
+
+            var groupMembers = await _groupService.GetAllGroupMembersAsync(id);
+            var groupMembersIds = groupMembers.Select(g => g.StudentId).ToList();
+
+            // Get all members' devices
+            var deviceTokens = await _deviceService.GetDeviceTokensForSelectedUsers(groupMembersIds);
+
+            if (!deviceTokens.IsNullOrEmpty())
+            {
+                var status = group.Status.ToString().ToLower();
+
+                // Generate notification contents
+                FCMessage message = CreateDeletedGroupMessage(deviceTokens, group.Name, group.Id, status);
+
+                var notiResult = await _notiService.SendNotificationAsync(message);
+                if (!notiResult) 
+                    return Ok(new ApiErrorResponse(200, 
+                        "Group deleted successfully, " +
+                        "but failed to send notifications to some devices."));
+            }
+
+            return Ok("Successfully deleted a group");
         }
 
         /// <summary>
         /// Adds a member to a group.
         /// </summary>
+        [InvalidateCache("/groups")]
         [HttpPost("{id}/members")]
         [Authorize(Roles = "Student")]
         public async Task<IActionResult> AddMemberToGroup(int id, GroupMemberToAddDto groupMemberToAddDto)
         {
-            try
-            {
-                var group = await _groupService.GetGroupByIdAsync(id);
-                if (group == null)
-                    return NotFound(new ApiErrorResponse(404, "Group not found!"));
+            var group = await _groupService.GetGroupByIdAsync(id);
+            if (group == null)
+                return NotFound(new ApiErrorResponse(404, "Group not found!"));
 
-                var groupMember = groupMemberToAddDto.ToEntity();
-                groupMember.GroupId = id;
-                await _groupService.AddMemberToGroup(groupMember);
+            var user = await _userService.GetUserByClaims(HttpContext.User);
+            var isLeader = await _groupService.CheckGroupLeaderAsync(id, user.Id);
+            if (!isLeader) return Unauthorized(new ApiErrorResponse(401, "Only group leader can add members."));
+            
+            var groupMember = groupMemberToAddDto.ToEntity();
+            groupMember.GroupId = id;
+            await _groupService.AddMemberToGroup(groupMember);
 
-                group = await _groupService.GetGroupByIdAsync(id);
-                return Ok(group.ToDto());
-            }
-            catch (InvalidOperationException ex)
-            {
-                return BadRequest(new ApiErrorResponse(409, ex.Message, ex.InnerException?.Message));
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new ApiErrorResponse(400, ex.Message, ex.InnerException?.Message));
-            }
-        }
-        /// <summary>
-        /// Add position to group
-        /// </summary>
-        [HttpPost("{id}/positions")]
-        [Authorize(Roles = "Student")]
-        public async Task<IActionResult> AddGroupPosition (int id, GroupPositionToAddDto groupPositionDto)
-        {
-            try
-            {
-                var group = await _groupService.GetGroupByIdAsync(id);
-                if (group == null)
-                    return NotFound(new ApiErrorResponse(404, "Group not found!"));
-
-                var groupPosition = groupPositionDto.ToEntity();
-                groupPosition.GroupId = id;
-                await _groupService.AddGroupPosition(groupPosition);
-
-                group = await _groupService.GetGroupByIdAsync(id);
-                return Ok(group.ToDto());
-            }
-            catch(Exception ex)
-            {
-                return BadRequest(new ApiErrorResponse(400, ex.Message, ex.InnerException?.Message));
-            }
-        }
-
-        /// <summary>
-        /// Update group position
-        /// </summary>
-        [HttpPatch("{groupId}/positions/{positionId}")]
-        [Authorize(Roles = "Student")]
-        public async Task<IActionResult> UpdateGroupPosition(int groupId, int positionId, GroupPositionToAddDto updateDto)
-        {           
-            try
-            {
-                var groupPosition = await _groupService.GetGroupPositionByIdAsync(positionId);
-                if (groupPosition == null)
-                {
-                    return NotFound(new ApiErrorResponse(404, "Group position not found."));
-                }
-
-                groupPosition = updateDto.ToEntity(groupPosition);
-                groupPosition.GroupId = groupId;
-                await _groupService.UpdateGroupPositionAsync(groupPosition, updateDto.SkillIds);
-
-                var group = await _groupService.GetGroupByIdAsync(groupId);
-                return Ok(group.ToDto());
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new ApiErrorResponse(400, ex.Message, ex.InnerException?.Message));
-            }
+            groupMember = await _groupService.GetGroupMemberAsync(groupMember.GroupId, groupMember.StudentId);
+            return Ok(groupMember.ToDto());
         }
 
         /// <summary>
         /// Removes a member from a group.
         /// </summary>
-        [HttpDelete("{groupId}/members/{groupMemberId}")]
+        [InvalidateCache("/groups")]
+        [HttpDelete("{groupId}/members/{studentId}")]
         [Authorize(Roles = "Student")]
-        public async Task<IActionResult> RemoveMemberFromGroup(int groupId, int groupMemberId)
+        public async Task<IActionResult> RemoveMemberFromGroup(int groupId, int studentId)
         {
-            try
+            var user = await _userService.GetUserByClaims(HttpContext.User);
+            var isLeader = await _groupService.CheckGroupLeaderAsync(groupId, user.Id);
+            if (!isLeader) return Unauthorized(new ApiErrorResponse(401, "Only group leader can remove members."));
+            
+            var groupMember = await _groupService.GetGroupMemberAsync(groupId, studentId);
+            if (groupMember == null)
             {
-                var groupMember = await _groupService.GetGroupMemberByIdAsync(groupMemberId);
-                if (groupMember == null)
-                {
-                    return NotFound(new ApiErrorResponse(404, "Group Member not found!"));
-                }
-                await _groupService.RemoveMemberFromGroup(groupMember);
+                return NotFound(new ApiErrorResponse(404, "Group Member not found!"));
+            }
 
-                var group = await _groupService.GetGroupByIdAsync(groupId);
-                return Ok(group.ToDto());
-            }
-            catch (InvalidOperationException ex)
+            var groupName = groupMember.Group.Name;
+
+            await _groupService.RemoveMemberFromGroup(groupMember);
+
+            // Get removed member's devices
+            var deviceTokens = await _deviceService.GetDeviceTokensForUser(studentId);
+
+            if (!deviceTokens.IsNullOrEmpty())
             {
-                return BadRequest(new ApiErrorResponse(409, ex.Message, ex.InnerException?.Message));
+                // Generate notification contents
+                FCMessage message = CreateRemovedMemberMessage(deviceTokens, groupId, groupName);
+
+                var notiResult = await _notiService.SendNotificationAsync(message);
+                if (!notiResult) 
+                    return Ok(new ApiErrorResponse(200, 
+                        "Member removed successfully, " +
+                        "but failed to send notifications to some devices."));
             }
-            catch (Exception ex)
+
+            return Ok("Delete Successfully");
+        }
+
+        [InvalidateCache("/groups")]
+        [HttpPatch("{groupId}/members/{studentId}")]
+        [Authorize(Roles = "Student")]
+        public async Task<IActionResult> UpdateGroupMember (int groupId, int studentId, GroupMemberToAddDto gmDto)
+        {
+            var user = await _userService.GetUserByClaims(HttpContext.User);
+            var isLeader = await _groupService.CheckGroupLeaderAsync(groupId, user.Id);
+            if (!isLeader) return Unauthorized(new ApiErrorResponse(401, "Only group leader can update members."));
+            
+            var groupMember = await _groupService.GetGroupMemberAsync(groupId, studentId);
+            if (groupMember == null)
             {
-                return BadRequest(new ApiErrorResponse(400, ex.Message, ex.InnerException?.Message));
+                return NotFound(new ApiErrorResponse(404, "Group Member not found!"));
             }
+            groupMember = gmDto.ToEntity(groupMember);
+            await _groupService.UpdateGroupMemberAsync(groupMember);
+
+            groupMember = await _groupService.GetGroupMemberAsync(groupId, studentId);
+
+            var groupName = groupMember.Group.Name;
+
+            // Get updated member's devices
+            var deviceTokens = await _deviceService.GetDeviceTokensForUser(studentId);
+
+            if (!deviceTokens.IsNullOrEmpty())
+            {
+                // Generate notification contents
+                FCMessage message = CreateUpdatedMemberMessage(deviceTokens, groupId, groupName);
+
+                var notiResult = await _notiService.SendNotificationAsync(message);
+                if (!notiResult) 
+                    return Ok(new ApiErrorResponse(200, 
+                        "Member updated successfully, " +
+                        "but failed to send notifications to some devices."));
+            }
+
+            return Ok(groupMember.ToDto());
+        }
+
+        private static FCMessage CreateUpdatedGroupMessage(List<string> tokens, 
+            Group group, string status)
+        {
+            return new FCMessage
+            {
+                tokens = tokens,
+                title = "Group Update",
+                body = $"{group.Name} has been updated recently.",
+                data = new Dictionary<string, string>
+                {
+                    { "type", "updated_group" },
+                    { "groupId", group.Id.ToString() },
+                    { "status", status }
+                }
+            };
+        }
+
+        private static FCMessage CreateDeletedGroupMessage(List<string> tokens, 
+            string groupName, int groupId, string status)
+        {
+            return new FCMessage
+            {
+                tokens = tokens,
+                title = "Delete group",
+                body = $"{groupName} has been deleted.",
+                data = new Dictionary<string, string>
+                {
+                    { "type", "deleted_group" },
+                    { "groupName", groupName },
+                    { "groupId", groupId.ToString() },
+                    { "status", status }
+                }
+            };
+        }
+
+        private static FCMessage CreateRemovedMemberMessage(List<string> tokens, 
+            int groupId, string groupName)
+        {
+            return new FCMessage
+            {
+                tokens = tokens,
+                title = "Member Removal",
+                body = $"You have been removed from {groupName}",
+                data = new Dictionary<string, string>
+                {
+                    { "type", "removed_member" },
+                    { "groupId", groupId.ToString() },
+                    { "groupName", groupName }
+                }
+            };
+        }
+
+        private static FCMessage CreateUpdatedMemberMessage(List<string> tokens, 
+            int groupId, string groupName)
+        {
+            return new FCMessage
+            {
+                tokens = tokens,
+                title = "Member Update",
+                body = $"Your positions in {groupName} have been updated.",
+                data = new Dictionary<string, string>
+                {
+                    { "type", "updated_member" },
+                    { "groupId", groupId.ToString() },
+                    { "groupName", groupName }
+                }
+            };
         }
     }
 }

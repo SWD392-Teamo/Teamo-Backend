@@ -1,3 +1,5 @@
+using Teamo.Core.Enums;
+
 namespace Teamo.Core.Specifications.Majors
 {
     public class MajorSpecParams : PagingParams
@@ -8,5 +10,6 @@ namespace Teamo.Core.Specifications.Majors
             get => _search;
             set => _search = value.ToLower();
         }
+        public MajorStatus? Status { get; set; }
     }
 }

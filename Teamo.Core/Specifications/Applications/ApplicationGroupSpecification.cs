@@ -1,4 +1,6 @@
+using Teamo.Core.Constants;
 using Teamo.Core.Entities;
+using Teamo.Core.Enums;
 
 namespace Teamo.Core.Specifications.Applications
 {
@@ -7,22 +9,25 @@ namespace Teamo.Core.Specifications.Applications
 
         public ApplicationGroupSpecification(ApplicationParams appParams)
             : base(x => (x.GroupId == appParams.GroupId)
-                    &&(!appParams.PositionId.HasValue || x.GroupPositionId == appParams.PositionId)
-                    &&(string.IsNullOrEmpty(appParams.Status)
-                    || x.Status.ToString().ToLower().Equals(appParams.Status.ToLower())))
+                    && (string.IsNullOrEmpty(appParams.Status) 
+                    ? x.Status == ApplicationStatus.Requested 
+                    : x.Status == ParseStatus<ApplicationStatus>(appParams.Status)))
         {
             AddInclude(x => x.Group);
             AddInclude(x => x.Student);
             AddInclude(x => x.GroupPosition);
 
+            ApplyPaging(appParams.PageSize * (appParams.PageIndex - 1),
+                appParams.PageSize);
+
             if(!string.IsNullOrEmpty(appParams.Sort))
             {
                 switch (appParams.Sort)
                 {
-                    case "dateAsc":
+                    case SortOptions.DateAsc:
                         AddOrderBy(x => x.RequestTime);
                         break;
-                    case "dateDesc":
+                    case SortOptions.DateDesc:
                         AddOrderByDescending(x => x.RequestTime);
                         break;
                     default:

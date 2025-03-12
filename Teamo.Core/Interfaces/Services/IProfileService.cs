@@ -7,12 +7,15 @@ namespace Teamo.Core.Interfaces.Services
 {
     public interface IProfileService
     {
-        Task<User> GetProfileAsync(string userEmail);
-        Task<IdentityResult> UpdateProfileDescriptionAsync(int userId, string description);
-        Task<bool> AddProfileSkillAsync(StudentSkill newSkill);
-        Task<bool> UpdateProfileSkillAsync(int userId, int skillId, StudentSkillLevel skillLevel);
-        Task<bool> AddProfileLinkAsync(Link newLink);
-        Task<bool> UpdateProfileLinkAsync(int linkId, string linkName, string linkUrl);
-        Task<bool> RemoveProfileLinkAsync(int linkId);
+        Task<User> GetProfileAsync(int id);
+        Task<IdentityResult> UpdateProfileDescriptionAsync(User user);
+        Task<StudentSkill> AddProfileSkillAsync(StudentSkill newSkill);
+        Task<bool> UpdateProfileSkillAsync(StudentSkill studentSkill);
+        Task<bool> DeleteProfileSkillAsync(StudentSkill studentSkill);
+        Task<StudentSkill> GetProfileSkillAsync(int studentSkillId);
+        Task<Link> AddProfileLinkAsync(Link newLink);
+        Task<bool> UpdateProfileLinkAsync(Link link);
+        Task<Link> GetLinkByIdAsync(int id);
+        Task<bool> RemoveProfileLinkAsync(Link link);
     }
 }

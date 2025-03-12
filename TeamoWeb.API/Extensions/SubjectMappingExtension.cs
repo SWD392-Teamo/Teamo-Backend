@@ -1,4 +1,5 @@
 ﻿using Teamo.Core.Entities;
+using Teamo.Core.Enums;
 using TeamoWeb.API.Dtos;
 
 namespace TeamoWeb.API.Extensions
@@ -16,7 +17,9 @@ namespace TeamoWeb.API.Extensions
                 Code = subject.Code,
                 Name = subject.Name,
                 Description = subject.Description,
+                ImgUrl = subject.ImgUrl,
                 CreatedDate = subject.CreatedDate,
+                Status = subject.Status.ToString()
             };
         }
 
@@ -30,13 +33,16 @@ namespace TeamoWeb.API.Extensions
                     Name = subjectDto.Name,
                     Code = subjectDto.Code,
                     Description = subjectDto.Description,
-                    CreatedDate = subjectDto.CreatedDate
+                    ImgUrl = subjectDto.ImgUrl,
+                    CreatedDate = subjectDto.CreatedDate,
+                    Status = SubjectStatus.Active
                 };
             }
 
             //Update subject
             subject.Name = string.IsNullOrEmpty(subjectDto.Name) ? subject.Name : subjectDto.Name;
             subject.Description = string.IsNullOrEmpty(subjectDto.Description) ? subject.Description : subjectDto.Description;
+            subject.ImgUrl = string.IsNullOrEmpty(subjectDto.ImgUrl) ? subject.ImgUrl : subjectDto.ImgUrl;
 
             return subject;
         }

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Teamo.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class _NewMigration : Migration
+    public partial class NewMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -48,7 +48,9 @@ namespace Teamo.Infrastructure.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Code = table.Column<string>(type: "varchar(20)", nullable: true),
                     Name = table.Column<string>(type: "varchar(100)", nullable: true),
-                    CreatedDate = table.Column<DateOnly>(type: "date", nullable: false)
+                    ImgUrl = table.Column<string>(type: "varchar(200)", nullable: true),
+                    CreatedDate = table.Column<DateOnly>(type: "date", nullable: false),
+                    Status = table.Column<string>(type: "varchar(50)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -90,8 +92,7 @@ namespace Teamo.Infrastructure.Migrations
                 name: "Student",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<int>(type: "int", nullable: false),
                     Code = table.Column<string>(type: "varchar(20)", nullable: true),
                     FirstName = table.Column<string>(type: "varchar(100)", nullable: true),
                     LastName = table.Column<string>(type: "varchar(100)", nullable: true),
@@ -100,7 +101,7 @@ namespace Teamo.Infrastructure.Migrations
                     Gender = table.Column<string>(type: "varchar(20)", nullable: false),
                     Phone = table.Column<string>(type: "varchar(20)", nullable: true),
                     ImgUrl = table.Column<string>(type: "varchar(200)", nullable: true),
-                    MajorId = table.Column<int>(type: "int", nullable: false)
+                    MajorCode = table.Column<string>(type: "varchar(20)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -114,9 +115,11 @@ namespace Teamo.Infrastructure.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Code = table.Column<string>(type: "varchar(20)", nullable: true),
-                    Name = table.Column<string>(type: "nvarchar(100)", nullable: true),
-                    Description = table.Column<string>(type: "nvarchar(1000)", nullable: true),
-                    CreatedDate = table.Column<DateOnly>(type: "date", nullable: false)
+                    Name = table.Column<string>(type: "varchar(100)", nullable: true),
+                    ImgUrl = table.Column<string>(type: "varchar(200)", nullable: true),
+                    Description = table.Column<string>(type: "varchar(1000)", nullable: true),
+                    CreatedDate = table.Column<DateOnly>(type: "date", nullable: false),
+                    Status = table.Column<string>(type: "varchar(50)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -330,6 +333,7 @@ namespace Teamo.Infrastructure.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(100)", nullable: true),
                     Title = table.Column<string>(type: "nvarchar(200)", nullable: true),
+                    ImgUrl = table.Column<string>(type: "varchar(200)", nullable: true),
                     SemesterId = table.Column<int>(type: "int", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(1000)", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -417,6 +421,26 @@ namespace Teamo.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "UserDevice",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    FCMToken = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserDevice", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_UserDevice_User_UserId",
+                        column: x => x.UserId,
+                        principalTable: "User",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "GroupMember",
                 columns: table => new
                 {
@@ -471,7 +495,8 @@ namespace Teamo.Infrastructure.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    GroupMemberId = table.Column<int>(type: "int", nullable: false),
+                    StudentId = table.Column<int>(type: "int", nullable: false),
+                    GroupId = table.Column<int>(type: "int", nullable: false),
                     Content = table.Column<string>(type: "nvarchar(1000)", nullable: true),
                     Status = table.Column<string>(type: "varchar(20)", nullable: false),
                     Privacy = table.Column<string>(type: "varchar(20)", nullable: false),
@@ -482,11 +507,16 @@ namespace Teamo.Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_Post", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Post_GroupMember_GroupMemberId",
-                        column: x => x.GroupMemberId,
-                        principalTable: "GroupMember",
+                        name: "FK_Post_Group_GroupId",
+                        column: x => x.GroupId,
+                        principalTable: "Group",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Post_User_StudentId",
+                        column: x => x.StudentId,
+                        principalTable: "User",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -499,6 +529,7 @@ namespace Teamo.Infrastructure.Migrations
                     StudentId = table.Column<int>(type: "int", nullable: false),
                     RequestTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     RequestContent = table.Column<string>(type: "nvarchar(1000)", nullable: true),
+                    DocumentUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     GroupPositionId = table.Column<int>(type: "int", nullable: false),
                     Status = table.Column<string>(type: "varchar(50)", nullable: false)
                 },
@@ -680,6 +711,13 @@ namespace Teamo.Infrastructure.Migrations
                 column: "StudentId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Major_Code",
+                table: "Major",
+                column: "Code",
+                unique: true,
+                filter: "[Code] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_MajorSubject_MajorId",
                 table: "MajorSubject",
                 column: "MajorId");
@@ -690,9 +728,42 @@ namespace Teamo.Infrastructure.Migrations
                 column: "SubjectId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Post_GroupMemberId",
+                name: "IX_Post_GroupId",
                 table: "Post",
-                column: "GroupMemberId");
+                column: "GroupId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Post_StudentId",
+                table: "Post",
+                column: "StudentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Semester_Code",
+                table: "Semester",
+                column: "Code",
+                unique: true,
+                filter: "[Code] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Student_Code",
+                table: "Student",
+                column: "Code",
+                unique: true,
+                filter: "[Code] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Student_Email",
+                table: "Student",
+                column: "Email",
+                unique: true,
+                filter: "[Email] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Student_Phone",
+                table: "Student",
+                column: "Phone",
+                unique: true,
+                filter: "[Phone] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_StudentSkill_SkillId",
@@ -703,6 +774,13 @@ namespace Teamo.Infrastructure.Migrations
                 name: "IX_StudentSkill_StudentId",
                 table: "StudentSkill",
                 column: "StudentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Subject_Code",
+                table: "Subject",
+                column: "Code",
+                unique: true,
+                filter: "[Code] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_SubjectField_FieldId",
@@ -720,9 +798,30 @@ namespace Teamo.Infrastructure.Migrations
                 column: "NormalizedEmail");
 
             migrationBuilder.CreateIndex(
+                name: "IX_User_Code",
+                table: "User",
+                column: "Code",
+                unique: true,
+                filter: "[Code] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_User_Email",
+                table: "User",
+                column: "Email",
+                unique: true,
+                filter: "[Email] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_User_MajorID",
                 table: "User",
                 column: "MajorID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_User_PhoneNumber",
+                table: "User",
+                column: "PhoneNumber",
+                unique: true,
+                filter: "[PhoneNumber] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "UserNameIndex",
@@ -730,6 +829,11 @@ namespace Teamo.Infrastructure.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserDevice_UserId",
+                table: "UserDevice",
+                column: "UserId");
         }
 
         /// <inheritdoc />
@@ -778,13 +882,16 @@ namespace Teamo.Infrastructure.Migrations
                 name: "SubjectField");
 
             migrationBuilder.DropTable(
+                name: "UserDevice");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "GroupPosition");
+                name: "GroupMember");
 
             migrationBuilder.DropTable(
-                name: "GroupMember");
+                name: "GroupPosition");
 
             migrationBuilder.DropTable(
                 name: "Skill");

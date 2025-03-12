@@ -1,4 +1,6 @@
 using API.Extensions;
+using FirebaseAdmin;
+using Google.Apis.Auth.OAuth2;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Teamo.Core.Entities.Identity;
@@ -14,6 +16,7 @@ builder.Services.AddSwaggerGen();
 // Add services to the container.
 builder.Services.AddApplicationServices(builder.Configuration);
 builder.Services.AddIdentityServices(builder.Configuration);
+
 builder.Services.AddSingleton(TimeProvider.System);
 
 var app = builder.Build();

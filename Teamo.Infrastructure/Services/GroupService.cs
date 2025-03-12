@@ -27,18 +27,40 @@ namespace Teamo.Infrastructure.Services
         {
             var spec = new GroupMemberSpecification(new GroupMemberParams
             {
-                Studentd = groupMember.StudentId,
+                StudentId = groupMember.StudentId,
                 GroupId = groupMember.GroupId
             });
+
             var existingMember = await _unitOfWork.Repository<GroupMember>().GetEntityWithSpec(spec);
             if (existingMember != null)
             {
                 throw new InvalidOperationException("This student already exists in this group!");
             }
 
+            foreach(var position in groupMember.GroupMemberPositions)
+            {
+                var groupPosition = await _unitOfWork.Repository<GroupPosition>().GetEntityWithSpec(new GroupPositionSpecification(
+                new GroupPositionParams { GroupId = groupMember.GroupId, PositionId = position.GroupPositionId}));
+                if (groupPosition == null)
+                {
+                    throw new InvalidOperationException($"Position with ID {position.GroupPositionId} does not exist in group with ID {groupMember.GroupId}.");
+                }
+                if(groupPosition.Status == GroupPositionStatus.Closed)
+                {
+                    throw new InvalidOperationException($"Position with ID {position.GroupPositionId} is closed.");
+
+                }
+            }
+            
             groupMember.Role = GroupMemberRole.Member;
             _unitOfWork.Repository<GroupMember>().Add(groupMember);
             await _unitOfWork.Repository<GroupMember>().SaveAllAsync();
+
+            // update status of group position
+            foreach (var groupPositionId in groupMember.GroupMemberPositions.Select(mp => mp.GroupPositionId))
+            {
+                await UpdateGroupPositionStatus(groupPositionId);
+            }
         }
 
         public async Task CreateGroupAsync(Group group, int createdUserId)
@@ -62,9 +84,37 @@ namespace Teamo.Infrastructure.Services
 
         public async Task DeleteGroupAsync(Group group)
         {
-            group.Status = GroupStatus.Archived;
+            group.Status = GroupStatus.Deleted;
             _unitOfWork.Repository<Group>().Update(group);
             await _unitOfWork.Repository<Group>().SaveAllAsync();
+        }
+        public async Task RemoveGroupPositionAsync(GroupPosition groupPosition)
+        {
+            var groupMemberPositions = await _unitOfWork.Repository<GroupMemberPosition>()
+                .ListAsync(new GroupMemberPositionSpecification(groupPositionId: groupPosition.Id));
+            if(groupMemberPositions.Count() > 0)
+            {
+                throw new InvalidOperationException("You cannot remove this position because there are still members assigned to it.");
+            }
+            groupPosition.Status = GroupPositionStatus.Deleted;
+            _unitOfWork.Repository<GroupPosition>().Update(groupPosition);
+            await _unitOfWork.Repository<GroupPosition>().SaveAllAsync();
+        }
+
+        public async Task RemoveMemberFromGroup(GroupMember groupMember)
+        {
+            var affectedGroupPositionIds = (await _unitOfWork.Repository<GroupMemberPosition>()
+                                            .ListAsync(new GroupMemberPositionSpecification(groupMemberId: groupMember.Id)))
+                                            .Select(mp => mp.GroupPositionId);
+
+            _unitOfWork.Repository<GroupMember>().Delete(groupMember);
+            await _unitOfWork.Repository<GroupMember>().SaveAllAsync();
+
+            // update status of group position
+            foreach (var groupPositionId in affectedGroupPositionIds)
+            {
+                await UpdateGroupPositionStatus(groupPositionId);
+            }
         }
 
         public async Task<Group> GetGroupByIdAsync(int id)
@@ -73,14 +123,28 @@ namespace Teamo.Infrastructure.Services
             return await _unitOfWork.Repository<Group>().GetEntityWithSpec(spec);
         }
 
-        public async Task<GroupMember> GetGroupMemberByIdAsync(int groupMemberId)
+        public async Task<GroupMember> GetGroupMemberAsync(int groupId, int studentId)
         {
-            return await _unitOfWork.Repository<GroupMember>().GetByIdAsync(groupMemberId);
+            var spec = new GroupMemberSpecification(new GroupMemberParams
+            {
+                GroupId = groupId,
+                StudentId = studentId
+            });
+            return await _unitOfWork.Repository<GroupMember>().GetEntityWithSpec(spec);
         }
 
-        public async Task<GroupPosition> GetGroupPositionByIdAsync(int id)
+        public async Task<IReadOnlyList<GroupMember>> GetAllGroupMembersAsync(int groupId)
         {
-            var spec = new GroupPositionSpecification(id);
+            var spec = new GroupMemberSpecification(new GroupMemberParams
+            {
+                GroupId = groupId
+            });
+            return await _unitOfWork.Repository<GroupMember>().ListAsync(spec);
+        }
+
+        public async Task<GroupPosition> GetGroupPositionAsync(int positionId)
+        {
+            var spec = new GroupPositionSpecification(positionId);
             return await _unitOfWork.Repository<GroupPosition>().GetEntityWithSpec(spec);
         }
 
@@ -89,57 +153,67 @@ namespace Teamo.Infrastructure.Services
             return await _unitOfWork.Repository<Group>().ListAsync(spec);
         }
 
-        public async Task<IReadOnlyList<Group>> GetGroupsByMemberIdAsync(ISpecification<GroupMember> spec)
-        {
-            var studentGroups = await _unitOfWork.Repository<GroupMember>().ListAsync(spec);
-            var groups = new List<Group>(); 
-            foreach (var sg in studentGroups)
-            {
-                var group = await GetGroupByIdAsync(sg.Id);
-                groups.Add(group);
-            }
-            return groups;
-        }
-
-        public async Task RemoveMemberFromGroup(GroupMember groupMember)
-        {
-            _unitOfWork.Repository<GroupMember>().Delete(groupMember);
-            await _unitOfWork.Repository<GroupMember>().SaveAllAsync();
-        }
-
-        public async Task UpdateGroupAsync(Group group)
+        public async Task<bool> UpdateGroupAsync(Group group)
         {
             _unitOfWork.Repository<Group>().Update(group);
-            await _unitOfWork.Repository<Group>().SaveAllAsync();
+            var result = await _unitOfWork.Repository<Group>().SaveAllAsync();
+            return result;
         }
 
-        public async Task UpdateGroupPositionAsync(GroupPosition groupPosition, IEnumerable<int> skillIds)
+        public async Task UpdateGroupMemberAsync(GroupMember groupMember)
         {
-            var existingSkills = await _unitOfWork.Repository<GroupPositionSkill>()
-                                                  .ListAsync(new GroupPositionSkillSpecification(groupPosition.Id));
-            var existingSkillIds = existingSkills.Select(s => s.SkillId).ToList();
+            var affectedGroupPositionIds = groupMember.GroupMemberPositions
+                .Select(mp => mp.GroupPositionId)
+                .Concat((await _unitOfWork.Repository<GroupMemberPosition>()
+                    .ListAsync(new GroupMemberPositionSpecification(groupMemberId: groupMember.Id)))
+                    .Select(mp => mp.GroupPositionId))
+                .Distinct()
+                .ToList();
+            
+            // update Group Member
+            _unitOfWork.Repository<GroupMember>().Update(groupMember);
+            await _unitOfWork.Repository<GroupMember>().SaveAllAsync(); 
+            
+            // update status of group position
+            foreach(var groupPositionId in affectedGroupPositionIds)
+            {
+                await UpdateGroupPositionStatus(groupPositionId);
+            }  
+        }
 
-            var skillsToAdd = skillIds.Except(existingSkillIds)
-                              .Select(skillId => new GroupPositionSkill
-                              {
-                                  GroupPositionId = groupPosition.Id,
-                                  SkillId = skillId
-                              });
-            var skillsToRemove = existingSkills.Where(s => !skillIds.Contains(s.SkillId));
-
-
+        public async Task UpdateGroupPositionAsync(GroupPosition groupPosition)
+        {
             // update GroupPosition
             _unitOfWork.Repository<GroupPosition>().Update(groupPosition);
             await _unitOfWork.Repository<GroupPosition>().SaveAllAsync();
+        }
+        /// <summary>
+        /// Updates the status of a GroupPosition based on the current number of assigned members.
+        /// If the number of assigned members reaches the maximum allowed, the status is set to "Closed".
+        /// Otherwise, the status remains "Open".
+        /// </summary>
+        /// <param name="positionId">The ID of the GroupPosition to update.</param>
+        private async Task UpdateGroupPositionStatus(int positionId)
+        {
 
-            // add GroupPositionSkill
-            if (skillsToAdd.Count() > 0) 
-                _unitOfWork.Repository<GroupPositionSkill>().AddRange(skillsToAdd);
-            if(skillsToRemove.Count() > 0) 
-                _unitOfWork.Repository<GroupPositionSkill>().DeleteRange(skillsToRemove);
+            var assignedMemberPositions = await _unitOfWork.Repository<GroupMemberPosition>()
+                .ListAsync(new GroupMemberPositionSpecification(groupPositionId: positionId));
+            var totalAssignedMembers = assignedMemberPositions.Count();
 
-            await _unitOfWork.Repository<GroupPositionSkill>().SaveAllAsync();
+            var groupPosition = await _unitOfWork.Repository<GroupPosition>().GetByIdAsync(positionId);
+            var maxAllowedMembers = groupPosition.Count;
 
+            groupPosition.Status = totalAssignedMembers >= maxAllowedMembers
+                                    ? GroupPositionStatus.Closed
+                                    : GroupPositionStatus.Open;
+
+            await UpdateGroupPositionAsync(groupPosition);
+        }
+
+        public async Task<bool> CheckGroupLeaderAsync(int groupId, int studentId)
+        {
+            var groupMember = await GetGroupMemberAsync(groupId, studentId);
+            return groupMember != null && groupMember.Role == GroupMemberRole.Leader;
         }
     }
 }

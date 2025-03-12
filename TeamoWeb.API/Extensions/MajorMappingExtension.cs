@@ -14,10 +14,32 @@ namespace TeamoWeb.API.Extensions
                 Id = major.Id,
                 Code = major.Code,
                 Name = major.Name,
+                ImgUrl = major.ImgUrl,
                 CreatedDate = major.CreatedDate,
+                Status = major.Status,
                 Subjects =(major.Subjects != null) ? 
                     major.Subjects.Select(subject => subject.ToDto()).ToList() : null
             };
+        }
+
+        public static Major toEntity(this MajorToUpsertDto majorDto, Major? major = null)
+        {
+            if(major == null)
+            {
+                if (string.IsNullOrEmpty(majorDto.Code) || string.IsNullOrEmpty(majorDto.Name))
+                    throw new ArgumentException("All required fields must be provided when creating a new major.");
+                return new Major
+                {
+                    Code = majorDto.Code,
+                    Name = majorDto.Name,
+                    ImgUrl= majorDto.ImgUrl,
+                };
+            }
+
+            major.Code = string.IsNullOrEmpty(majorDto.Code) ? major.Code : majorDto.Code;
+            major.Name = string.IsNullOrEmpty(majorDto.Name) ? major.Name : majorDto.Name;
+            major.ImgUrl = string.IsNullOrEmpty(majorDto.ImgUrl) ? major.ImgUrl : majorDto.ImgUrl;
+            return major;
         }
     }
 }

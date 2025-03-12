@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Teamo.Core.Entities;
+using Teamo.Core.Enums;
 
 namespace Teamo.Infrastructure.Configs
 {
@@ -9,13 +10,23 @@ namespace Teamo.Infrastructure.Configs
         public void Configure(EntityTypeBuilder<Major> builder)
         {
             builder.ToTable("Major");
+
+            builder.HasIndex(o => o.Code).IsUnique();
+
             builder.Property(m => m.Code).HasColumnType("varchar(20)");
             builder.Property(m => m.Name).HasColumnType("varchar(100)");
             builder.Property(m => m.CreatedDate).HasColumnType("date");
+            builder.Property(o => o.ImgUrl).HasColumnType("varchar(200)");
 
             builder.HasMany(m => m.Subjects)
                 .WithMany()
                 .UsingEntity<MajorSubject>();
+
+            builder.Property(o => o.Status)
+                .HasConversion(
+                    s => s.ToString(),
+                    s => (MajorStatus)Enum.Parse(typeof(MajorStatus), s))
+                .HasColumnType("varchar(50)");
         }
     }
 }

@@ -12,8 +12,8 @@ using Teamo.Infrastructure.Data;
 namespace Teamo.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250214132904__NewMigration")]
-    partial class _NewMigration
+    [Migration("20250311175408_NewMigration")]
+    partial class NewMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -166,6 +166,9 @@ namespace Teamo.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("DocumentUrl")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("GroupId")
                         .HasColumnType("int");
 
@@ -234,6 +237,9 @@ namespace Teamo.Infrastructure.Migrations
 
                     b.Property<int>("FieldId")
                         .HasColumnType("int");
+
+                    b.Property<string>("ImgUrl")
+                        .HasColumnType("varchar(200)");
 
                     b.Property<int>("MaxMember")
                         .HasColumnType("int");
@@ -454,6 +460,14 @@ namespace Teamo.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Code")
+                        .IsUnique()
+                        .HasFilter("[Code] IS NOT NULL");
+
+                    b.HasIndex("Email")
+                        .IsUnique()
+                        .HasFilter("[Email] IS NOT NULL");
+
                     b.HasIndex("MajorID");
 
                     b.HasIndex("NormalizedEmail")
@@ -463,6 +477,10 @@ namespace Teamo.Infrastructure.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.HasIndex("PhoneNumber")
+                        .IsUnique()
+                        .HasFilter("[PhoneNumber] IS NOT NULL");
 
                     b.ToTable("User", (string)null);
                 });
@@ -505,10 +523,21 @@ namespace Teamo.Infrastructure.Migrations
                     b.Property<DateOnly>("CreatedDate")
                         .HasColumnType("date");
 
+                    b.Property<string>("ImgUrl")
+                        .HasColumnType("varchar(200)");
+
                     b.Property<string>("Name")
                         .HasColumnType("varchar(100)");
 
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("varchar(50)");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("Code")
+                        .IsUnique()
+                        .HasFilter("[Code] IS NOT NULL");
 
                     b.ToTable("Major", (string)null);
                 });
@@ -550,7 +579,7 @@ namespace Teamo.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("GroupMemberId")
+                    b.Property<int>("GroupId")
                         .HasColumnType("int");
 
                     b.Property<string>("Privacy")
@@ -561,12 +590,17 @@ namespace Teamo.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("varchar(20)");
 
+                    b.Property<int>("StudentId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("GroupMemberId");
+                    b.HasIndex("GroupId");
+
+                    b.HasIndex("StudentId");
 
                     b.ToTable("Post", (string)null);
                 });
@@ -597,6 +631,10 @@ namespace Teamo.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Code")
+                        .IsUnique()
+                        .HasFilter("[Code] IS NOT NULL");
+
                     b.ToTable("Semester", (string)null);
                 });
 
@@ -622,10 +660,7 @@ namespace Teamo.Infrastructure.Migrations
             modelBuilder.Entity("Teamo.Core.Entities.Student", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Code")
                         .HasColumnType("varchar(20)");
@@ -646,8 +681,8 @@ namespace Teamo.Infrastructure.Migrations
                     b.Property<string>("LastName")
                         .HasColumnType("varchar(100)");
 
-                    b.Property<int>("MajorId")
-                        .HasColumnType("int");
+                    b.Property<string>("MajorCode")
+                        .HasColumnType("varchar(20)");
 
                     b.Property<string>("Phone")
                         .HasColumnType("varchar(20)");
@@ -656,6 +691,18 @@ namespace Teamo.Infrastructure.Migrations
                         .HasColumnType("varchar(50)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Code")
+                        .IsUnique()
+                        .HasFilter("[Code] IS NOT NULL");
+
+                    b.HasIndex("Email")
+                        .IsUnique()
+                        .HasFilter("[Email] IS NOT NULL");
+
+                    b.HasIndex("Phone")
+                        .IsUnique()
+                        .HasFilter("[Phone] IS NOT NULL");
 
                     b.ToTable("Student", (string)null);
                 });
@@ -702,12 +749,23 @@ namespace Teamo.Infrastructure.Migrations
                         .HasColumnType("date");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(1000)");
+                        .HasColumnType("varchar(1000)");
+
+                    b.Property<string>("ImgUrl")
+                        .HasColumnType("varchar(200)");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("varchar(50)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Code")
+                        .IsUnique()
+                        .HasFilter("[Code] IS NOT NULL");
 
                     b.ToTable("Subject", (string)null);
                 });
@@ -733,6 +791,27 @@ namespace Teamo.Infrastructure.Migrations
                     b.HasIndex("SubjectId");
 
                     b.ToTable("SubjectField", (string)null);
+                });
+
+            modelBuilder.Entity("Teamo.Core.Entities.UserDevice", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("FCMToken")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserDevice");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
@@ -958,13 +1037,21 @@ namespace Teamo.Infrastructure.Migrations
 
             modelBuilder.Entity("Teamo.Core.Entities.Post", b =>
                 {
-                    b.HasOne("Teamo.Core.Entities.GroupMember", "GroupMember")
-                        .WithMany()
-                        .HasForeignKey("GroupMemberId")
+                    b.HasOne("Teamo.Core.Entities.Group", "Group")
+                        .WithMany("Posts")
+                        .HasForeignKey("GroupId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("GroupMember");
+                    b.HasOne("Teamo.Core.Entities.Identity.User", "Student")
+                        .WithMany()
+                        .HasForeignKey("StudentId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Group");
+
+                    b.Navigation("Student");
                 });
 
             modelBuilder.Entity("Teamo.Core.Entities.StudentSkill", b =>
@@ -1005,6 +1092,17 @@ namespace Teamo.Infrastructure.Migrations
                     b.Navigation("Subject");
                 });
 
+            modelBuilder.Entity("Teamo.Core.Entities.UserDevice", b =>
+                {
+                    b.HasOne("Teamo.Core.Entities.Identity.User", "User")
+                        .WithMany("Devices")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Teamo.Core.Entities.Group", b =>
                 {
                     b.Navigation("Applications");
@@ -1012,6 +1110,8 @@ namespace Teamo.Infrastructure.Migrations
                     b.Navigation("GroupMembers");
 
                     b.Navigation("GroupPositions");
+
+                    b.Navigation("Posts");
                 });
 
             modelBuilder.Entity("Teamo.Core.Entities.GroupMember", b =>
@@ -1026,6 +1126,8 @@ namespace Teamo.Infrastructure.Migrations
 
             modelBuilder.Entity("Teamo.Core.Entities.Identity.User", b =>
                 {
+                    b.Navigation("Devices");
+
                     b.Navigation("Links");
 
                     b.Navigation("StudentSkills");

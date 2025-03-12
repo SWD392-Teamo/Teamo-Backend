@@ -13,6 +13,10 @@ namespace Teamo.Infrastructure.Configs
         {
             builder.ToTable("User");
 
+            builder.HasIndex(u => u.PhoneNumber).IsUnique();
+            builder.HasIndex(u => u.Email).IsUnique();
+            builder.HasIndex(u => u.Code).IsUnique();
+
             builder.Property(u => u.UserName).HasColumnType("varchar(50)");
             builder.Property(u => u.PhoneNumber).HasColumnType("varchar(20)");
             builder.Property(u => u.Email).HasColumnType("varchar(100)");
@@ -39,7 +43,11 @@ namespace Teamo.Infrastructure.Configs
                       .WithMany()
                       .HasForeignKey(r => r.MajorID)
                       .OnDelete(DeleteBehavior.Restrict);
-            
+
+            builder.HasMany(u => u.Devices)
+                      .WithOne(ud => ud.User)
+                      .OnDelete(DeleteBehavior.Restrict);
+
             builder.HasMany(u => u.Skills).WithMany().UsingEntity<StudentSkill>();
         }
     }

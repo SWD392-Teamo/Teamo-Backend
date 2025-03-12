@@ -4,7 +4,7 @@ using Teamo.Core.Enums;
 
 namespace TeamoWeb.API.Dtos
 {
-    public class GroupPositionToAddDto
+    public class GroupPositionToUpsertDto
     {
         public string? Name { get; set; }
         [Range(1, 100, ErrorMessage = "Count must be between 1 and 50.")]

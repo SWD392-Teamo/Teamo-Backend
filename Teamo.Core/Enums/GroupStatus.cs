@@ -11,6 +11,8 @@ namespace Teamo.Core.Enums
         [EnumMember(Value = "Full")]
         Full,
         [EnumMember(Value = "Archived")]
-        Archived
+        Archived,
+        [EnumMember(Value = "Deleted")]
+        Deleted
     }
 }

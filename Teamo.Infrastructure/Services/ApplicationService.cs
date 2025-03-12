@@ -1,4 +1,3 @@
-using Microsoft.VisualBasic;
 using Teamo.Core.Entities;
 using Teamo.Core.Enums;
 using Teamo.Core.Interfaces;
@@ -25,32 +24,36 @@ namespace Teamo.Infrastructure.Services
 
         public async Task<IReadOnlyList<Application>> GetSentApplicationsAsync(ApplicationSpecification appSpec)
         {
-            return await _unitOfWork.Repository<Application>().ListAsync(appSpec);
+            await AutoDeleteRequestedApplicationsAsync();
+            return await _unitOfWork.Repository<Application>().ListAsync(appSpec);;
         }
 
         public async Task<IReadOnlyList<Application>> GetGroupApplicationsAsync(ApplicationGroupSpecification appSpec)
         {
+            await AutoDeleteRequestedApplicationsAsync();
             return await _unitOfWork.Repository<Application>().ListAsync(appSpec);
         }
 
-        public async Task<bool> ReviewApplicationAsync(Application app, string newStatus)
+        public async Task<bool> ReviewApplicationAsync(Application app)
         {   
-            if(Enum.TryParse(newStatus, out ApplicationStatus appStatus))
-            {
-                app.Status = appStatus;
-                _unitOfWork.Repository<Application>().Update(app);
-                return await _unitOfWork.Complete();
-            }
-            else return false;
+            _unitOfWork.Repository<Application>().Update(app);
+            return await _unitOfWork.Complete();
         }
 
-        public async Task<bool> CreateNewApplicationAsync(Application newAapp)
+        public async Task<Application> CreateNewApplicationAsync(Application newAapp)
         {
             _unitOfWork.Repository<Application>().Add(newAapp);
-            return await _unitOfWork.Complete();            
+            await _unitOfWork.Complete();
+            return await GetApplicationByIdAsync(newAapp.Id);            
         }
 
-        public async Task<string> GetGroupLeaderEmailAsync(int groupId)
+        public async Task<bool> DeleteApplicationAsync(Application app)
+        {
+            _unitOfWork.Repository<Application>().Delete(app);
+            return await _unitOfWork.Complete();
+        }
+
+        public async Task<int> GetGroupLeaderIdAsync(int groupId)
         {
             var groupSpec = new GroupSpecification(groupId);
             var group = await _unitOfWork.Repository<Group>().GetEntityWithSpec(groupSpec);
@@ -63,7 +66,7 @@ namespace Teamo.Infrastructure.Services
             var memberSpec = new GroupMemberSpecification(memberParams);
             var groupLeader = await _unitOfWork.Repository<GroupMember>().GetEntityWithSpec(memberSpec);
 
-            return groupLeader.Student.Email;
+            return groupLeader.StudentId;
         }
 
         public async Task<bool> CheckValidToApply(int groupId, int studentId, int groupPositionId)
@@ -83,7 +86,7 @@ namespace Teamo.Infrastructure.Services
             var memberParams = new GroupMemberParams
             {
                 GroupId = groupId,
-                Studentd = studentId
+                StudentId = studentId
             };
             var memberSpec = new GroupMemberSpecification(memberParams);
             var existMember = await _unitOfWork.Repository<GroupMember>().GetEntityWithSpec(memberSpec);
@@ -108,6 +111,17 @@ namespace Teamo.Infrastructure.Services
         public async Task<int> CountAsync(ApplicationGroupSpecification appSpec)
         {
             return await _unitOfWork.Repository<Application>().CountAsync(appSpec);
+        }
+
+        //Delete applications that have been requested (and unanswered) for 7 days
+        private async Task<bool> AutoDeleteRequestedApplicationsAsync()
+        {
+            var applications = await _unitOfWork.Repository<Application>().ListAllAsync();
+            var applicationsToDelete = applications.Where(a => 
+                ((DateTime.Now - a.RequestTime).TotalDays >= 7) &&
+                (a.Status == ApplicationStatus.Requested)).ToList();
+            _unitOfWork.Repository<Application>().DeleteRange(applicationsToDelete);
+            return await _unitOfWork.Complete();
         }
     }
 }

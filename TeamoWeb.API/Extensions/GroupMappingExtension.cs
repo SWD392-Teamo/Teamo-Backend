@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using Teamo.Core.Entities;
+using Teamo.Core.Enums;
+using Teamo.Core.Specifications.Groups;
 using TeamoWeb.API.Dtos;
 
 namespace TeamoWeb.API.Extensions
@@ -12,12 +14,13 @@ namespace TeamoWeb.API.Extensions
         public static GroupDto? ToDto (this Group? group)
         {
             if (group == null) return null;
-            return new GroupDto
+            var groupDto = new GroupDto
             {
                 Id = group.Id,
                 Name = group.Name,
                 Title = group.Title,
                 Description = group.Description,
+                ImgUrl = group.ImgUrl,
                 SemesterName = group.Semester.Name,
                 CreatedAt = group.CreatedAt,
                 CreatedByUserName = group.CreatedByUser.FirstName + " " + group.CreatedByUser.LastName,
@@ -27,36 +30,44 @@ namespace TeamoWeb.API.Extensions
                 SubjectCode = group.Subject.Code,
 
                 GroupMembers = group.GroupMembers?
-                    .Select(gm => new GroupMemberDto
-                    {
-                        Id = gm.Id,
-                        MemberName = gm.Student.FirstName + " " + gm.Student.LastName,
-                        MemberEmail = gm.Student.Email,
-                        ImgUrl = gm.Student.ImgUrl,
-                        Positions = gm.GroupPositions.Select(gp => gp.Name),
-                        Role = gm.Role
-                    }).ToList() ?? new List<GroupMemberDto>(),
+                    .Select(gm => gm.ToDto()).ToList() ?? new List<GroupMemberDto>(),
 
                 GroupPositions = group.GroupPositions?
-                .Select(gp => new GroupPositionDto
-                {
-                    Id = gp.Id,
-                    Name = gp.Name,
-                    Count = gp.Count,
-                    Status = gp.Status,
-
-                    Skills = gp.Skills?
-                    .Select(s => new SkillDto
-                    {
-                        Id = s.Id,
-                        Name = s.Name,
-                        Type = s.Type
-                    }).ToList() ?? new List<SkillDto>(),
-                }).ToList() ?? new List<GroupPositionDto>(),
+                .Where(gp => gp.Status != GroupPositionStatus.Deleted)
+                .Select(gp => gp.ToDto()).ToList() ?? new List<GroupPositionDto>(),
 
                 Applications = (group.Applications != null) ?
-                    group.Applications.Select(a => a.ToDto()).ToList() : new List<ApplicationDto?>()
+                    group.Applications.Select(a => a.ToDto()).ToList() : new List<ApplicationDto?>(),
+
             };
+
+            groupDto.TotalMembers = groupDto.GroupMembers.Count();
+            groupDto.TotalGroupPositions = groupDto.GroupPositions.Count();
+            groupDto.TotalApplications = groupDto.Applications.Count();
+
+            return groupDto;    
+        }
+
+        /**
+         * Mapping Group to GroupSuggestionDto
+         */
+        public static GroupSuggestionDto? ToSuggestionDto (this Group? group)
+        {
+            if (group == null) return null;
+            var groupDto = new GroupSuggestionDto
+            {
+                Id = group.Id,
+                Name = group.Name,
+                Title = group.Title,
+                Description = group.Description,
+                FieldName = group.Field.Name,
+                SubjectCode = group.Subject.Code,
+                GroupPositions = group.GroupPositions?
+                .Where(gp => gp.Status != GroupPositionStatus.Deleted)
+                .Select(gp => gp.ToDto()).ToList() ?? new List<GroupPositionDto>(),
+            };
+
+            return groupDto;    
         }
 
         /**
@@ -78,21 +89,13 @@ namespace TeamoWeb.API.Extensions
                     Name = groupDto.Name,
                     Title = groupDto.Title,
                     Description = groupDto.Description,
+                    ImgUrl = groupDto.ImgUrl,
                     SemesterId = groupDto.SemesterId.Value,
                     MaxMember = groupDto.MaxMember.Value,
                     FieldId = groupDto.FieldId.Value,
                     SubjectId = groupDto.SubjectId.Value,
                     GroupPositions = groupDto.GroupPositions
-                    .Select(gp => new GroupPosition
-                    {
-                        Name = gp.Name,
-                        Count = (int) gp.Count,
-                        GroupPositionSkills = gp.SkillIds
-                        .Select(skillId => new GroupPositionSkill
-                        {
-                            SkillId = skillId
-                        }).ToList()
-                    }).ToList()
+                    .Select(gp => gp.ToEntity()).ToList()
                 }; 
             }
 
@@ -100,6 +103,7 @@ namespace TeamoWeb.API.Extensions
             group.Name = string.IsNullOrEmpty(groupDto.Name) ? group.Name : groupDto.Name;
             group.Title = string.IsNullOrEmpty(groupDto.Title) ? group.Title : groupDto.Title;
             group.Description = string.IsNullOrEmpty(groupDto.Description) ? group.Description : groupDto.Description;
+            group.ImgUrl = string.IsNullOrEmpty(groupDto.ImgUrl) ? group.ImgUrl : groupDto.ImgUrl;
             group.SemesterId = groupDto.SemesterId ?? group.SemesterId;
             group.MaxMember = groupDto.MaxMember ?? group.MaxMember;
             group.FieldId = groupDto.FieldId ?? group.FieldId;
@@ -109,7 +113,9 @@ namespace TeamoWeb.API.Extensions
             return group;
         }
 
-        public static GroupPosition ToEntity (this GroupPositionToAddDto groupPositionDto, GroupPosition? groupPosition = null)
+        // Mapping GroupPositionToUpsertDto to GroupPosition Entity
+
+        public static GroupPosition ToEntity (this GroupPositionToUpsertDto groupPositionDto, GroupPosition? groupPosition = null)
         {
             // for add
             if (groupPosition == null)
@@ -134,20 +140,67 @@ namespace TeamoWeb.API.Extensions
             groupPosition.Name = string.IsNullOrEmpty(groupPositionDto.Name) ? groupPosition.Name : groupPositionDto.Name;
             groupPosition.Count = groupPositionDto.Count ?? groupPosition.Count;
             groupPosition.Status = groupPositionDto.Status ?? groupPosition.Status;
+            groupPosition.GroupPositionSkills = groupPositionDto.SkillIds?
+                                                      .Select(sId => new GroupPositionSkill
+                                                      {
+                                                          SkillId = sId
+                                                      }).ToList() ?? groupPosition.GroupPositionSkills;
             return groupPosition;
         }
 
         // Mapping GroupMemberToAddDto to GroupMember
-        public static GroupMember ToEntity (this GroupMemberToAddDto groupMemberToAddDto)
+        public static GroupMember ToEntity(this GroupMemberToAddDto groupMemberToAddDto, GroupMember? groupMember = null)
         {
-            return new GroupMember
+            if (groupMember == null)
             {
-                StudentId = groupMemberToAddDto.StudentId,
-                GroupMemberPositions = groupMemberToAddDto.GroupPositionIds
-                                      .Select(gpId => new GroupMemberPosition
-                                      {
-                                          GroupPositionId = gpId
-                                      }).ToList()
+                if(groupMemberToAddDto.StudentId == null)
+                    throw new ArgumentException("Student ID is required.");
+                return new GroupMember
+                {
+                    StudentId = groupMemberToAddDto.StudentId.Value,
+                    GroupMemberPositions = groupMemberToAddDto.GroupPositionIds?
+                                                      .Select(gpId => new GroupMemberPosition
+                                                      {
+                                                          GroupPositionId = gpId
+                                                      }).ToList() ?? new List<GroupMemberPosition>()
+
+                };
+            }
+            groupMember.Role = groupMemberToAddDto.Role ?? groupMember.Role;
+            groupMember.GroupMemberPositions = groupMemberToAddDto.GroupPositionIds?
+                                                      .Select(gpId => new GroupMemberPosition
+                                                      {
+                                                          GroupPositionId = gpId
+                                                      }).ToList() ?? groupMember.GroupMemberPositions;
+            return groupMember;
+        }
+
+        // Mapping GroupMember to GroupMemberDto
+        public static GroupMemberDto ToDto(this GroupMember groupMember)
+        {
+            return new GroupMemberDto
+            {
+                GroupId = groupMember.GroupId,
+                StudentId = groupMember.StudentId,
+                StudentName = groupMember.Student.FirstName + " " + groupMember.Student.LastName,
+                StudentEmail = groupMember.Student.Email,
+                ImgUrl = groupMember.Student.ImgUrl,
+                Positions = groupMember.GroupMemberPositions?.Select(gp => gp.GroupPosition.Name) ?? [],
+                Role = groupMember.Role
+            };
+        }
+
+        // Mapping GroupPosition to GroupPositionDto
+        public static GroupPositionDto ToDto(this GroupPosition groupPosition)
+        {
+            return new GroupPositionDto
+            {
+                Id = groupPosition.Id,
+                Name = groupPosition.Name,
+                Count = groupPosition.Count,
+                Status = groupPosition.Status,
+
+                Skills = groupPosition.GroupPositionSkills?.Select(gps => gps.Skill.ToDto()).ToList() ?? []
             };
         }
     }
