@@ -33,6 +33,11 @@ jobs:
       - name: dotnet publish
         run: dotnet publish ${{env.STARTUP_PATH}} -c Release -o "${{env.DOTNET_ROOT}}/myapp"
 
+      # Step to create firebase.json from the GitHub secret
+      - name: Create firebase.json file from secret
+        run: |
+          echo '${{ secrets.FIREBASE_JSON }}' | jq '.' > "${{env.DOTNET_ROOT}}/myapp/firebase.json"
+
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
