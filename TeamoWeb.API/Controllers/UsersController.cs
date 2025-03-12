@@ -135,9 +135,7 @@ namespace TeamoWeb.API.Controllers
 
             studentSkill = studentSkillDto.ToEntity(studentSkill);
 
-            var result = await _profileService.UpdateProfileSkillAsync(studentSkill);
-
-            if(!result) return BadRequest(new ApiErrorResponse(400, "Failed to update skill."));
+            studentSkill = await _profileService.UpdateProfileSkillAsync(studentSkill);
             return Ok(studentSkill.ToDto());
         }
 
