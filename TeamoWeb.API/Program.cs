@@ -1,6 +1,4 @@
 using API.Extensions;
-using FirebaseAdmin;
-using Google.Apis.Auth.OAuth2;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Teamo.Core.Entities.Identity;
@@ -29,6 +27,7 @@ app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "Teamo API V1");
+
     c.RoutePrefix = string.Empty; // Serve Swagger UI at the app's root ("/")
 });
 

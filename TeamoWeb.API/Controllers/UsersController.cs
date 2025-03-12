@@ -211,7 +211,7 @@ namespace TeamoWeb.API.Controllers
         [InvalidateCache("/profile")]
         [HttpPost("{userId}/profile/image")]
         [Authorize(Roles = "Student")]
-        public async Task<ActionResult> UploadProfileImage(int userId, [FromForm] IFormFile image) 
+        public async Task<ActionResult> UploadProfileImage(int userId, IFormFile image) 
         {
             var currentUser = await _userService.GetUserByIdAsync(userId);
             if(currentUser == null) return Unauthorized(new ApiErrorResponse(401, "Unauthorized"));

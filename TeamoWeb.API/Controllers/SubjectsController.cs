@@ -91,7 +91,7 @@ namespace TeamoWeb.API.Controllers
         [InvalidateCache("/subjects")]
         [HttpPost("{id}/image")]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult> UploadSubjectImage(int id, [FromForm] IFormFile image)
+        public async Task<ActionResult> UploadSubjectImage(int id, IFormFile image)
         {
             // Check if an image was chosen
             if (image == null) return BadRequest(new ApiErrorResponse(400, "No image found"));

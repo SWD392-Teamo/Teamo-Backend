@@ -236,7 +236,7 @@ namespace TeamoWeb.API.Controllers
         [InvalidateCache("/applications")]
         [HttpPost("/api/applications/document")]
         [Authorize(Roles = "Student")]
-        public async Task<ActionResult> UploadApplicationDocument([FromForm] IFormFile document)
+        public async Task<ActionResult> UploadApplicationDocument(IFormFile document)
         {
             // Check if an image was chosen
             if (document == null) 
