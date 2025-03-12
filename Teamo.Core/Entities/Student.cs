@@ -2,9 +2,8 @@ using Teamo.Core.Enums;
 
 namespace Teamo.Core.Entities
 {
-    public class Student
+    public class Student : BaseEntity
     {
-        public required int Id { get; set; }
         public required string Code { get; set; }
         public required string FirstName { get; set; }
         public required string LastName { get; set; }
