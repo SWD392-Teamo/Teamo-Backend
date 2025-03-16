@@ -67,5 +67,16 @@ namespace TeamoWeb.API.Controllers
             await _semesterRepo.SaveAllAsync();
             return Ok(semester.ToDto());            
         }
+
+        [Cache(1000)]
+        [HttpGet("current")]
+        [Authorize]
+        public async Task<ActionResult<SemesterDto>> GetCurrentSemester()
+        {
+            var spec = new SemesterSpecification();
+            var currentSemester = await _semesterRepo.GetEntityWithSpec(spec);
+            if(currentSemester == null) return NotFound(new ApiErrorResponse(400, "Semester not found."));
+            return Ok(currentSemester.ToDto());
+        }
     }
 }
