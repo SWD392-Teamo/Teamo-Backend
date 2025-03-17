@@ -13,12 +13,14 @@ namespace TeamoWeb.API.Extensions
                 Id = application.Id,
                 GroupId = application.GroupId,
                 GroupName = application.Group.Name,
+                StudentId = application.StudentId,
                 StudentName = application.Student.FirstName + " " + application.Student.LastName,
                 StudentEmail = application.Student.Email,
                 ImgUrl= application.Student.ImgUrl,
                 RequestTime = application.RequestTime,
                 RequestContent = application.RequestContent,
                 DocumentUrl = application.DocumentUrl,
+                GroupPositionId = application.GroupPositionId,
                 GroupPositionName = (application.GroupPosition == null) ? null 
                     : application.GroupPosition.Name,
                 Status = application.Status.ToString()
