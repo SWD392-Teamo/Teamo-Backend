@@ -1,6 +1,9 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Teamo.Core.Entities;
 using Teamo.Core.Interfaces.Services;
+using Teamo.Core.Specifications.Groups;
+using Teamo.Infrastructure.Services;
 using TeamoWeb.API.Dtos;
 using TeamoWeb.API.Errors;
 using TeamoWeb.API.Extensions;
@@ -13,6 +16,7 @@ namespace TeamoWeb.API.Controllers
         private readonly IUserService _userService;
         private readonly IProfileService _profileService;
         private readonly IUploadService _uploadService;
+        private readonly IGroupService _groupService;
         private readonly IConfiguration _config;
 
         public ProfileController
@@ -20,13 +24,15 @@ namespace TeamoWeb.API.Controllers
             IUserService userService,
             IProfileService profileService, 
             IUploadService uploadService,
-            IConfiguration config
+            IConfiguration config,
+            IGroupService groupService
         )
         {
             _userService = userService;
             _profileService = profileService;
             _uploadService = uploadService;
             _config = config;
+            _groupService = groupService;
         }
 
         //Display current user's profile
@@ -195,6 +201,29 @@ namespace TeamoWeb.API.Controllers
             if (!result.Succeeded) return BadRequest(new ApiErrorResponse(400, "Failed to upload image."));
 
             return Ok(new ApiErrorResponse(200, "Image uploaded successfully."));
+        }
+
+        /// <summary>
+        /// Retrieves a list of user's groups with pagination.
+        /// </summary>
+        [Cache(1000)]
+        [HttpGet("groups")]
+        [Authorize]
+        public async Task<ActionResult<IReadOnlyList<GroupDto>>> GetOwnGroupsAsync([FromQuery] GroupParams groupParams)
+        {
+            var user = await _userService.GetUserByClaims(HttpContext.User);
+            if (user == null)
+                return Unauthorized(new ApiErrorResponse(401, "User not authenticated."));
+
+            groupParams.StudentId = user.Id;
+            var spec = new GroupSpecification(groupParams);
+            var groups = await _groupService.GetGroupsAsync(spec) ?? new List<Group>();
+            var countSpec = new GroupSpecification(groupParams, false);
+            var totalGroups = (await _groupService.GetGroupsAsync(countSpec)).Count();
+
+            var groupDtos = groups.Any() ? groups.Select(g => g.ToDto()).ToList() : new List<GroupDto?>();
+            var pagination = new Pagination<GroupDto>(groupParams.PageIndex, groupParams.PageSize, totalGroups, groupDtos);
+            return Ok(pagination);
         }
 
     }

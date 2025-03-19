@@ -50,29 +50,7 @@ namespace TeamoWeb.API.Controllers
             var groupDtos = groups.Any() ? groups.Select(g => g.ToDto()).ToList() : new List<GroupDto?>();
             var pagination = new Pagination<GroupDto>(groupParams.PageIndex, groupParams.PageSize, groups.Count(), groupDtos);
             return Ok(pagination);
-        }
-        /// <summary>
-        /// Retrieves a list of user's groups with pagination.
-        /// </summary>
-        [Cache(1000)]
-        [HttpGet("me")]
-        [Authorize]
-        public async Task<ActionResult<IReadOnlyList<GroupDto>>> GetOwnGroupsAsync([FromQuery] GroupParams groupParams)
-        {
-            var user = await _userService.GetUserByClaims(HttpContext.User);
-            if (user == null)
-                return Unauthorized(new ApiErrorResponse(401, "User not authenticated."));
-
-            groupParams.StudentId = user.Id;    
-            var spec = new GroupSpecification(groupParams);
-            var groups = await _groupService.GetGroupsAsync(spec) ?? new List<Group>();
-            var countSpec = new GroupSpecification(groupParams, false);
-            var totalGroups = (await _groupService.GetGroupsAsync(countSpec)).Count();
-
-            var groupDtos = groups.Any() ? groups.Select(g => g.ToDto()).ToList() : new List<GroupDto?>();
-            var pagination = new Pagination<GroupDto>(groupParams.PageIndex, groupParams.PageSize, totalGroups, groupDtos);
-            return Ok(pagination);
-        }
+        }       
 
         /// <summary>
         /// Retrieves group details by ID.
