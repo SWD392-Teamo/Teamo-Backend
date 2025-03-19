@@ -1,10 +1,12 @@
-﻿using Teamo.Core.Enums;
+﻿using Microsoft.AspNetCore.Mvc;
+using Teamo.Core.Enums;
 
 namespace TeamoWeb.API.Dtos
 {
     public class PostToUpsertDto
     {
-        public string Content { get; set; } = string.Empty;
-        public PostPrivacy Privacy { get; set; } = PostPrivacy.Public;
+        public IFormFile? Document { get; set; }
+        public string? Content { get; set; } 
+        public PostPrivacy? Privacy { get; set; } 
     }
 }

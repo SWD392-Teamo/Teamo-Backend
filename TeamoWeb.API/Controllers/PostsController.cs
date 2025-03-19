@@ -5,10 +5,12 @@ using Teamo.Core.Entities;
 using Teamo.Core.Entities.Identity;
 using Teamo.Core.Interfaces.Services;
 using Teamo.Core.Specifications.Posts;
+using Teamo.Infrastructure.Services;
 using TeamoWeb.API.Dtos;
 using TeamoWeb.API.Errors;
 using TeamoWeb.API.Extensions;
 using TeamoWeb.API.RequestHelpers;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace TeamoWeb.API.Controllers
 {
@@ -20,6 +22,9 @@ namespace TeamoWeb.API.Controllers
         private readonly IGroupService _groupService;
         private readonly INotificationService _notiService;
         private readonly IDeviceService _deviceService;
+        private readonly IUploadService _uploadService;
+        private readonly IConfiguration _config;
+
 
         public PostsController
         (
@@ -27,7 +32,9 @@ namespace TeamoWeb.API.Controllers
             IUserService userService,
             IGroupService groupService,
             INotificationService notiService,
-            IDeviceService deviceService
+            IDeviceService deviceService,
+            IUploadService uploadService,
+            IConfiguration config
         )
         {
             _postService = postService;
@@ -35,6 +42,8 @@ namespace TeamoWeb.API.Controllers
             _groupService = groupService;
             _notiService = notiService;
             _deviceService = deviceService;
+            _uploadService = uploadService;
+            _config = config;
         }
 
         [Cache(1000)]
@@ -63,13 +72,27 @@ namespace TeamoWeb.API.Controllers
         [InvalidateCache("/posts")]
         [HttpPost]
         [Authorize(Roles = "Student")]
-        public async Task<ActionResult<PostDto>> CreatePostAsync([FromRoute]int GroupId, PostToUpsertDto postDto)
+        public async Task<ActionResult<PostDto>> CreatePostAsync([FromRoute]int GroupId,[FromForm] PostToUpsertDto postDto)
         {
             var user = await _userService.GetUserByClaims(HttpContext.User);
             if (user == null)
                 return Unauthorized();
 
             var post = postDto.ToEntity();
+            if(postDto.Document != null)
+            {
+                var document = postDto.Document;
+                // Upload and get download Url
+                var documentUrl = await _uploadService.UploadFileAsync(
+                    document.OpenReadStream(),
+                    document.FileName,
+                    document.ContentType,
+                    _config["Firebase:PostDocumentsUrl"]);
+
+                // Update document url
+                post.DocumentUrl = documentUrl;
+            }
+
             post = await _postService.CreatePost(post, user.Id, GroupId);
 
             var groupMembers = await _groupService.GetAllGroupMembersAsync(GroupId);
@@ -98,7 +121,7 @@ namespace TeamoWeb.API.Controllers
         [InvalidateCache("/posts")]
         [HttpPatch("{id}")]
         [Authorize(Roles = "Student")]
-        public async Task<ActionResult<PostDto>> UpdatePostAsync(int id, PostToUpsertDto postDto)
+        public async Task<ActionResult<PostDto>> UpdatePostAsync(int id,[FromForm] PostToUpsertDto postDto)
         {
             var post = await _postService.GetPostByIdAsync(id);
             if(post == null) return NotFound(new ApiErrorResponse(404, "Post not found.")); 
@@ -107,6 +130,19 @@ namespace TeamoWeb.API.Controllers
                 return Unauthorized();
 
             post = postDto.ToEntity(post);
+            if (postDto.Document != null)
+            {
+                var document = postDto.Document;
+                // Upload and get download Url
+                var documentUrl = await _uploadService.UploadFileAsync(
+                    document.OpenReadStream(),
+                    document.FileName,
+                    document.ContentType,
+                    _config["Firebase:PostDocumentsUrl"]);
+
+                // Update document url
+                post.DocumentUrl = documentUrl;
+            }
             post = await _postService.UpdatePost(post, user.Id);
 
             var groupMembers = await _groupService.GetAllGroupMembersAsync(post.GroupId);
