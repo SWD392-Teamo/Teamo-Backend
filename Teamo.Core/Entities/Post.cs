@@ -14,5 +14,7 @@ namespace Teamo.Core.Entities
         public PostPrivacy Privacy { get; set; } = PostPrivacy.Public;
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime? UpdatedAt { get; set; }
+        public int TotalLike { get; set; }
+        public string DocumentUrl { get; set; }
     }
 }
