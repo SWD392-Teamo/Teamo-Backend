@@ -353,6 +353,21 @@ namespace Teamo.Infrastructure.Data
 
                 await context.SaveChangesAsync();
             }
+
+            // seed post
+            if (!context.Posts.Any())
+            {
+                var postsData = await File
+                    .ReadAllTextAsync(path + @"/Data/SeedData/posts.json");
+
+                var posts = JsonSerializer.Deserialize<List<Post>>(postsData, options);
+
+                if (posts == null) return;
+
+                context.Posts.AddRange(posts);
+
+                await context.SaveChangesAsync();
+            }
         }
     }
 }
