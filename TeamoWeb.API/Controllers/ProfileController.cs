@@ -30,7 +30,6 @@ namespace TeamoWeb.API.Controllers
         }
 
         //Display current user's profile
-        [Cache(1000)]
         [HttpGet]
         [Authorize(Roles = "Student")]
         public async Task<ActionResult<ProfileDto>> GetProfile()
