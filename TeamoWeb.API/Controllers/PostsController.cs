@@ -39,8 +39,9 @@ namespace TeamoWeb.API.Controllers
 
         [Cache(1000)]
         [HttpGet]
-        public async Task<ActionResult<Pagination<PostDto>>> GetPostsAsync([FromQuery]PostParams postParams)
+        public async Task<ActionResult<Pagination<PostDto>>> GetPostsAsync([FromRoute]int groupId, [FromQuery]PostParams postParams)
         {
+            postParams.GroupId = groupId;
             var spec = new PostSpecification(postParams);
             var posts = await _postService.GetPostsAsync(spec);
             var countSpec = new PostSpecification(postParams, false);
