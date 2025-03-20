@@ -10,7 +10,7 @@ namespace Teamo.Core.Entities
         public required string Name { get; set; }
         public string ImgUrl { get; set; }
         public string Description { get; set; }
-        public required DateOnly CreatedDate { get; set; } = DateOnly.FromDateTime(DateTime.Now);
+        public DateOnly CreatedDate { get; set; } = DateOnly.FromDateTime(DateTime.Now);
         public List<Field> Fields { get; set; }
         public List<SubjectField> SubjectFields { get; set; }
         public SubjectStatus Status { get; set; } = SubjectStatus.Active;
