@@ -9,6 +9,7 @@ using TeamoWeb.API.Dtos;
 using TeamoWeb.API.Errors;
 using TeamoWeb.API.Extensions;
 using TeamoWeb.API.RequestHelpers;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace TeamoWeb.API.Controllers
 {
@@ -52,11 +53,25 @@ namespace TeamoWeb.API.Controllers
         [InvalidateCache("/majors")]
         [HttpPost]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<MajorDto>> CreateMajor(MajorToUpsertDto majorDto)
+        public async Task<ActionResult<MajorDto>> CreateMajor([FromForm] MajorToUpsertDto majorDto)
         {
             try
             {
                 var major = majorDto.toEntity();
+                if(majorDto.Image != null)
+                {
+                    var image = majorDto.Image;
+                    // Upload and get download url
+                    var imgUrl = await _uploadService.UploadFileAsync(
+                        image.OpenReadStream(),
+                        image.FileName,
+                        image.ContentType,
+                        _config["Firebase:MajorImagesUrl"]);
+
+                    // Update image url
+                    major.ImgUrl = imgUrl;
+                }
+                
                 _majorRepo.Add(major);
                 await _majorRepo.SaveAllAsync();
                 return Ok(major.ToDto());
@@ -70,14 +85,28 @@ namespace TeamoWeb.API.Controllers
         [InvalidateCache("/majors")]
         [HttpPatch("{id}")]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<MajorDto>> UpdateMajor(int id, MajorToUpsertDto majorDto)
+        public async Task<ActionResult<MajorDto>> UpdateMajor(int id,[FromForm] MajorToUpsertDto majorDto)
         {
             try
             {
                 var major = await _majorRepo.GetEntityWithSpec(new MajorSpecification(id));
                 if (major == null) return NotFound();
-
                 major = majorDto.toEntity(major);
+
+                if (majorDto.Image != null)
+                {
+                    var image = majorDto.Image;
+                    // Upload and get download url
+                    var imgUrl = await _uploadService.UploadFileAsync(
+                        image.OpenReadStream(),
+                        image.FileName,
+                        image.ContentType,
+                        _config["Firebase:MajorImagesUrl"]);
+
+                    // Update image url
+                    major.ImgUrl = imgUrl;
+                }
+
                 _majorRepo.Update(major);
                 await _majorRepo.SaveAllAsync();
                 return Ok(major.ToDto());
@@ -86,35 +115,6 @@ namespace TeamoWeb.API.Controllers
             {
                 return BadRequest(new ApiErrorResponse(400, ex.Message, ex.InnerException?.Message));
             }
-        }
-
-        [InvalidateCache("/majors")]
-        [HttpPost("{id}/image")]
-        [Authorize(Roles = "Admin")]
-        public async Task<ActionResult> UploadMajorImage(int id, IFormFile image)
-        {
-            // Check if an image was chosen
-            if (image == null) return BadRequest(new ApiErrorResponse(400, "No image found"));
-
-            var major = await _majorRepo.GetEntityWithSpec(new MajorSpecification(id));
-            if (major == null) return NotFound();
-
-            // Upload and get download url
-            var imgUrl = await _uploadService.UploadFileAsync(
-                image.OpenReadStream(),
-                image.FileName,
-                image.ContentType,
-                _config["Firebase:MajorImagesUrl"]);
-
-            // Update image url
-            major.ImgUrl = imgUrl;
-
-            _majorRepo.Update(major);
-            var result = await _majorRepo.SaveAllAsync();
-
-            if (!result) return BadRequest(new ApiErrorResponse(400, "Failed to upload image."));
-
-            return Ok(new ApiErrorResponse(200, "Image uploaded successfully.", imgUrl));
         }
 
         [InvalidateCache("/majors")]

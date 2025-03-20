@@ -32,13 +32,11 @@ namespace TeamoWeb.API.Extensions
                 {
                     Code = majorDto.Code,
                     Name = majorDto.Name,
-                    ImgUrl= majorDto.ImgUrl,
                 };
             }
 
             major.Code = string.IsNullOrEmpty(majorDto.Code) ? major.Code : majorDto.Code;
             major.Name = string.IsNullOrEmpty(majorDto.Name) ? major.Name : majorDto.Name;
-            major.ImgUrl = string.IsNullOrEmpty(majorDto.ImgUrl) ? major.ImgUrl : majorDto.ImgUrl;
             return major;
         }
     }
