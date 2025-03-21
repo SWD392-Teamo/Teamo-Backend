@@ -37,8 +37,9 @@ namespace TeamoWeb.API.Controllers
         public async Task<ActionResult<IReadOnlyList<ProfileDto>>> GetUsers([FromQuery] UserSpecParams userSpecParams)
         {
             var userSpec = new UserSpecification(userSpecParams);
+            var userCountSpec = new UserSpecification(userSpecParams, false);
             var users = await _userService.ListUsersAsync(userSpec);
-            var count = await _userService.CountAsync(userSpec);
+            var count = await _userService.CountAsync(userCountSpec);
             var usersToProfileDto = users.Select(u => u.ToProfileDto()).ToList();
             var pagination = new Pagination<ProfileDto>(userSpecParams.PageIndex,userSpecParams.PageSize,count,usersToProfileDto);
             return Ok(pagination);

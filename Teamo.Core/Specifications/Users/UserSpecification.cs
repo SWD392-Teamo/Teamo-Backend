@@ -21,7 +21,7 @@ namespace Teamo.Core.Specifications.Users
             AddInclude(x => x.Links);
         }
 
-        public UserSpecification(UserSpecParams userSpecParams)
+        public UserSpecification(UserSpecParams userSpecParams, bool applyPaging = true)
             : base(x => (string.IsNullOrEmpty(userSpecParams.Search)
                         || x.Code.ToLower().Contains(userSpecParams.Search)
                         || x.FirstName.ToLower().Contains(userSpecParams.Search)
@@ -34,10 +34,12 @@ namespace Teamo.Core.Specifications.Users
             AddInclude(x => x.Major);
             AddInclude(x => x.Skills);
             AddInclude(x => x.Links);
-
-            ApplyPaging(userSpecParams.PageSize * (userSpecParams.PageIndex - 1),
+            if(applyPaging)
+            {
+                ApplyPaging(userSpecParams.PageSize * (userSpecParams.PageIndex - 1),
                 userSpecParams.PageSize);
-
+            }
+           
             //Sort users alphabetically by first name
             if(!string.IsNullOrEmpty(userSpecParams.Sort)) AddOrderBy(x => x.FirstName);
         }
