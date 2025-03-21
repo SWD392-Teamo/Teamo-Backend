@@ -18,6 +18,7 @@ namespace TeamoWeb.API.Dtos
         public GroupStatus Status { get; set; }
         public string? FieldName { get; set; }
         public string? SubjectCode { get; set; }
+        public int SubjectId { get; set; }
         public int TotalMembers { get; set; }
         public int TotalGroupPositions { get; set; }
         public int TotalApplications { get; set; }
