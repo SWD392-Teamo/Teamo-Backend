@@ -28,6 +28,7 @@ namespace TeamoWeb.API.Extensions
                 Status = group.Status,
                 FieldName = group.Field.Name,
                 SubjectCode = group.Subject.Code,
+                SubjectId = group.SubjectId,
 
                 GroupMembers = group.GroupMembers?
                     .Select(gm => gm.ToDto()).ToList() ?? new List<GroupMemberDto>(),
