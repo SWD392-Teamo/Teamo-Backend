@@ -4,7 +4,8 @@ namespace Teamo.Core.Specifications.SubjectFields
 {
     public class SubjectFieldSpecification : BaseSpecification<SubjectField>
     {
-        public SubjectFieldSpecification(int? subjectId) : base(x => x.SubjectId == subjectId)
+        public SubjectFieldSpecification(SubjectFieldParams subjectFieldParams) 
+            : base(x => x.SubjectId == subjectFieldParams.SubjectId)
         {
             AddInclude(x => x.Field);
         }

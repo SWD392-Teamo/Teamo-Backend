@@ -19,21 +19,21 @@ namespace Teamo.Infrastructure.Services
 
         public async Task<IReadOnlyList<Field>> GetFieldsWithSpecAsync(FieldParams fieldParams)
         {
-            // Get all fields
-            var fields = await _unitOfWork.Repository<Field>().ListAllAsync();
-
-            // Filter by SubjectId if it has value
-            if (fieldParams.SubjectId.HasValue)
-            {
-                var spec = new SubjectFieldSpecification((int) fieldParams.SubjectId);
-                var subjectFields = await _unitOfWork.Repository<SubjectField>().ListAsync(spec);
-                var allSubjectFields = subjectFields.Select(s => s.Field).ToList();
-                fields = fields.Where(allSubjectFields.Contains).ToList();
-            }  
-
-            // Apply filter, paging, search
+            //Get fields by search param
             var fieldSpec = new FieldSpecification(fieldParams);
-            fields = SpecificationEvaluator<Field>.GetQuery(fields.AsQueryable(), fieldSpec).ToList();
+            var fields = await _unitOfWork.Repository<Field>().ListAsync(fieldSpec);
+
+            if(!fieldParams.SubjectId.HasValue)
+            {
+                return fields;
+            }
+            
+            // Filter by SubjectId if it has value
+            var subjectFieldParams = new SubjectFieldParams{ SubjectId = fieldParams.SubjectId };
+            var spec = new SubjectFieldSpecification(subjectFieldParams);
+            var subjectFields = await _unitOfWork.Repository<SubjectField>().ListAsync(spec);
+            var filteredFields = subjectFields.Select(s => s.Field).ToList();
+            fields = fields.Where(filteredFields.Contains).ToList();
 
             return fields;          
         }
@@ -86,29 +86,6 @@ namespace Teamo.Infrastructure.Services
             if(existField != null) result = false;
 
             return result;
-        }
-
-        public async Task<int> CountAsync(FieldParams fieldParams)
-        {
-            // Get all fields
-            var fields = await _unitOfWork.Repository<Field>().ListAllAsync();
-
-            // Filter by SubjectId if it has value
-            if (fieldParams.SubjectId.HasValue)
-            {
-                var spec = new SubjectFieldSpecification((int)fieldParams.SubjectId);
-                var subjectFields = await _unitOfWork.Repository<SubjectField>().ListAsync(spec);
-                var allSubjectFields = subjectFields.Select(s => s.Field).ToList();
-                fields = fields.Where(allSubjectFields.Contains).ToList();
-            }
-
-            // Apply filter and count
-            var countSpec = new FieldCountSpecification(fieldParams);
-            var count = SpecificationEvaluator<Field>
-                .GetQuery(fields.AsQueryable(), countSpec)
-                .Count();
-
-            return count;
         }
     }
 }

@@ -27,9 +27,7 @@ namespace TeamoWeb.API.Controllers
         {
             var fields = await _fieldService.GetFieldsWithSpecAsync(fieldParams);
             var fieldsToDtos = fields.Select(f => f.ToDto()).ToList();
-            var count = await _fieldService.CountAsync(fieldParams);
-            var pagination = new Pagination<Field>(fieldParams.PageIndex,fieldParams.PageSize,count,fields);
-            return Ok(pagination);
+            return Ok(fieldsToDtos);
         }
 
         //Get field by id
