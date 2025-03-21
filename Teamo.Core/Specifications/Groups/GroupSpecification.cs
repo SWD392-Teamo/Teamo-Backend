@@ -62,5 +62,11 @@ namespace Teamo.Core.Specifications.Groups
             AddThenInclude(q => q.Include(x => x.GroupMembers).ThenInclude(u => u.Student));
             AddThenInclude(q => q.Include(x => x.GroupMembers).ThenInclude(u => u.GroupPositions));
         }
+
+        //Group specification for status update based on semester
+        public GroupSpecification()
+        {
+            AddInclude(x => x.Semester);
+        }
     }
 }

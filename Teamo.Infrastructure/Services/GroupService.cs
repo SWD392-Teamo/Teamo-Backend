@@ -150,6 +150,7 @@ namespace Teamo.Infrastructure.Services
 
         public async Task<IReadOnlyList<Group>> GetGroupsAsync(ISpecification<Group> spec)
         {
+            await UpdateGroupStatus();
             return await _unitOfWork.Repository<Group>().ListAsync(spec);
         }
 
@@ -214,6 +215,23 @@ namespace Teamo.Infrastructure.Services
         {
             var groupMember = await GetGroupMemberAsync(groupId, studentId);
             return groupMember != null && groupMember.Role == GroupMemberRole.Leader;
+        }
+
+        //Update group status to Archived if semester is over
+        private async Task UpdateGroupStatus()
+        {
+            var spec = new GroupSpecification();
+            var groups = await _unitOfWork.Repository<Group>().ListAsync(spec);
+            foreach (var g in groups)
+            {
+                if(g.Semester.Status == SemesterStatus.Past && g.Status != GroupStatus.Archived)
+                {
+                    g.Status = GroupStatus.Archived;
+                    _unitOfWork.Repository<Group>().Update(g);
+                }
+            }
+
+            await _unitOfWork.Complete();
         }
     }
 }
