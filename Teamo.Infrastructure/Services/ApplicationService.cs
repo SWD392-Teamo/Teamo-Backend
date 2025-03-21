@@ -55,9 +55,6 @@ namespace Teamo.Infrastructure.Services
 
         public async Task<int> GetGroupLeaderIdAsync(int groupId)
         {
-            var groupSpec = new GroupSpecification(groupId);
-            var group = await _unitOfWork.Repository<Group>().GetEntityWithSpec(groupSpec);
-
             var memberParams = new GroupMemberParams
             {
                 GroupId = groupId,

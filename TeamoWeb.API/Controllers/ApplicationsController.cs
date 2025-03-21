@@ -53,7 +53,8 @@ namespace TeamoWeb.API.Controllers
             // Check if the student viewing the application is the
             // leader of the group that the application is sent to
             // or the student viewing the application is the one sent it
-            if (app.Group.CreatedById != User.GetId() && app.StudentId != User.GetId())
+            var leaderId = await _appService.GetGroupLeaderIdAsync(app.GroupId);
+            if (leaderId != User.GetId() && app.StudentId != User.GetId())
                 return BadRequest(new ApiErrorResponse(400, "You are not allowed to view this application"));
 
             return Ok(app.ToDto());
