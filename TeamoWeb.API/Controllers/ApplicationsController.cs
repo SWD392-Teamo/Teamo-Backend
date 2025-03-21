@@ -6,14 +6,13 @@ using Teamo.Core.Entities.Identity;
 using Teamo.Core.Enums;
 using Teamo.Core.Interfaces.Services;
 using Teamo.Core.Specifications.Applications;
-using Teamo.Infrastructure.Services;
 using TeamoWeb.API.Dtos;
 using TeamoWeb.API.Errors;
 using TeamoWeb.API.Extensions;
 using TeamoWeb.API.RequestHelpers;
 
 namespace TeamoWeb.API.Controllers
-{   
+{
     [Route("api/groups/{groupId}/applications")]
     public class ApplicationsController : BaseApiController
     {
@@ -43,9 +42,9 @@ namespace TeamoWeb.API.Controllers
 
         // Get application by id
         [Cache(1000)]
-        [HttpGet("{id}")]
+        [HttpGet("/api/applications/{id}")]
         [Authorize(Roles = "Student")]
-        public async Task<ActionResult<ApplicationDto?>> GetGroupApplicationById(int id)
+        public async Task<ActionResult<ApplicationDto?>> GetApplicationById(int id)
         {
             var app = await _appService.GetApplicationByIdAsync(id);
 
@@ -53,25 +52,9 @@ namespace TeamoWeb.API.Controllers
 
             // Check if the student viewing the application is the
             // leader of the group that the application is sent to
-            if (app.Group.CreatedById != User.GetId())
+            // or the student viewing the application is the one sent it
+            if (app.Group.CreatedById != User.GetId() && app.StudentId != User.GetId())
                 return BadRequest(new ApiErrorResponse(400, "You are not allowed to view this application"));
-
-            return Ok(app.ToDto());
-        }
-
-        // Get application by id
-        [Cache(1000)]
-        [HttpGet("/api/applications/{id}")]
-        [Authorize(Roles = "Student")]
-        public async Task<ActionResult<ApplicationDto?>> GetUserApplicationById(int id)
-        {
-            var app = await _appService.GetApplicationByIdAsync(id);
-            if (app == null) 
-                return NotFound(new ApiErrorResponse(404, "Application not found"));
-
-            // Check if the sender is the one viewing the applications
-            if (app.StudentId != User.GetId()) 
-                return BadRequest(new ApiErrorResponse(400, "You are not this application's sender"));
 
             return Ok(app.ToDto());
         }
