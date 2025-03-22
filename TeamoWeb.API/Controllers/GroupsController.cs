@@ -129,7 +129,7 @@ namespace TeamoWeb.API.Controllers
         }
 
         [InvalidateCache("/groups")]
-        [HttpPost("{id}/image")]
+        [HttpPost("{id}/images")]
         [Authorize(Roles = "Student")]
         public async Task<ActionResult> UploadGroupImage(int id, IFormFile image) 
         {

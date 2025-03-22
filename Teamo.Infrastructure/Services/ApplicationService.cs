@@ -53,19 +53,6 @@ namespace Teamo.Infrastructure.Services
             return await _unitOfWork.Complete();
         }
 
-        public async Task<int> GetGroupLeaderIdAsync(int groupId)
-        {
-            var memberParams = new GroupMemberParams
-            {
-                GroupId = groupId,
-                Role = GroupMemberRole.Leader
-            };
-            var memberSpec = new GroupMemberSpecification(memberParams);
-            var groupLeader = await _unitOfWork.Repository<GroupMember>().GetEntityWithSpec(memberSpec);
-
-            return groupLeader.StudentId;
-        }
-
         public async Task<bool> CheckValidToApply(int groupId, int studentId, int groupPositionId)
         {
             var isValid = true;
