@@ -77,6 +77,7 @@ namespace TeamoWeb.API.Controllers
             else return BadRequest(new ApiErrorResponse(400, "Failed to ban user."));
         }
 
+        [InvalidateCache("/users")]
         [HttpPatch("{id}")]
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult<ProfileDto>> UnbanUser(int id)

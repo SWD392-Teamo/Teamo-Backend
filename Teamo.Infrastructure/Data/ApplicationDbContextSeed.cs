@@ -368,6 +368,20 @@ namespace Teamo.Infrastructure.Data
 
                 await context.SaveChangesAsync();
             }
+            // seed link
+            if (!context.Links.Any())
+            {
+                var linksData = await File
+                    .ReadAllTextAsync(path + @"/Data/SeedData/links.json");
+
+                var links = JsonSerializer.Deserialize<List<Link>>(linksData, options);
+
+                if (links == null) return;
+
+                context.Links.AddRange(links);
+
+                await context.SaveChangesAsync();
+            }
         }
     }
 }
