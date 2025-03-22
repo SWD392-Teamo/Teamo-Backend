@@ -1,0 +1,92 @@
+[
+  {
+    "name": "GitHub",
+    "url": "https://github.com/student1",
+    "studentId": 1
+  },
+  {
+    "name": "LinkedIn",
+    "url": "https://linkedin.com/in/student1",
+    "studentId": 1
+  },
+  {
+    "name": "Personal Blog",
+    "url": "https://student1blog.com",
+    "studentId": 1
+  },
+  {
+    "name": "GitHub",
+    "url": "https://github.com/student2",
+    "studentId": 2
+  },
+  {
+    "name": "LinkedIn",
+    "url": "https://linkedin.com/in/student2",
+    "studentId": 2
+  },
+  {
+    "name": "Personal Blog",
+    "url": "https://student2blog.com",
+    "studentId": 2
+  },
+  {
+    "name": "GitHub",
+    "url": "https://github.com/student4",
+    "studentId": 4
+  },
+  {
+    "name": "LinkedIn",
+    "url": "https://linkedin.com/in/student4",
+    "studentId": 4
+  },
+  {
+    "name": "Personal Blog",
+    "url": "https://student4blog.com",
+    "studentId": 4
+  },
+  {
+    "name": "GitHub",
+    "url": "https://github.com/student5",
+    "studentId": 5
+  },
+  {
+    "name": "LinkedIn",
+    "url": "https://linkedin.com/in/student5",
+    "studentId": 5
+  },
+  {
+    "name": "Personal Blog",
+    "url": "https://student5blog.com",
+    "studentId": 5
+  },
+  {
+    "name": "GitHub",
+    "url": "https://github.com/student6",
+    "studentId": 6
+  },
+  {
+    "name": "LinkedIn",
+    "url": "https://linkedin.com/in/student6",
+    "studentId": 6
+  },
+  {
+    "name": "Personal Blog",
+    "url": "https://student6blog.com",
+    "studentId": 6
+  },
+  {
+    "name": "GitHub",
+    "url": "https://github.com/student7",
+    "studentId": 7
+  },
+  {
+    "name": "LinkedIn",
+    "url": "https://linkedin.com/in/student7",
+    "studentId": 7
+  },
+  {
+    "name": "Personal Blog",
+    "url": "https://student7blog.com",
+    "studentId": 7
+  }
+]
