@@ -36,7 +36,6 @@ namespace TeamoWeb.API.Controllers
         }
 
         //Display current user's profile
-        [Cache(1000)]
         [HttpGet]
         [Authorize(Roles = "Student")]
         public async Task<ActionResult<ProfileDto>> GetProfile()
@@ -180,7 +179,7 @@ namespace TeamoWeb.API.Controllers
 
         // Update profile image
         [InvalidateCache("/profile")]
-        [HttpPost("image")]
+        [HttpPost("images")]
         [Authorize(Roles = "Student")]
         public async Task<ActionResult> UploadProfileImage(IFormFile image) 
         {

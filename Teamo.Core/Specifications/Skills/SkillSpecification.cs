@@ -20,6 +20,11 @@ namespace Teamo.Core.Specifications.Skills
                         || !skillParams.StudentId.HasValue))
         {
             AddOrderBy(s => s.Name);
+            if (skillParams.IsPaginated)
+            {
+                ApplyPaging(skillParams.PageSize * (skillParams.PageIndex - 1),
+                skillParams.PageSize);
+            }
         }
     }
 }

@@ -1,6 +1,6 @@
 namespace Teamo.Core.Specifications.Skills
 {
-    public class SkillParams
+    public class SkillParams : PagingParams
     {
         private string _search;
         public string Search

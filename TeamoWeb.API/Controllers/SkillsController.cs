@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Teamo.Core.Entities;
 using Teamo.Core.Interfaces;
 using Teamo.Core.Specifications.Skills;
 using TeamoWeb.API.Dtos;
@@ -35,9 +34,32 @@ namespace TeamoWeb.API.Controllers
         [Authorize]
         public async Task<ActionResult<IReadOnlyList<SkillDto>>> GetSkills([FromQuery] SkillParams skillParams)
         {
-            var skills = await _skillService.GetSkillsWithSpecAsync(skillParams);
+            var skills = await _skillService.GetSkillsAsync(skillParams);
             var skillsToDtos = skills.Select(s => s.ToDto()).ToList();
+
+            if (skillParams.IsPaginated)
+            {
+                var count = await _skillService.CountSkillsAsync(skillParams);
+                var pagination = new Pagination<SkillDto>(skillParams.PageIndex, skillParams.PageSize, count, skillsToDtos);
+                return Ok(pagination);
+            }
+
             return Ok(skillsToDtos);
+        }
+
+
+        [Cache(1000)]
+        [HttpGet("admin")]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<IReadOnlyList<SkillDto>>> GetSkillsForAdmin([FromQuery] SkillParams skillParams)
+        {
+            var skills = await _skillService.GetSkillsAsync(skillParams);
+            var count = await _skillService.CountSkillsAsync(skillParams);
+
+            var skillsToDtos = skills.Select(s => s.ToDto()).ToList();
+
+            var pagination = new Pagination<SkillDto>(skillParams.PageIndex, skillParams.PageSize, count, skillsToDtos);
+            return Ok(pagination);
         }
 
         [InvalidateCache("/skills")]

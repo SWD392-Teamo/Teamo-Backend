@@ -21,7 +21,7 @@ namespace Teamo.Infrastructure.Services
             return await _unitOfWork.Repository<Skill>().GetEntityWithSpec(skillSpec);
         }
 
-        public async Task<IReadOnlyList<Skill>> GetSkillsWithSpecAsync(SkillParams skillParams)
+        public async Task<IReadOnlyList<Skill>> GetSkillsAsync(SkillParams skillParams)
         {
             var skillSpec = new SkillSpecification(skillParams);
             var skills = await _unitOfWork.Repository<Skill>().ListAsync(skillSpec);
@@ -45,6 +45,14 @@ namespace Teamo.Infrastructure.Services
             skills = skills.Where(s => !compareSkills.Contains(s)).ToList();
 
             return skills;
+        }
+
+        public async Task<int> CountSkillsAsync(SkillParams skillParams)
+        {
+            var skillSpec = new SkillSpecification(skillParams);
+            var count = await _unitOfWork.Repository<Skill>().CountAsync(skillSpec);
+
+            return count;
         }
 
         public async Task<Skill> CreateSkillAsync(Skill skill)
