@@ -17,6 +17,7 @@ namespace TeamoWeb.API.Controllers
     public class ApplicationsController : BaseApiController
     {
         private readonly IApplicationService _appService;
+        private readonly IGroupService _groupService;
         private readonly INotificationService _notiService;
         private readonly IDeviceService _deviceService;
         private readonly IUserService _userService;
@@ -25,6 +26,7 @@ namespace TeamoWeb.API.Controllers
 
         public ApplicationsController(
             IApplicationService appService, 
+            IGroupService groupService,
             IUserService userService, 
             INotificationService notiService,
             IDeviceService deviceService,
@@ -33,6 +35,7 @@ namespace TeamoWeb.API.Controllers
         )
         {
             _appService = appService;
+            _groupService = groupService;
             _userService = userService;
             _notiService = notiService;
             _deviceService = deviceService;
@@ -50,11 +53,15 @@ namespace TeamoWeb.API.Controllers
 
             if (app == null) return NotFound(new ApiErrorResponse(404, "Application not found"));
 
+            var user = await _userService.GetUserByClaims(HttpContext.User);
+            if (user == null)
+                return Unauthorized(new ApiErrorResponse(401, "Unauthorized"));
+
             // Check if the student viewing the application is the
             // leader of the group that the application is sent to
             // or the student viewing the application is the one sent it
-            var leaderId = await _appService.GetGroupLeaderIdAsync(app.GroupId);
-            if (leaderId != User.GetId() && app.StudentId != User.GetId())
+            var isLeader = await _groupService.CheckGroupLeaderAsync(app.GroupId, user.Id);
+            if (!isLeader && app.StudentId != user.Id)
                 return BadRequest(new ApiErrorResponse(400, "You are not allowed to view this application"));
 
             return Ok(app.ToDto());
@@ -73,8 +80,8 @@ namespace TeamoWeb.API.Controllers
             if (user == null)
                 return Unauthorized(new ApiErrorResponse(401, "Unauthorized"));
 
-            var groupLeaderId = await _appService.GetGroupLeaderIdAsync(groupId);
-            if(user.Id != groupLeaderId) 
+            var isLeader = await _groupService.CheckGroupLeaderAsync(groupId, user.Id);
+            if(!isLeader) 
                 return BadRequest(new ApiErrorResponse(400, "Only group leaders can view applications"));
 
             var appSpec = new ApplicationGroupSpecification(appParams);
@@ -97,8 +104,8 @@ namespace TeamoWeb.API.Controllers
                 return Unauthorized(new ApiErrorResponse(401, "Unauthorized"));
 
             // Check if current user is the leader of corresponding group
-            var groupLeaderId = await _appService.GetGroupLeaderIdAsync(groupId);
-            if(user.Id != groupLeaderId) 
+            var isLeader = await _groupService.CheckGroupLeaderAsync(groupId, user.Id);
+            if(!isLeader) 
                 return BadRequest(new ApiErrorResponse(400, "Only group leaders can review applications."));
             
 
@@ -155,10 +162,12 @@ namespace TeamoWeb.API.Controllers
             app = await _appService.CreateNewApplicationAsync(app);
             if(app == null) return BadRequest(new ApiErrorResponse(400, "Failed to create and send application."));
 
-            var groupLeaderId = await _appService.GetGroupLeaderIdAsync(groupId);
-            
-            // Get group leader's devices
-            var deviceTokens = await _deviceService.GetDeviceTokensForUser(groupLeaderId);
+            var groupMembers = await _groupService.GetAllGroupMembersAsync(groupId);
+            var groupLeaders = groupMembers.Where(gm => gm.Role == GroupMemberRole.Leader);
+            var groupLeadersIds = groupLeaders.Select(g => g.StudentId).ToList();
+
+            // Get all members' devices
+            var deviceTokens = await _deviceService.GetDeviceTokensForSelectedUsers(groupLeadersIds);
 
             if (!deviceTokens.IsNullOrEmpty())
             {

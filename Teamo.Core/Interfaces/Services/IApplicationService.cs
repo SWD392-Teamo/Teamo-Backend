@@ -11,7 +11,6 @@ namespace Teamo.Core.Interfaces.Services
         Task<bool> ReviewApplicationAsync(Application app);
         Task<Application> CreateNewApplicationAsync(Application newAapp);
         Task<bool> DeleteApplicationAsync(Application app);
-        Task<int> GetGroupLeaderIdAsync(int groupId);
         Task<bool> CheckValidToApply(int groupId, int studentId, int groupPositionId);
         Task<int> CountAsync(ApplicationSpecification appSpec);
         Task<int> CountAsync(ApplicationGroupSpecification appSpec);
