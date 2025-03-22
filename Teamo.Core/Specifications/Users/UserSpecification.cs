@@ -28,8 +28,8 @@ namespace Teamo.Core.Specifications.Users
                         || x.LastName.ToLower().Contains(userSpecParams.Search)
                         || x.Email.Contains(userSpecParams.Search)
                         || x.MajorID.Equals(userSpecParams.MajorId))
-                        && (string.IsNullOrEmpty(userSpecParams.UserStatus)
-                        || x.Status == ParseStatus<UserStatus>(userSpecParams.UserStatus)))
+                        && (string.IsNullOrEmpty(userSpecParams.Status)
+                        || x.Status == ParseStatus<UserStatus>(userSpecParams.Status)))
         {
             AddInclude(x => x.Major);
             AddInclude(x => x.Skills);
