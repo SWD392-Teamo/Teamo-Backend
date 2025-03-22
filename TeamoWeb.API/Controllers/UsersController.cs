@@ -69,10 +69,27 @@ namespace TeamoWeb.API.Controllers
             if(user == null) return NotFound(new ApiErrorResponse(404, "User not found."));
 
             if(user.Status != UserStatus.Active) return BadRequest(new ApiErrorResponse(400, "Failed to ban user."));
-            user.Status = UserStatus.Inactive;
+            user.Status = UserStatus.Banned;
             
             var result = await _userService.UpdateUserAsync(user);
             
+            if (result.Succeeded) return Ok(user.ToProfileDto());
+            else return BadRequest(new ApiErrorResponse(400, "Failed to ban user."));
+        }
+
+        [InvalidateCache("/users")]
+        [HttpPatch("{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<ProfileDto>> UnbanUser(int id)
+        {
+            var userSpec = new UserSpecification(id);
+            var user = await _userService.GetUserWithSpec(userSpec);
+            if (user == null) return NotFound(new ApiErrorResponse(404, "User not found."));
+
+            user.Status = UserStatus.Active;
+
+            var result = await _userService.UpdateUserAsync(user);
+
             if (result.Succeeded) return Ok(user.ToProfileDto());
             else return BadRequest(new ApiErrorResponse(400, "Failed to ban user."));
         }

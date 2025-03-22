@@ -368,6 +368,36 @@ namespace Teamo.Infrastructure.Data
 
                 await context.SaveChangesAsync();
             }
+
+            // seed link
+            if (!context.Links.Any())
+            {
+                var linksData = await File
+                    .ReadAllTextAsync(path + @"/Data/SeedData/links.json");
+
+                var links = JsonSerializer.Deserialize<List<Link>>(linksData, options);
+
+                if (links == null) return;
+
+                context.Links.AddRange(links);
+
+                await context.SaveChangesAsync();
+            }
+
+            // Seed position skills
+            if (!context.GroupPositionSkills.Any())
+            {
+                var groupPositionSkillsData = await File
+                    .ReadAllTextAsync(path + @"/Data/SeedData/groupPositionSkills.json");
+
+                var groupPositionSkills = JsonSerializer.Deserialize<List<GroupPositionSkill>>(groupPositionSkillsData, options);
+
+                if (groupPositionSkills == null) return;
+
+                context.GroupPositionSkills.AddRange(groupPositionSkills);
+
+                await context.SaveChangesAsync();
+            }
         }
     }
 }
