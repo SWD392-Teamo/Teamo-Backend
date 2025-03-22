@@ -55,31 +55,27 @@ namespace TeamoWeb.API.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult<MajorDto>> CreateMajor([FromForm] MajorToUpsertDto majorDto)
         {
-            try
+            var major = majorDto.toEntity();
+            if(majorDto.Image != null)
             {
-                var major = majorDto.toEntity();
-                if(majorDto.Image != null)
-                {
-                    var image = majorDto.Image;
-                    // Upload and get download url
-                    var imgUrl = await _uploadService.UploadFileAsync(
-                        image.OpenReadStream(),
-                        image.FileName,
-                        image.ContentType,
-                        _config["Firebase:MajorImagesUrl"]);
+                var image = majorDto.Image;
+                // Upload and get download url
+                var imgUrl = await _uploadService.UploadFileAsync(
+                    image.OpenReadStream(),
+                    image.FileName,
+                    image.ContentType,
+                    _config["Firebase:MajorImagesUrl"]);
 
-                    // Update image url
-                    major.ImgUrl = imgUrl;
-                }
-                
-                _majorRepo.Add(major);
-                await _majorRepo.SaveAllAsync();
-                return Ok(major.ToDto());
+                // Update image url
+                major.ImgUrl = imgUrl;
             }
-            catch (Exception ex)
-            {
-                return BadRequest(new ApiErrorResponse(400, ex.Message, ex.InnerException?.Message));
-            }           
+                
+            _majorRepo.Add(major);
+            var result = await _majorRepo.SaveAllAsync();
+
+            if (!result) return BadRequest(new ApiErrorResponse(400, "Failed to create new major"));
+
+            return Ok(major.ToDto());
         }
 
         [InvalidateCache("/majors")]
@@ -87,34 +83,30 @@ namespace TeamoWeb.API.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult<MajorDto>> UpdateMajor(int id,[FromForm] MajorToUpsertDto majorDto)
         {
-            try
+            var major = await _majorRepo.GetEntityWithSpec(new MajorSpecification(id));
+            if (major == null) return NotFound();
+            major = majorDto.toEntity(major);
+
+            if (majorDto.Image != null)
             {
-                var major = await _majorRepo.GetEntityWithSpec(new MajorSpecification(id));
-                if (major == null) return NotFound();
-                major = majorDto.toEntity(major);
+                var image = majorDto.Image;
+                // Upload and get download url
+                var imgUrl = await _uploadService.UploadFileAsync(
+                    image.OpenReadStream(),
+                    image.FileName,
+                    image.ContentType,
+                    _config["Firebase:MajorImagesUrl"]);
 
-                if (majorDto.Image != null)
-                {
-                    var image = majorDto.Image;
-                    // Upload and get download url
-                    var imgUrl = await _uploadService.UploadFileAsync(
-                        image.OpenReadStream(),
-                        image.FileName,
-                        image.ContentType,
-                        _config["Firebase:MajorImagesUrl"]);
-
-                    // Update image url
-                    major.ImgUrl = imgUrl;
-                }
-
-                _majorRepo.Update(major);
-                await _majorRepo.SaveAllAsync();
-                return Ok(major.ToDto());
+                // Update image url
+                major.ImgUrl = imgUrl;
             }
-            catch (Exception ex)
-            {
-                return BadRequest(new ApiErrorResponse(400, ex.Message, ex.InnerException?.Message));
-            }
+
+            _majorRepo.Update(major);
+            var result = await _majorRepo.SaveAllAsync();
+
+            if (!result) return BadRequest(new ApiErrorResponse(400, "Failed to update new major"));
+
+            return Ok(major.ToDto());
         }
 
         [InvalidateCache("/majors")]
@@ -122,19 +114,16 @@ namespace TeamoWeb.API.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult<MajorDto>> DeleteMajor(int id)
         {
-            try
-            {
-                var major = await _majorRepo.GetEntityWithSpec(new MajorSpecification(id));
-                if (major == null) return NotFound();
+            var major = await _majorRepo.GetEntityWithSpec(new MajorSpecification(id));
+            if (major == null) return NotFound();
 
-                major.Status = MajorStatus.Inactive;
-                _majorRepo.Update(major);
-                return Ok(new ApiErrorResponse(200, "Major deleted successfully."));
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new ApiErrorResponse(400, ex.Message, ex.InnerException?.Message));
-            }
+            major.Status = MajorStatus.Inactive;
+            _majorRepo.Update(major);
+            var result = await _majorRepo.SaveAllAsync();
+
+            if (!result) return BadRequest(new ApiErrorResponse(400, "Failed to delete major"));
+
+            return Ok(new ApiErrorResponse(200, "Major deleted successfully."));
         }
     }
 }

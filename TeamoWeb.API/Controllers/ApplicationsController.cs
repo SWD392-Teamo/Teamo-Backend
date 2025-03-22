@@ -227,7 +227,7 @@ namespace TeamoWeb.API.Controllers
         }
 
         [InvalidateCache("/applications")]
-        [HttpPost("/api/applications/document")]
+        [HttpPost("/api/applications/documents")]
         [Authorize(Roles = "Student")]
         public async Task<ActionResult> UploadApplicationDocument(IFormFile document)
         {
