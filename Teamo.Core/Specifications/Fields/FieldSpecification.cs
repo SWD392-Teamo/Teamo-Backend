@@ -1,4 +1,5 @@
 using Teamo.Core.Entities;
+using Teamo.Core.Specifications.Skills;
 
 namespace Teamo.Core.Specifications.Fields
 {
@@ -17,6 +18,12 @@ namespace Teamo.Core.Specifications.Fields
                 || x.Name.ToLower().Contains(fieldParams.Search)
                 || x.Description.ToLower().Contains(fieldParams.Search))
         {
+            AddOrderBy(x => x.Name);
+            if (fieldParams.IsPaginated)
+            {
+                ApplyPaging(fieldParams.PageSize * (fieldParams.PageIndex - 1),
+                fieldParams.PageSize);
+            }
         }
     }
 }

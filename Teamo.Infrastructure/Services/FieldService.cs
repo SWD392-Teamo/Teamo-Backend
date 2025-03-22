@@ -17,7 +17,7 @@ namespace Teamo.Infrastructure.Services
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<IReadOnlyList<Field>> GetFieldsWithSpecAsync(FieldParams fieldParams)
+        public async Task<IReadOnlyList<Field>> GetFieldsAsync(FieldParams fieldParams)
         {
             //Get fields by search param
             var fieldSpec = new FieldSpecification(fieldParams);
@@ -36,6 +36,13 @@ namespace Teamo.Infrastructure.Services
             fields = fields.Where(filteredFields.Contains).ToList();
 
             return fields;          
+        }
+
+        public async Task<int> CountFieldsAsync(FieldParams fieldParams)
+        {
+            var fieldSpec = new FieldSpecification(fieldParams);
+            var count = await _unitOfWork.Repository<Field>().CountAsync(fieldSpec);
+            return count;
         }
 
         public async Task<Field> GetFieldByIdAsync(int id)

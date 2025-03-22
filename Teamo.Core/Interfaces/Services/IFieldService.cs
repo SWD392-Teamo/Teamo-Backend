@@ -5,7 +5,8 @@ namespace Teamo.Core.Interfaces.Services
 {
     public interface IFieldService
     {
-        Task<IReadOnlyList<Field>> GetFieldsWithSpecAsync(FieldParams fieldParams);
+        Task<IReadOnlyList<Field>> GetFieldsAsync(FieldParams fieldParams);
+        Task<int> CountFieldsAsync(FieldParams fieldParams);
         Task<Field> GetFieldByIdAsync(int id);
         Task<Field> CreateFieldAsync(Field field);
         Task<bool> DeleteFieldAsync(Field field);
