@@ -13,6 +13,7 @@ namespace Teamo.Core.Specifications.Posts
         {
             {
                 AddInclude(p => p.Student);
+                AddInclude(p => p.Group);
                 if (isApplyPaging == true)
                 {
                     ApplyPaging(postParams.PageSize * (postParams.PageIndex - 1),
@@ -39,6 +40,8 @@ namespace Teamo.Core.Specifications.Posts
         public PostSpecification(int id)
             : base(p => p.Id == id && p.Status != PostStatus.Deleted)
         {
+            AddInclude(p => p.Student);
+            AddInclude(p => p.Group);
             {
                 AddInclude(p => p.Student);
             }
