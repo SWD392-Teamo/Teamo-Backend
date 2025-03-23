@@ -2,6 +2,7 @@
 using Teamo.Core.Enums;
 using Teamo.Core.Interfaces;
 using Teamo.Core.Interfaces.Services;
+using Teamo.Core.Specifications;
 using Teamo.Core.Specifications.Groups;
 using Teamo.Core.Specifications.Posts;
 
@@ -14,6 +15,7 @@ namespace Teamo.Infrastructure.Services
         {
             _unitOfWork = unitOfWork;
         }
+
         public async Task<Post> CreatePost(Post post, int userId, int groupId)
         {
             var spec = new GroupMemberSpecification(new GroupMemberParams { GroupId = groupId, StudentId = userId });
@@ -51,6 +53,16 @@ namespace Teamo.Infrastructure.Services
         public async Task<IEnumerable<Post>> GetPostsAsync(PostSpecification spec)
         {
            return await _unitOfWork.Repository<Post>().ListAsync(spec);
+        }
+
+        public async Task<(IEnumerable<Post>,int)> GetUserPosts(IEnumerable<int> groupIds, PagingParams pagingParams)
+        {
+            var spec = new PostSpecification(groupIds, pagingParams);
+            var posts = await _unitOfWork.Repository<Post>().ListAsync(spec);
+
+            var countSpec = new PostSpecification(groupIds);
+            var total = (await _unitOfWork.Repository<Post>().ListAsync(countSpec)).Count();
+            return (posts, total);
         }
 
         public async Task<Post> UpdatePost(Post post, int userId)

@@ -7,6 +7,5 @@ namespace TeamoWeb.API.Dtos
     {
         public IFormFile? Document { get; set; }
         public string? Content { get; set; } 
-        public PostPrivacy? Privacy { get; set; } 
     }
 }
