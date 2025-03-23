@@ -49,6 +49,7 @@ namespace TeamoWeb.API.Controllers
         }
 
         [Cache(1000)]
+        [Authorize(Roles = "Student")]
         [HttpGet]
         public async Task<ActionResult<Pagination<PostDto>>> GetPostsAsync([FromRoute]int groupId, [FromQuery]PostParams postParams)
         {
@@ -63,6 +64,7 @@ namespace TeamoWeb.API.Controllers
         }
 
         [Cache(1000)]
+        [Authorize(Roles = "Student")]
         [HttpGet("{id}")]
         public async Task<ActionResult<PostDto>> GetPostByIdAsync(int id)
         {
