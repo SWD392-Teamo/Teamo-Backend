@@ -181,6 +181,7 @@ namespace TeamoWeb.API.Extensions
         {
             return new GroupMemberDto
             {
+                Id = groupMember.Id,
                 GroupId = groupMember.GroupId,
                 StudentId = groupMember.StudentId,
                 StudentName = groupMember.Student.FirstName + " " + groupMember.Student.LastName,

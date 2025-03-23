@@ -244,9 +244,10 @@ namespace TeamoWeb.API.Controllers
                 return NotFound(new ApiErrorResponse(404, "Group Member not found!"));
             }
 
-            var groupName = groupMember.Group.Name;
-
             await _groupService.RemoveMemberFromGroup(groupMember);
+
+            var group = await _groupService.GetGroupByIdAsync(groupId);
+            var groupName = group.Name;
 
             // Get removed member's devices
             var deviceTokens = await _deviceService.GetDeviceTokensForUser(studentId);
@@ -283,9 +284,8 @@ namespace TeamoWeb.API.Controllers
             groupMember = gmDto.ToEntity(groupMember);
             await _groupService.UpdateGroupMemberAsync(groupMember);
 
-            groupMember = await _groupService.GetGroupMemberAsync(groupId, studentId);
-
-            var groupName = groupMember.Group.Name;
+            var group = await _groupService.GetGroupByIdAsync(groupId);
+            var groupName = group.Name;
 
             // Get updated member's devices
             var deviceTokens = await _deviceService.GetDeviceTokensForUser(studentId);
