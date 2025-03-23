@@ -75,7 +75,7 @@ namespace TeamoWeb.API.Controllers
             var field = await _fieldService.GetFieldByIdAsync(id);
             if(field == null) return NotFound(new ApiErrorResponse(404, "Field not found."));
 
-            if(!string.IsNullOrEmpty(fieldDto.Name))
+            if(!string.IsNullOrEmpty(fieldDto.Name) && field.Name != fieldDto.Name)
             {
                 var check = await _fieldService.CheckDuplicateNameField(fieldDto.Name);
                 if(!check) return BadRequest(new ApiErrorResponse(400, "Already exists field with this name."));

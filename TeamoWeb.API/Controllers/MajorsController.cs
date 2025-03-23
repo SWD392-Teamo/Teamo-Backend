@@ -5,6 +5,8 @@ using Teamo.Core.Enums;
 using Teamo.Core.Interfaces;
 using Teamo.Core.Interfaces.Services;
 using Teamo.Core.Specifications.Majors;
+using Teamo.Core.Specifications.Subjects;
+using Teamo.Infrastructure.Data;
 using TeamoWeb.API.Dtos;
 using TeamoWeb.API.Errors;
 using TeamoWeb.API.Extensions;
@@ -55,6 +57,10 @@ namespace TeamoWeb.API.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult<MajorDto>> CreateMajor([FromForm] MajorToUpsertDto majorDto)
         {
+            var majorSpec = new MajorSpecification(majorDto.Code);
+            var duplicateCode = await _majorRepo.GetEntityWithSpec(majorSpec);
+            if (duplicateCode != null) return BadRequest(new ApiErrorResponse(400, "Major code already existed"));
+        
             var major = majorDto.toEntity();
             if(majorDto.Image != null)
             {

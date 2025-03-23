@@ -1,0 +1,86 @@
+[
+    {
+        "SkillId": 4,
+        "GroupPositionId": 1
+    },
+    {
+        "SkillId": 5,
+        "GroupPositionId": 1
+    },
+    {
+        "SkillId": 18,
+        "GroupPositionId": 1
+    },
+    {
+        "SkillId": 7,
+        "GroupPositionId": 2
+    },
+    {
+        "SkillId": 8,
+        "GroupPositionId": 2
+    },
+    {
+        "SkillId": 26,
+        "GroupPositionId": 3
+    },
+    {
+        "SkillId": 24,
+        "GroupPositionId": 3
+    },
+    {
+        "SkillId": 16,
+        "GroupPositionId": 4
+    },
+    {
+        "SkillId": 27,
+        "GroupPositionId": 4
+    },
+    {
+        "SkillId": 4,
+        "GroupPositionId": 5
+    },
+    {
+        "SkillId": 5,
+        "GroupPositionId": 5
+    },
+    {
+        "SkillId": 18,
+        "GroupPositionId": 5
+    },
+    {
+        "SkillId": 7,
+        "GroupPositionId": 6
+    },
+    {
+        "SkillId": 8,
+        "GroupPositionId": 6
+    },
+    {
+        "SkillId": 4,
+        "GroupPositionId": 7
+    },
+    {
+        "SkillId": 5,
+        "GroupPositionId": 7
+    },
+    {
+        "SkillId": 18,
+        "GroupPositionId": 7
+    },
+    {
+        "SkillId": 7,
+        "GroupPositionId": 8
+    },
+    {
+        "SkillId": 8,
+        "GroupPositionId": 8
+    },
+    {
+        "SkillId": 8,
+        "GroupPositionId": 9
+    },
+    {
+        "SkillId": 19,
+        "GroupPositionId": 9
+    }
+]

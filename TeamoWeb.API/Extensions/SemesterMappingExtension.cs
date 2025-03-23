@@ -29,8 +29,8 @@ namespace TeamoWeb.API.Extensions
             else
             {
                 // for updating
-                semester.Name = string.IsNullOrEmpty(dto.Name) ? dto.Name : semester.Name;
-                semester.Code = string.IsNullOrEmpty(dto.Code) ? dto.Code : semester.Code;
+                semester.Name = !string.IsNullOrEmpty(dto.Name) ? dto.Name : semester.Name;
+                semester.Code = !string.IsNullOrEmpty(dto.Code) ? dto.Code : semester.Code;
                 semester.StartDate = dto.StartDate ?? semester.StartDate;
                 semester.EndDate = dto.EndDate ?? semester.EndDate;
             }
