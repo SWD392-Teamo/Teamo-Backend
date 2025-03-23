@@ -34,6 +34,7 @@ namespace Teamo.Core.Specifications.Posts
                             break;
                     }
                 }
+                AddOrderByDescending(p => p.CreatedAt);
             }
         }
 
@@ -42,8 +43,18 @@ namespace Teamo.Core.Specifications.Posts
         {
             AddInclude(p => p.Student);
             AddInclude(p => p.Group);
+        }
+
+        public PostSpecification(IEnumerable<int> groupIds, PagingParams? pagingParams = null)
+            : base(x => groupIds.Contains(x.Id))
+        {
+            AddInclude(p => p.Student);
+            AddInclude(p => p.Group);
+            AddOrderByDescending(p => p.CreatedAt);
+            if(pagingParams != null)
             {
-                AddInclude(p => p.Student);
+                ApplyPaging(pagingParams.PageSize * (pagingParams.PageIndex - 1),
+                                pagingParams.PageSize);
             }
         }
     } 

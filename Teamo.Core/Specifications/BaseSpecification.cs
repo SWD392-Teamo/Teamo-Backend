@@ -59,6 +59,17 @@ namespace Teamo.Core.Specifications
         public bool IsPagingEnabled { get; private set; }
 
         /// <summary>
+        /// Expression for GroupBy
+        /// </summary>
+        public Expression<Func<T, object>> GroupBy { get; private set; }
+
+        /// <summary>
+        /// Expression for custom Select / projection
+        /// </summary>
+        public Expression<Func<T, object>> Select { get; private set; }
+
+
+        /// <summary>
         /// The list of custom include queries for nested include entities
         /// </summary>
         public List<Func<IQueryable<T>, IIncludableQueryable<T, object>>> ThenIncludes { get; } = new List<Func<IQueryable<T>, IIncludableQueryable<T, object>>>();
@@ -126,7 +137,17 @@ namespace Teamo.Core.Specifications
             Take = take;
             IsPagingEnabled = true;
         }
+        // Method để set GroupBy
+        protected void AddGroupBy(Expression<Func<T, object>> groupByExpression)
+        {
+            GroupBy = groupByExpression;
+        }
 
+        // Method để set Select projection
+        protected void AddSelect(Expression<Func<T, object>> selectExpression)
+        {
+            Select = selectExpression;
+        }
         protected static E? ParseStatus<E>(string status) where E : struct, Enum
         {
             if (Enum.TryParse<E>(status, true, out var result))

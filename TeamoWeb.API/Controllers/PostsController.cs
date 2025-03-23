@@ -4,6 +4,8 @@ using Microsoft.IdentityModel.Tokens;
 using Teamo.Core.Entities;
 using Teamo.Core.Entities.Identity;
 using Teamo.Core.Interfaces.Services;
+using Teamo.Core.Specifications;
+using Teamo.Core.Specifications.Groups;
 using Teamo.Core.Specifications.Posts;
 using Teamo.Infrastructure.Services;
 using TeamoWeb.API.Dtos;
@@ -181,6 +183,25 @@ namespace TeamoWeb.API.Controllers
 
             await _postService.DeletePost(post, user.Id);
             return Ok("Successfully delete this post");
+        }
+        [Cache(1000)]
+        [HttpGet("/api/posts")]
+        [Authorize(Roles = "Student")]
+        public async Task<ActionResult<Pagination<PostDto>>> GetTopPosts([FromQuery] PagingParams pagingParams)
+        {
+            var user = await _userService.GetUserByClaims(HttpContext.User);
+            if (user == null)
+                return Unauthorized();
+
+            var groupSpec = new GroupSpecification(new GroupParams { StudentId = user.Id });
+            var groupIds = (await _groupService.GetGroupsAsync(groupSpec)).Select(g => g.Id);
+            
+            var (posts, totalPosts) = await _postService.GetUserPosts(groupIds, pagingParams);
+            
+            var postDtos = posts.Any() ? posts.Select(p => p.ToDto()).ToList() : new List<PostDto?>();
+            var pagination = new Pagination<PostDto>(pagingParams.PageIndex, pagingParams.PageSize, totalPosts, postDtos);
+            return Ok(pagination);
+
         }
 
         private static FCMessage CreateNewPostMessage(List<string> tokens, 
