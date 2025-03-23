@@ -19,5 +19,9 @@ namespace Teamo.Core.Specifications.Semesters
 
         public SemesterSpecification() : base (x => x.Status == SemesterStatus.Ongoing){
         }
+
+        public SemesterSpecification(string code) : base(x => x.Code == code)
+        {
+        }
     }
 }

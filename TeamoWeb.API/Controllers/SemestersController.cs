@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Teamo.Core.Entities;
 using Teamo.Core.Interfaces;
+using Teamo.Core.Specifications.Majors;
 using Teamo.Core.Specifications.Semesters;
 using TeamoWeb.API.Dtos;
 using TeamoWeb.API.Errors;
@@ -46,9 +47,14 @@ namespace TeamoWeb.API.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult<SemesterDto>> CreateSemester(SemesterToUpsertDto semesterDto)
         {
+            var semesterSpec = new SemesterSpecification(semesterDto.Code);
+            var duplicateCode = await _semesterRepo.GetEntityWithSpec(semesterSpec);
+            if (duplicateCode != null) return BadRequest(new ApiErrorResponse(400, "Semester code already existed"));
+
             var semester = semesterDto.ToEntity();
             _semesterRepo.Add(semester);
-            await _semesterRepo.SaveAllAsync();
+            var result = await _semesterRepo.SaveAllAsync();
+            if (!result) return BadRequest(new ApiErrorResponse(400, "Failed to create semester"));
             return Ok(semester.ToDto());
         }
 
@@ -64,7 +70,8 @@ namespace TeamoWeb.API.Controllers
 
             semester = semesterDto.ToEntity(semester);
             _semesterRepo.Update(semester);
-            await _semesterRepo.SaveAllAsync();
+            var result = await _semesterRepo.SaveAllAsync();
+            if (!result) return BadRequest(new ApiErrorResponse(400, "Failed to update semester"));
             return Ok(semester.ToDto());            
         }
 
