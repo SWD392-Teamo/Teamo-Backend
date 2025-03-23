@@ -87,7 +87,7 @@ namespace TeamoWeb.API.Controllers
             var skill = await _skillService.GetSkillByIdAsync(id);
             if(skill == null) return NotFound(new ApiErrorResponse(404, "Skill not found."));
 
-            if(!string.IsNullOrEmpty(skillDto.Name))
+            if(!string.IsNullOrEmpty(skillDto.Name) && skill.Name != skillDto.Name)
             {
                 var check = await _skillService.CheckDuplicateSkillAsync(skillDto.Name);
                 if(!check) return BadRequest(new ApiErrorResponse(400, "Already exists skill with this name."));
