@@ -187,6 +187,7 @@ namespace TeamoWeb.API.Extensions
                 StudentName = groupMember.Student.FirstName + " " + groupMember.Student.LastName,
                 StudentEmail = groupMember.Student.Email,
                 ImgUrl = groupMember.Student.ImgUrl,
+                PositionIds = groupMember.GroupMemberPositions?.Select(p => p.GroupPositionId) ?? [],
                 Positions = groupMember.GroupMemberPositions?.Select(gp => gp.GroupPosition.Name) ?? [],
                 Role = groupMember.Role
             };

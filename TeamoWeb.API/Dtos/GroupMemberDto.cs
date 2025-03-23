@@ -10,6 +10,7 @@ namespace TeamoWeb.API.Dtos
         public string? StudentName { get; set; }
         public string? StudentEmail { get; set; }
         public string? ImgUrl { get; set; }
+        public IEnumerable<int> PositionIds { get; set; } = new List<int>();
         public IEnumerable<string> Positions { get; set; } = new List<string>();
         public GroupMemberRole Role { get; set; }
 
