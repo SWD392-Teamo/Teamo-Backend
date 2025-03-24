@@ -6,6 +6,6 @@ namespace TeamoWeb.API.Dtos
     {
         public int? StudentId { get; set; }
         public GroupMemberRole? Role { get; set; }
-        public IEnumerable<int> GroupPositionIds { get; set; } = new List<int>();
+        public IEnumerable<int>? GroupPositionIds { get; set; }
     }
 }

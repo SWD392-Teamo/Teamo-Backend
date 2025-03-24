@@ -181,11 +181,13 @@ namespace TeamoWeb.API.Extensions
         {
             return new GroupMemberDto
             {
+                Id = groupMember.Id,
                 GroupId = groupMember.GroupId,
                 StudentId = groupMember.StudentId,
                 StudentName = groupMember.Student.FirstName + " " + groupMember.Student.LastName,
                 StudentEmail = groupMember.Student.Email,
                 ImgUrl = groupMember.Student.ImgUrl,
+                PositionIds = groupMember.GroupMemberPositions?.Select(p => p.GroupPositionId) ?? [],
                 Positions = groupMember.GroupMemberPositions?.Select(gp => gp.GroupPosition.Name) ?? [],
                 Role = groupMember.Role
             };

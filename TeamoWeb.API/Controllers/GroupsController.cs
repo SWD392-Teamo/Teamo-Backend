@@ -61,7 +61,7 @@ namespace TeamoWeb.API.Controllers
         public async Task<ActionResult<GroupDto>> GetGroupByIdAsync(int id)
         {
             var group = await _groupService.GetGroupByIdAsync(id);
-            if (group == null) return NotFound();
+            if (group == null) return NotFound(new ApiErrorResponse(404, "Group not found.")); 
             return Ok(group.ToDto());
         }
 
@@ -79,7 +79,9 @@ namespace TeamoWeb.API.Controllers
 
             var group = groupDto.ToEntity();
 
-            await _groupService.CreateGroupAsync(group, user.Id);
+            var result = await _groupService.CreateGroupAsync(group, user.Id);
+            if(!result) return BadRequest(new ApiErrorResponse(400, "Failed to create group."));
+
             group = await _groupService.GetGroupByIdAsync(group.Id);
             var createdGroupDto = group.ToDto();
             return Ok(createdGroupDto);
@@ -95,14 +97,16 @@ namespace TeamoWeb.API.Controllers
         {
             var group = await _groupService.GetGroupByIdAsync(id);
             if (group == null)
-                return BadRequest(new ApiErrorResponse(404, "Group not found!"));
+                return NotFound(new ApiErrorResponse(404, "Group not found!"));
 
             var user = await _userService.GetUserByClaims(HttpContext.User);
             var isLeader = await _groupService.CheckGroupLeaderAsync(id, user.Id);
             if (!isLeader) return Unauthorized(new ApiErrorResponse(401, "Only group leader can update group."));
 
             var updatedGroup = groupDto.ToEntity(group);
-            await _groupService.UpdateGroupAsync(updatedGroup);
+            var result = await _groupService.UpdateGroupAsync(updatedGroup);
+            if(!result) return BadRequest(new ApiErrorResponse(400, "Failed to update group."));
+
             updatedGroup = await _groupService.GetGroupByIdAsync(group.Id);
 
             var groupMembers = await _groupService.GetAllGroupMembersAsync(group.Id);
@@ -143,7 +147,7 @@ namespace TeamoWeb.API.Controllers
 
             var group = await _groupService.GetGroupByIdAsync(id);
             if (group == null)
-                return BadRequest(new ApiErrorResponse(404, "Group not found!"));
+                return NotFound(new ApiErrorResponse(404, "Group not found!"));
 
             // Upload and get download Url
             var imgUrl = await _uploadService.UploadFileAsync(
@@ -178,7 +182,8 @@ namespace TeamoWeb.API.Controllers
             var isLeader = await _groupService.CheckGroupLeaderAsync(id, user.Id);
             if (!isLeader) return Unauthorized(new ApiErrorResponse(401, "Only group leader can delete group."));
 
-            await _groupService.DeleteGroupAsync(group);
+            var result = await _groupService.DeleteGroupAsync(group);
+            if(!result) return BadRequest(new ApiErrorResponse(400, "Failed to delete group."));
 
             var groupMembers = await _groupService.GetAllGroupMembersAsync(id);
             var groupMembersIds = groupMembers.Select(g => g.StudentId).ToList();
@@ -200,7 +205,7 @@ namespace TeamoWeb.API.Controllers
                         "but failed to send notifications to some devices."));
             }
 
-            return Ok("Successfully deleted a group");
+            return Ok(new ApiErrorResponse(200, "Successfully deleted group"));
         }
 
         /// <summary>
@@ -221,7 +226,8 @@ namespace TeamoWeb.API.Controllers
             
             var groupMember = groupMemberToAddDto.ToEntity();
             groupMember.GroupId = id;
-            await _groupService.AddMemberToGroup(groupMember);
+            var result = await _groupService.AddMemberToGroup(groupMember);
+            if(!result) return BadRequest(new ApiErrorResponse(400, "Failed to add member to group."));
 
             groupMember = await _groupService.GetGroupMemberAsync(groupMember.GroupId, groupMember.StudentId);
             return Ok(groupMember.ToDto());
@@ -245,9 +251,11 @@ namespace TeamoWeb.API.Controllers
                 return NotFound(new ApiErrorResponse(404, "Group Member not found!"));
             }
 
-            var groupName = groupMember.Group.Name;
+            var result = await _groupService.RemoveMemberFromGroup(groupMember);
+            if(!result) return BadRequest(new ApiErrorResponse(400, "Failed to remove member from group."));
 
-            await _groupService.RemoveMemberFromGroup(groupMember);
+            var group = await _groupService.GetGroupByIdAsync(groupId);
+            var groupName = group.Name;
 
             // Get removed member's devices
             var deviceTokens = await _deviceService.GetDeviceTokensForUser(studentId);
@@ -264,7 +272,7 @@ namespace TeamoWeb.API.Controllers
                         "but failed to send notifications to some devices."));
             }
 
-            return Ok("Delete Successfully");
+            return Ok(new ApiErrorResponse(200, "Removed member successfully."));
         }
 
         [InvalidateCache("/groups")]
@@ -282,11 +290,11 @@ namespace TeamoWeb.API.Controllers
                 return NotFound(new ApiErrorResponse(404, "Group Member not found!"));
             }
             groupMember = gmDto.ToEntity(groupMember);
-            await _groupService.UpdateGroupMemberAsync(groupMember);
+            var result = await _groupService.UpdateGroupMemberAsync(groupMember);
+            if(!result) return BadRequest(new ApiErrorResponse(400, "Failed to update group member."));
 
-            groupMember = await _groupService.GetGroupMemberAsync(groupId, studentId);
-
-            var groupName = groupMember.Group.Name;
+            var group = await _groupService.GetGroupByIdAsync(groupId);
+            var groupName = group.Name;
 
             // Get updated member's devices
             var deviceTokens = await _deviceService.GetDeviceTokensForUser(studentId);

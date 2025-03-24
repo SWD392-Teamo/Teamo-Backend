@@ -20,9 +20,10 @@ namespace TeamoWeb.API.Extensions
                 Content = post.Content,
                 CreatedAt = post.CreatedAt,
                 UpdatedAt = post.UpdatedAt,
-                Privacy = post.Privacy,
                 Status = post.Status,
                 DocumentUrl = post.DocumentUrl,
+                GroupName = post.Group.Name,
+                TotalLike = post.TotalLike,
             };
         }
 
@@ -35,12 +36,10 @@ namespace TeamoWeb.API.Extensions
                 return new Post
                 {
                     Content = postToUpsertDto.Content,
-                    Privacy = postToUpsertDto.Privacy ?? PostPrivacy.Public
                 };
             }
 
             post.Content = string.IsNullOrEmpty(postToUpsertDto.Content) ? post.Content : postToUpsertDto.Content;
-            post.Privacy = postToUpsertDto.Privacy ?? post.Privacy;
             post.UpdatedAt = DateTime.Now;
             return post;
         }
