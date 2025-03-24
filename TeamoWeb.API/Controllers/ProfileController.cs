@@ -217,11 +217,10 @@ namespace TeamoWeb.API.Controllers
             groupParams.StudentId = user.Id;
             var spec = new GroupSpecification(groupParams);
             var groups = await _groupService.GetGroupsAsync(spec) ?? new List<Group>();
-            var countSpec = new GroupSpecification(groupParams, false);
-            var totalGroups = (await _groupService.GetGroupsAsync(countSpec)).Count();
+            var count = await _groupService.CountGroupsAsync(spec);
 
             var groupDtos = groups.Any() ? groups.Select(g => g.ToDto()).ToList() : new List<GroupDto?>();
-            var pagination = new Pagination<GroupDto>(groupParams.PageIndex, groupParams.PageSize, totalGroups, groupDtos);
+            var pagination = new Pagination<GroupDto>(groupParams.PageIndex, groupParams.PageSize, count, groupDtos);
             return Ok(pagination);
         }
 

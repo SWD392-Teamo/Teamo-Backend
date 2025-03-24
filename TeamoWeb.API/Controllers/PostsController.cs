@@ -98,6 +98,8 @@ namespace TeamoWeb.API.Controllers
             var groupMembers = await _groupService.GetAllGroupMembersAsync(GroupId);
             var groupMembersIds = groupMembers.Select(g => g.StudentId).ToList();
 
+            var group = await _groupService.GetGroupByIdAsync(post.GroupId);
+
             // Get all members' devices
             var deviceTokens = await _deviceService.GetDeviceTokensForSelectedUsers(groupMembersIds);
 
@@ -106,7 +108,7 @@ namespace TeamoWeb.API.Controllers
                 var status = post.Status.ToString().ToLower();
 
                 // Generate notification contents
-                FCMessage message = CreateNewPostMessage(deviceTokens, post.Group, post.Id, user, status);
+                FCMessage message = CreateNewPostMessage(deviceTokens, group, post.Id, user, status);
 
                 var notiResult = await _notiService.SendNotificationAsync(message);
                 if (!notiResult) 
@@ -121,7 +123,7 @@ namespace TeamoWeb.API.Controllers
         [InvalidateCache("/posts")]
         [HttpPatch("{id}")]
         [Authorize(Roles = "Student")]
-        public async Task<ActionResult<PostDto>> UpdatePostAsync(int id,[FromForm] PostToUpsertDto postDto)
+        public async Task<ActionResult<PostDto>> UpdatePostAsync(int id, [FromForm] PostToUpsertDto postDto)
         {
             var post = await _postService.GetPostByIdAsync(id);
             if(post == null) return NotFound(new ApiErrorResponse(404, "Post not found.")); 
@@ -148,6 +150,8 @@ namespace TeamoWeb.API.Controllers
             var groupMembers = await _groupService.GetAllGroupMembersAsync(post.GroupId);
             var groupMembersIds = groupMembers.Select(g => g.StudentId).ToList();
 
+            var group = await _groupService.GetGroupByIdAsync(post.GroupId);
+
             // Get all members' devices
             var deviceTokens = await _deviceService.GetDeviceTokensForSelectedUsers(groupMembersIds);
 
@@ -156,7 +160,7 @@ namespace TeamoWeb.API.Controllers
                 var status = post.Status.ToString().ToLower();
 
                 // Generate notification contents
-                FCMessage message = CreateUpdatedPostMessage(deviceTokens, post.Group, post.Id, user, status);
+                FCMessage message = CreateUpdatedPostMessage(deviceTokens, group, post.Id, user, status);
 
                 var notiResult = await _notiService.SendNotificationAsync(message);
                 if (!notiResult) 

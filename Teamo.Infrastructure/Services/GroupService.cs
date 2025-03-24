@@ -233,5 +233,10 @@ namespace Teamo.Infrastructure.Services
 
             await _unitOfWork.Complete();
         }
+
+        public async Task<int> CountGroupsAsync(ISpecification<Group> spec)
+        {
+            return await _unitOfWork.Repository<Group>().CountAsync(spec);
+        }
     }
 }

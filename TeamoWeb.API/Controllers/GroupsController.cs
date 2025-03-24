@@ -47,8 +47,9 @@ namespace TeamoWeb.API.Controllers
         {
             var spec = new GroupSpecification(groupParams);
             var groups = await _groupService.GetGroupsAsync(spec) ?? new List<Group>();
+            var count = await _groupService.CountGroupsAsync(spec);
             var groupDtos = groups.Any() ? groups.Select(g => g.ToDto()).ToList() : new List<GroupDto?>();
-            var pagination = new Pagination<GroupDto>(groupParams.PageIndex, groupParams.PageSize, groups.Count(), groupDtos);
+            var pagination = new Pagination<GroupDto>(groupParams.PageIndex, groupParams.PageSize, count, groupDtos);
             return Ok(pagination);
         }       
 
