@@ -8,7 +8,7 @@ namespace Teamo.Core.Specifications.Groups
 {
     public class GroupSpecification : BaseSpecification<Group>
     {
-        public GroupSpecification(GroupParams groupParams, bool applyPaging = true)
+        public GroupSpecification(GroupParams groupParams, bool applyPaging = true, bool isAdmin = false)
             : base(x => (string.IsNullOrEmpty(groupParams.Search)
             || x.GroupPositions.Any(gp => gp.Name.ToLower().Contains(groupParams.Search))
             || x.Name.ToLower().Contains(groupParams.Search)
@@ -17,7 +17,8 @@ namespace Teamo.Core.Specifications.Groups
             (!groupParams.Status.HasValue ? x.Status != GroupStatus.Deleted : groupParams.Status == x.Status) &&
             (!groupParams.SemesterId.HasValue || groupParams.SemesterId == x.SemesterId) &&
             (!groupParams.FieldId.HasValue || groupParams.FieldId == x.FieldId) &&
-            (!groupParams.StudentId.HasValue || x.GroupMembers.Any(gm => gm.StudentId == groupParams.StudentId)))          
+            (!groupParams.StudentId.HasValue || x.GroupMembers.Any(gm => gm.StudentId == groupParams.StudentId)) &&
+            (isAdmin || (x.Status != GroupStatus.Banned && x.Status != GroupStatus.Deleted)))         
         {
             AddThenInclude(q => q.Include(x => x.GroupPositions).ThenInclude(a => a.Skills));
             AddInclude(x => x.CreatedByUser);
@@ -32,7 +33,7 @@ namespace Teamo.Core.Specifications.Groups
                 ApplyPaging(groupParams.PageSize * (groupParams.PageIndex - 1),
                 groupParams.PageSize);
             }
-            
+
             if (!string.IsNullOrEmpty(groupParams.Sort))
             {
                 switch (groupParams.Sort)
@@ -51,7 +52,7 @@ namespace Teamo.Core.Specifications.Groups
 
         }
         public GroupSpecification(int id)
-            : base(x => x.Id == id && x.Status != GroupStatus.Deleted)
+            : base(x => x.Id == id)
         {
             AddThenInclude(q => q.Include(x => x.GroupPositions).ThenInclude(a => a.Skills));
             AddThenInclude(q => q.Include(x => x.Applications).ThenInclude(a => a.Student));

@@ -19,6 +19,8 @@ namespace Teamo.Core.Interfaces.Services
         Task<bool> UpdateGroupPositionAsync(GroupPosition groupPosition);
         Task<bool> UpdateGroupMemberAsync(GroupMember groupMember);
         Task<bool> DeleteGroupAsync(Group group);           
+        Task<bool> BanGroupAsync(Group group);
+        Task<bool> UnBanGroupAsync(Group group);
         Task<bool> RemoveGroupPositionAsync(GroupPosition groupPosition);      
         Task<bool> RemoveMemberFromGroup(GroupMember groupMember);
         Task<bool> CheckGroupLeaderAsync(int groupId, int studentId);
