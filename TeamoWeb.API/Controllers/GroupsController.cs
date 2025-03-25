@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Teamo.Core.Entities;
+using Teamo.Core.Enums;
 using Teamo.Core.Interfaces.Services;
 using Teamo.Core.Specifications.Groups;
 using TeamoWeb.API.Dtos;
@@ -41,11 +42,11 @@ namespace TeamoWeb.API.Controllers
         /// <summary>
         /// Retrieves a list of groups with pagination.
         /// </summary>
-        [Cache(1000)]
         [HttpGet]
         public async Task<ActionResult<IReadOnlyList<GroupDto>>> GetGroupsAsync([FromQuery] GroupParams groupParams)
         {
-            var spec = new GroupSpecification(groupParams);
+            var isAdmin = HttpContext.User.IsInRole(UserRole.Admin.ToString());
+            var spec = new GroupSpecification(groupParams, isAdmin: isAdmin);
             var groups = await _groupService.GetGroupsAsync(spec) ?? new List<Group>();
             var count = await _groupService.CountGroupsAsync(spec);
             var groupDtos = groups.Any() ? groups.Select(g => g.ToDto()).ToList() : new List<GroupDto?>();
