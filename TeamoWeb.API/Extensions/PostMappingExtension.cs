@@ -23,7 +23,6 @@ namespace TeamoWeb.API.Extensions
                 Status = post.Status,
                 DocumentUrl = post.DocumentUrl,
                 GroupName = post.Group.Name,
-                TotalLike = post.TotalLike,
             };
         }
 

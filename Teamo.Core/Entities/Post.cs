@@ -13,7 +13,6 @@ namespace Teamo.Core.Entities
         public PostStatus Status { get; set; } = PostStatus.Posted;
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime? UpdatedAt { get; set; }
-        public int TotalLike { get; set; }
         public string DocumentUrl { get; set; }
     }
 }

@@ -16,7 +16,6 @@ namespace TeamoWeb.API.Dtos
         public DateTime CreatedAt { get; set; } 
         public DateTime? UpdatedAt { get; set; }
         public string? DocumentUrl { get; set; }
-        public int TotalLike { get; set; }
     }
 }
 
