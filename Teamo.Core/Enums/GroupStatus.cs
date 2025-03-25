@@ -13,6 +13,8 @@ namespace Teamo.Core.Enums
         [EnumMember(Value = "Archived")]
         Archived,
         [EnumMember(Value = "Deleted")]
-        Deleted
+        Deleted,
+        [EnumMember(Value = "Banned")]
+        Banned
     }
 }
