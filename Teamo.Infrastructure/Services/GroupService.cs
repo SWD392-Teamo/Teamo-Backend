@@ -92,7 +92,18 @@ namespace Teamo.Infrastructure.Services
             _unitOfWork.Repository<Group>().Update(group);
             return await _unitOfWork.Complete();
         }
-
+        public async Task<bool> BanGroupAsync(Group group)
+        {
+            group.Status = GroupStatus.Banned;
+            _unitOfWork.Repository<Group>().Update(group);
+            return await _unitOfWork.Complete();
+        }
+        public async Task<bool> UnBanGroupAsync(Group group)
+        {
+            group.Status = group.GroupMembers.Count() < group.MaxMember ? GroupStatus.Recruiting : GroupStatus.Full;
+            _unitOfWork.Repository<Group>().Update(group);
+            return await _unitOfWork.Complete();
+        }
         public async Task<bool> RemoveGroupPositionAsync(GroupPosition groupPosition)
         {
             var groupMemberPositions = await _unitOfWork.Repository<GroupMemberPosition>()
@@ -159,6 +170,7 @@ namespace Teamo.Infrastructure.Services
         public async Task<IReadOnlyList<Group>> GetGroupsAsync(ISpecification<Group> spec)
         {
             await UpdateGroupStatus();
+
             return await _unitOfWork.Repository<Group>().ListAsync(spec);
         }
 

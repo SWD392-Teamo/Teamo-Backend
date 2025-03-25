@@ -208,6 +208,75 @@ namespace TeamoWeb.API.Controllers
             return Ok(new ApiErrorResponse(200, "Successfully deleted group"));
         }
 
+        [InvalidateCache("/groups")]
+        [HttpPatch("{id}/ban")]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<GroupDto>> BanGroupAsync(int id)
+        {
+            var group = await _groupService.GetGroupByIdAsync(id);
+            if (group == null)
+                return NotFound(new ApiErrorResponse(404, "Group not found!"));
+
+            var result = await _groupService.BanGroupAsync(group);
+            if (!result) return BadRequest(new ApiErrorResponse(400, "Failed to ban group."));
+            
+            var groupMembers = await _groupService.GetAllGroupMembersAsync(id);
+            var groupMembersIds = groupMembers.Select(g => g.StudentId).ToList();
+
+            // Get all members' devices
+            var deviceTokens = await _deviceService.GetDeviceTokensForSelectedUsers(groupMembersIds);
+
+            if (!deviceTokens.IsNullOrEmpty())
+            {
+                var status = group.Status.ToString().ToLower();
+
+                // Generate notification contents
+                FCMessage message = CreateDeletedGroupMessage(deviceTokens, group.Name, group.Id, status);
+
+                var notiResult = await _notiService.SendNotificationAsync(message);
+                if (!notiResult)
+                    return Ok(new ApiErrorResponse(200,
+                        "Group banned successfully, " +
+                        "but failed to send notifications to some devices."));
+            }
+
+            return Ok(group.ToDto());
+        }
+        [InvalidateCache("/groups")]
+        [HttpPatch("{id}/unban")]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<GroupDto>> UnBanGroupAsync(int id)
+        {
+            var group = await _groupService.GetGroupByIdAsync(id);
+            if (group == null)
+                return NotFound(new ApiErrorResponse(404, "Group not found!"));
+
+            var result = await _groupService.UnBanGroupAsync(group);
+            if (!result) return BadRequest(new ApiErrorResponse(400, "Failed to ban group."));
+
+            var groupMembers = await _groupService.GetAllGroupMembersAsync(id);
+            var groupMembersIds = groupMembers.Select(g => g.StudentId).ToList();
+
+            // Get all members' devices
+            var deviceTokens = await _deviceService.GetDeviceTokensForSelectedUsers(groupMembersIds);
+
+            if (!deviceTokens.IsNullOrEmpty())
+            {
+                var status = group.Status.ToString().ToLower();
+
+                // Generate notification contents
+                FCMessage message = CreateDeletedGroupMessage(deviceTokens, group.Name, group.Id, status);
+
+                var notiResult = await _notiService.SendNotificationAsync(message);
+                if (!notiResult)
+                    return Ok(new ApiErrorResponse(200,
+                        "Group banned successfully, " +
+                        "but failed to send notifications to some devices."));
+            }
+
+            return Ok(group.ToDto());
+        }
+
         /// <summary>
         /// Adds a member to a group.
         /// </summary>
