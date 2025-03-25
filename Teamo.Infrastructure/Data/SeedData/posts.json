@@ -3,72 +3,62 @@
     "StudentId": 1,
     "GroupId": 1,
     "Content": "Hey team! I’ve just completed the first draft of our project proposal. Please review it and leave your feedback. I think we should also discuss the timeline for the next sprint.",
-    "Status": "Posted",
-    "TotalLike": 5
+    "Status": "Posted"
   },
   {
     "StudentId": 2,
     "GroupId": 1,
     "Content": "I’ve added some additional references to the literature review section based on the professor’s feedback. Let me know if you think we should expand more on the methodology part.",
     "Status": "Posted",
-    "CreatedAt": "2025-03-19T00:00:00",
-    "TotalLike": 10
+    "CreatedAt": "2025-03-19T00:00:00"
   },
   {
     "StudentId": 1,
     "GroupId": 1,
     "Content": "Great job everyone on the presentation! I think we nailed it. I’ve attached the slides here in case anyone wants to make final adjustments before submission.",
-    "Status": "Edited",
-    "TotalLike": 7
+    "Status": "Edited"
   },
   {
     "StudentId": 2,
     "GroupId": 1,
     "Content": "Here’s the meeting summary from today. We agreed to focus on improving the UI for our prototype and also refining the user flow based on the feedback we received.",
-    "Status": "Posted",
-    "TotalLike": 2
+    "Status": "Posted"
   },
   {
     "StudentId": 1,
     "GroupId": 2,
     "Content": "Hey all, due to the upcoming deadline, I think we should split the remaining tasks among us. Please check the document I shared and assign yourself to one of the pending tasks.",
-    "Status": "Deleted",
-    "TotalLike": 0
+    "Status": "Deleted"
   },
   {
     "StudentId": 2,
     "GroupId": 2,
     "Content": "Just uploaded the latest version of the backend API documentation. Please review it before the next integration phase. Let me know if you find any inconsistencies.",
-    "Status": "Posted",
-    "TotalLike": 4
+    "Status": "Posted"
   },
   {
     "StudentId": 2,
     "GroupId": 3,
     "Content": "Hi team, I’ve updated the project’s README file to include setup instructions and a troubleshooting section. It should be easier for everyone to get started now.",
     "Status": "Posted",
-    "Privacy": "Private",
-    "TotalLike": 1
+    "Privacy": "Private"
   },
   {
     "StudentId": 1,
     "GroupId": 3,
     "Content": "Reminder: We have a client meeting scheduled for Friday. Please make sure your parts of the demo are ready. Let’s do a dry run on Thursday evening to make sure everything works smoothly.",
-    "Status": "Posted",
-    "TotalLike": 6
+    "Status": "Posted"
   },
   {
     "StudentId": 6,
     "GroupId": 4,
     "Content": "I’ve attached the testing report from QA. There are still a few critical bugs to fix before we can move to production. Let’s prioritize these during the next sprint.",
-    "Status": "Posted",
-    "TotalLike": 8
+    "Status": "Posted"
   },
   {
     "StudentId": 6,
     "GroupId": 4,
     "Content": "Hey, check out the new dashboard design concept I worked on over the weekend. I’d love to hear your thoughts and suggestions before we finalize it.",
-    "Status": "Posted",
-    "TotalLike": 3
+    "Status": "Posted"
   }
 ]
