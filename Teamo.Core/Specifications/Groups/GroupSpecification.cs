@@ -18,7 +18,7 @@ namespace Teamo.Core.Specifications.Groups
             (!groupParams.SemesterId.HasValue || groupParams.SemesterId == x.SemesterId) &&
             (!groupParams.FieldId.HasValue || groupParams.FieldId == x.FieldId) &&
             (!groupParams.StudentId.HasValue || x.GroupMembers.Any(gm => gm.StudentId == groupParams.StudentId)) &&
-            (!isAdmin && x.Status != GroupStatus.Banned && x.Status != GroupStatus.Deleted))         
+            (isAdmin || (x.Status != GroupStatus.Banned && x.Status != GroupStatus.Deleted)))         
         {
             AddThenInclude(q => q.Include(x => x.GroupPositions).ThenInclude(a => a.Skills));
             AddInclude(x => x.CreatedByUser);
