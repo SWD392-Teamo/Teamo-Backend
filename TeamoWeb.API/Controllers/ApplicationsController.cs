@@ -207,7 +207,6 @@ namespace TeamoWeb.API.Controllers
         }
 
         // Get user's sent applications with spec
-        [Cache(1000)]
         [HttpGet("/api/applications")]
         [Authorize(Roles = "Student")]
         public async Task<ActionResult<IReadOnlyList<ApplicationDto>>> GetSentApplications([FromQuery] ApplicationParams appParams)

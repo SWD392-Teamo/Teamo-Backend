@@ -205,7 +205,6 @@ namespace TeamoWeb.API.Controllers
         /// <summary>
         /// Retrieves a list of user's groups with pagination.
         /// </summary>
-        [Cache(1000)]
         [HttpGet("groups")]
         [Authorize]
         public async Task<ActionResult<IReadOnlyList<GroupDto>>> GetOwnGroupsAsync([FromQuery] GroupParams groupParams)
