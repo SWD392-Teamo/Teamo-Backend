@@ -33,7 +33,7 @@ namespace TeamoWeb.API.Controllers
         //Get all users with spec
         [Cache(1000)]
         [HttpGet]
-        [Authorize(Roles = "Admin")]
+        [Authorize]
         public async Task<ActionResult<IReadOnlyList<ProfileDto>>> GetUsers([FromQuery] UserSpecParams userSpecParams)
         {
             var userSpec = new UserSpecification(userSpecParams);
