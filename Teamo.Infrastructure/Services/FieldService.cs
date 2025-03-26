@@ -1,3 +1,4 @@
+using System.CodeDom;
 using Teamo.Core.Entities;
 using Teamo.Core.Interfaces;
 using Teamo.Core.Interfaces.Services;
@@ -65,8 +66,8 @@ namespace Teamo.Infrastructure.Services
             //Check for existing groups in specified field
             var groupSpec = new GroupByFieldIdSpecification(field.Id);
             var group = await _unitOfWork.Repository<Group>().GetEntityWithSpec(groupSpec);
-            if(group != null) return false;
-            
+            if(group != null) throw new ArgumentException("This field cannot be deleted because it is associated with existing groups..");
+
             //Delete relevant entries in SubjectField table
             var subjectFieldSpec = new SubjectFieldSpecification(field.Id);
             var subjectFields = await _unitOfWork.Repository<SubjectField>().ListAsync(subjectFieldSpec);
