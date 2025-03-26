@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Teamo.Core.Entities;
 using TeamoWeb.API.Dtos;
 
@@ -24,6 +25,9 @@ namespace TeamoWeb.API.Extensions
 
         public static Major toEntity(this MajorToUpsertDto majorDto, Major? major = null)
         {
+            var arraystring = JsonSerializer.Deserialize<string>(majorDto.SubjectIds);
+            var intarray = JsonSerializer.Deserialize<int[]>(arraystring);
+
             if(major == null)
             {
                 if (string.IsNullOrEmpty(majorDto.Code) || string.IsNullOrEmpty(majorDto.Name))
@@ -32,11 +36,18 @@ namespace TeamoWeb.API.Extensions
                 {
                     Code = majorDto.Code,
                     Name = majorDto.Name,
+                    MajorSubjects = intarray?.Select(sId => new MajorSubject{
+                        SubjectId = sId
+                    }).ToList() ?? new List<MajorSubject>()
                 };
             }
 
             major.Code = string.IsNullOrEmpty(majorDto.Code) ? major.Code : majorDto.Code;
             major.Name = string.IsNullOrEmpty(majorDto.Name) ? major.Name : majorDto.Name;
+            major.MajorSubjects = intarray?.Select(sId => new MajorSubject
+                {
+                    SubjectId = sId
+                }).ToList() ?? major.MajorSubjects;
             return major;
         }
     }

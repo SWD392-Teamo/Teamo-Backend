@@ -18,13 +18,15 @@ namespace TeamoWeb.API.Controllers
     public class MajorsController : BaseApiController
     {
         private readonly IGenericRepository<Major> _majorRepo;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IUploadService _uploadService;
         private readonly IConfiguration _config;
 
         public MajorsController(IGenericRepository<Major> majorRepo, 
-            IUploadService uploadService, IConfiguration config)
+            IUnitOfWork unitOfWork, IUploadService uploadService, IConfiguration config)
         {
             _majorRepo = majorRepo;
+            _unitOfWork = unitOfWork;
             _uploadService = uploadService;
             _config = config;
         }
@@ -76,12 +78,15 @@ namespace TeamoWeb.API.Controllers
                 major.ImgUrl = imgUrl;
             }
                 
-            _majorRepo.Add(major);
-            var result = await _majorRepo.SaveAllAsync();
+            _unitOfWork.Repository<Major>().Add(major);
+            var result = await _unitOfWork.Complete();
 
             if (!result) return BadRequest(new ApiErrorResponse(400, "Failed to create new major"));
 
-            return Ok(major.ToDto());
+            var newSpec = new MajorSpecification(major.Id);
+            var createdMajor = await _majorRepo.GetEntityWithSpec(newSpec);
+
+            return Ok(createdMajor.ToDto());
         }
 
         [InvalidateCache("/majors")]
@@ -107,12 +112,15 @@ namespace TeamoWeb.API.Controllers
                 major.ImgUrl = imgUrl;
             }
 
-            _majorRepo.Update(major);
-            var result = await _majorRepo.SaveAllAsync();
+            _unitOfWork.Repository<Major>().Update(major);
+            var result = await _unitOfWork.Complete();
 
             if (!result) return BadRequest(new ApiErrorResponse(400, "Failed to update new major"));
 
-            return Ok(major.ToDto());
+            var newSpec = new MajorSpecification(id);
+            var updatedMajor = await _unitOfWork.Repository<Major>().GetEntityWithSpec(newSpec);
+
+            return Ok(updatedMajor.ToDto());
         }
 
         [InvalidateCache("/majors")]
