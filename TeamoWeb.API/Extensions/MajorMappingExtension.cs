@@ -25,8 +25,7 @@ namespace TeamoWeb.API.Extensions
 
         public static Major toEntity(this MajorToUpsertDto majorDto, Major? major = null)
         {
-            var arraystring = JsonSerializer.Deserialize<string>(majorDto.SubjectIds);
-            var intarray = JsonSerializer.Deserialize<int[]>(arraystring);
+            var intarray = JsonSerializer.Deserialize<int[]>(majorDto.SubjectIds);
 
             if(major == null)
             {
