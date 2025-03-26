@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using Microsoft.AspNetCore.Http;
+using System.Net;
 using System.Text.Json;
 using TeamoWeb.API.Errors;
 
@@ -32,7 +33,13 @@ namespace TeamoWeb.API.Middleware
         private static Task HandleExceptionAsync(HttpContext context, Exception ex, IHostEnvironment env)
         {
             context.Response.ContentType = "application/json";
-            context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+
+            int statusCode = (int)HttpStatusCode.InternalServerError;
+            if (ex is ArgumentException || ex is InvalidOperationException)
+            {
+                statusCode = (int)HttpStatusCode.BadRequest; 
+            }
+            context.Response.StatusCode = statusCode;
 
             // Show stack trace in development mode for debugging purposes
             var response = env.IsDevelopment()
