@@ -1,3 +1,5 @@
+using Teamo.Core.Enums;
+
 namespace TeamoWeb.API.Dtos
 {
     public class ProfileDto
@@ -12,6 +14,7 @@ namespace TeamoWeb.API.Dtos
         public string? ImgUrl { get; set; }
         public string? Description { get; set; }
         public string? MajorCode { get; set; }
+        public UserStatus Status { get; set; }
         public IReadOnlyList<LinkDto?>? Links { get; set; }
         public IReadOnlyList<StudentSkillDto?>? StudentSkills { get; set; }
     }

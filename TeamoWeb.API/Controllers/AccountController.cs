@@ -43,7 +43,7 @@ namespace TeamoWeb.API.Controllers
                 return Unauthorized(new ApiErrorResponse(401, "Incorrect email"));
 
             // If account is closed then return unauthorized response
-            if (user.Status.Equals(UserStatus.Inactive.ToString())) 
+            if (user.Status == UserStatus.Banned) 
                 return Unauthorized(new ApiErrorResponse(401, "User is banned, please contact the admin"));
 
             var result = await _signInManager.PasswordSignInAsync(user, loginDto.Password!, loginDto.RememberMe, false);

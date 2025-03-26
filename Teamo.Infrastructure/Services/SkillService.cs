@@ -21,7 +21,7 @@ namespace Teamo.Infrastructure.Services
             return await _unitOfWork.Repository<Skill>().GetEntityWithSpec(skillSpec);
         }
 
-        public async Task<IReadOnlyList<Skill>> GetSkillsWithSpecAsync(SkillParams skillParams)
+        public async Task<IReadOnlyList<Skill>> GetSkillsAsync(SkillParams skillParams)
         {
             var skillSpec = new SkillSpecification(skillParams);
             var skills = await _unitOfWork.Repository<Skill>().ListAsync(skillSpec);
@@ -47,6 +47,14 @@ namespace Teamo.Infrastructure.Services
             return skills;
         }
 
+        public async Task<int> CountSkillsAsync(SkillParams skillParams)
+        {
+            var skillSpec = new SkillSpecification(skillParams);
+            var count = await _unitOfWork.Repository<Skill>().CountAsync(skillSpec);
+
+            return count;
+        }
+
         public async Task<Skill> CreateSkillAsync(Skill skill)
         {
             _unitOfWork.Repository<Skill>().Add(skill);
@@ -70,7 +78,8 @@ namespace Teamo.Infrastructure.Services
             var positionSkillSpec = new GroupPositionSkillBySkillIdSpecification(skill.Id);
             var positionSkill = await _unitOfWork.Repository<GroupPositionSkill>().GetEntityWithSpec(positionSkillSpec);
 
-            if(studentSkill != null || positionSkill != null) return false;
+            if(studentSkill != null || positionSkill != null) 
+                throw new InvalidOperationException("Unable to delete this skill because it is being used in at least one student profile or group position.");
 
             _unitOfWork.Repository<Skill>().Delete(skill);
             return await _unitOfWork.Complete();

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Teamo.Core.Entities;
+using Teamo.Core.Enums;
 using Teamo.Core.Interfaces.Services;
 using Teamo.Core.Specifications.Groups;
 using TeamoWeb.API.Dtos;
@@ -41,36 +42,17 @@ namespace TeamoWeb.API.Controllers
         /// <summary>
         /// Retrieves a list of groups with pagination.
         /// </summary>
-        [Cache(1000)]
         [HttpGet]
         public async Task<ActionResult<IReadOnlyList<GroupDto>>> GetGroupsAsync([FromQuery] GroupParams groupParams)
         {
-            var spec = new GroupSpecification(groupParams);
+            var isAdmin = HttpContext.User.IsInRole(UserRole.Admin.ToString());
+            var spec = new GroupSpecification(groupParams, isAdmin: isAdmin);
             var groups = await _groupService.GetGroupsAsync(spec) ?? new List<Group>();
+            var count = await _groupService.CountGroupsAsync(spec);
             var groupDtos = groups.Any() ? groups.Select(g => g.ToDto()).ToList() : new List<GroupDto?>();
-            var pagination = new Pagination<GroupDto>(groupParams.PageIndex, groupParams.PageSize, groups.Count(), groupDtos);
+            var pagination = new Pagination<GroupDto>(groupParams.PageIndex, groupParams.PageSize, count, groupDtos);
             return Ok(pagination);
-        }
-        /// <summary>
-        /// Retrieves a list of user's groups with pagination.
-        /// </summary>
-        [Cache(1000)]
-        [HttpGet("me")]
-        [Authorize]
-        public async Task<ActionResult<IReadOnlyList<GroupDto>>> GetOwnGroupsAsync([FromQuery] GroupParams groupParams)
-        {
-            var user = await _userService.GetUserByClaims(HttpContext.User);
-            if (user == null)
-                return Unauthorized(new ApiErrorResponse(401, "User not authenticated."));
-
-            groupParams.StudentId = user.Id;    
-            var spec = new GroupSpecification(groupParams);
-            var groups = await _groupService.GetGroupsAsync(spec) ?? new List<Group>();
-
-            var groupDtos = groups.Any() ? groups.Select(g => g.ToDto()).ToList() : new List<GroupDto?>();
-            var pagination = new Pagination<GroupDto>(groupParams.PageIndex, groupParams.PageSize, groups.Count(), groupDtos);
-            return Ok(pagination);
-        }
+        }       
 
         /// <summary>
         /// Retrieves group details by ID.
@@ -80,7 +62,7 @@ namespace TeamoWeb.API.Controllers
         public async Task<ActionResult<GroupDto>> GetGroupByIdAsync(int id)
         {
             var group = await _groupService.GetGroupByIdAsync(id);
-            if (group == null) return NotFound();
+            if (group == null) return NotFound(new ApiErrorResponse(404, "Group not found.")); 
             return Ok(group.ToDto());
         }
 
@@ -98,7 +80,9 @@ namespace TeamoWeb.API.Controllers
 
             var group = groupDto.ToEntity();
 
-            await _groupService.CreateGroupAsync(group, user.Id);
+            var result = await _groupService.CreateGroupAsync(group, user.Id);
+            if(!result) return BadRequest(new ApiErrorResponse(400, "Failed to create group."));
+
             group = await _groupService.GetGroupByIdAsync(group.Id);
             var createdGroupDto = group.ToDto();
             return Ok(createdGroupDto);
@@ -114,14 +98,16 @@ namespace TeamoWeb.API.Controllers
         {
             var group = await _groupService.GetGroupByIdAsync(id);
             if (group == null)
-                return BadRequest(new ApiErrorResponse(404, "Group not found!"));
+                return NotFound(new ApiErrorResponse(404, "Group not found!"));
 
             var user = await _userService.GetUserByClaims(HttpContext.User);
             var isLeader = await _groupService.CheckGroupLeaderAsync(id, user.Id);
             if (!isLeader) return Unauthorized(new ApiErrorResponse(401, "Only group leader can update group."));
 
             var updatedGroup = groupDto.ToEntity(group);
-            await _groupService.UpdateGroupAsync(updatedGroup);
+            var result = await _groupService.UpdateGroupAsync(updatedGroup);
+            if(!result) return BadRequest(new ApiErrorResponse(400, "Failed to update group."));
+
             updatedGroup = await _groupService.GetGroupByIdAsync(group.Id);
 
             var groupMembers = await _groupService.GetAllGroupMembersAsync(group.Id);
@@ -149,7 +135,7 @@ namespace TeamoWeb.API.Controllers
         }
 
         [InvalidateCache("/groups")]
-        [HttpPost("{id}/image")]
+        [HttpPost("{id}/images")]
         [Authorize(Roles = "Student")]
         public async Task<ActionResult> UploadGroupImage(int id, IFormFile image) 
         {
@@ -162,7 +148,7 @@ namespace TeamoWeb.API.Controllers
 
             var group = await _groupService.GetGroupByIdAsync(id);
             if (group == null)
-                return BadRequest(new ApiErrorResponse(404, "Group not found!"));
+                return NotFound(new ApiErrorResponse(404, "Group not found!"));
 
             // Upload and get download Url
             var imgUrl = await _uploadService.UploadFileAsync(
@@ -197,7 +183,8 @@ namespace TeamoWeb.API.Controllers
             var isLeader = await _groupService.CheckGroupLeaderAsync(id, user.Id);
             if (!isLeader) return Unauthorized(new ApiErrorResponse(401, "Only group leader can delete group."));
 
-            await _groupService.DeleteGroupAsync(group);
+            var result = await _groupService.DeleteGroupAsync(group);
+            if(!result) return BadRequest(new ApiErrorResponse(400, "Failed to delete group."));
 
             var groupMembers = await _groupService.GetAllGroupMembersAsync(id);
             var groupMembersIds = groupMembers.Select(g => g.StudentId).ToList();
@@ -219,7 +206,76 @@ namespace TeamoWeb.API.Controllers
                         "but failed to send notifications to some devices."));
             }
 
-            return Ok("Successfully deleted a group");
+            return Ok(new ApiErrorResponse(200, "Successfully deleted group"));
+        }
+
+        [InvalidateCache("/groups")]
+        [HttpPatch("{id}/ban")]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<GroupDto>> BanGroupAsync(int id)
+        {
+            var group = await _groupService.GetGroupByIdAsync(id);
+            if (group == null)
+                return NotFound(new ApiErrorResponse(404, "Group not found!"));
+
+            var result = await _groupService.BanGroupAsync(group);
+            if (!result) return BadRequest(new ApiErrorResponse(400, "Failed to ban group."));
+            
+            var groupMembers = await _groupService.GetAllGroupMembersAsync(id);
+            var groupMembersIds = groupMembers.Select(g => g.StudentId).ToList();
+
+            // Get all members' devices
+            var deviceTokens = await _deviceService.GetDeviceTokensForSelectedUsers(groupMembersIds);
+
+            if (!deviceTokens.IsNullOrEmpty())
+            {
+                var status = group.Status.ToString().ToLower();
+
+                // Generate notification contents
+                FCMessage message = CreateBanUnbanGroupMessage(deviceTokens, group.Name, group.Id, status);
+
+                var notiResult = await _notiService.SendNotificationAsync(message);
+                if (!notiResult)
+                    return Ok(new ApiErrorResponse(200,
+                        "Group banned successfully, " +
+                        "but failed to send notifications to some devices."));
+            }
+
+            return Ok(group.ToDto());
+        }
+        [InvalidateCache("/groups")]
+        [HttpPatch("{id}/unban")]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<GroupDto>> UnBanGroupAsync(int id)
+        {
+            var group = await _groupService.GetGroupByIdAsync(id);
+            if (group == null)
+                return NotFound(new ApiErrorResponse(404, "Group not found!"));
+
+            var result = await _groupService.UnBanGroupAsync(group);
+            if (!result) return BadRequest(new ApiErrorResponse(400, "Failed to ban group."));
+
+            var groupMembers = await _groupService.GetAllGroupMembersAsync(id);
+            var groupMembersIds = groupMembers.Select(g => g.StudentId).ToList();
+
+            // Get all members' devices
+            var deviceTokens = await _deviceService.GetDeviceTokensForSelectedUsers(groupMembersIds);
+
+            if (!deviceTokens.IsNullOrEmpty())
+            {
+                var status = group.Status.ToString().ToLower();
+
+                // Generate notification contents
+                FCMessage message = CreateBanUnbanGroupMessage(deviceTokens, group.Name, group.Id, status);
+
+                var notiResult = await _notiService.SendNotificationAsync(message);
+                if (!notiResult)
+                    return Ok(new ApiErrorResponse(200,
+                        "Group banned successfully, " +
+                        "but failed to send notifications to some devices."));
+            }
+
+            return Ok(group.ToDto());
         }
 
         /// <summary>
@@ -240,7 +296,8 @@ namespace TeamoWeb.API.Controllers
             
             var groupMember = groupMemberToAddDto.ToEntity();
             groupMember.GroupId = id;
-            await _groupService.AddMemberToGroup(groupMember);
+            var result = await _groupService.AddMemberToGroup(groupMember);
+            if(!result) return BadRequest(new ApiErrorResponse(400, "Failed to add member to group."));
 
             groupMember = await _groupService.GetGroupMemberAsync(groupMember.GroupId, groupMember.StudentId);
             return Ok(groupMember.ToDto());
@@ -264,9 +321,11 @@ namespace TeamoWeb.API.Controllers
                 return NotFound(new ApiErrorResponse(404, "Group Member not found!"));
             }
 
-            var groupName = groupMember.Group.Name;
+            var result = await _groupService.RemoveMemberFromGroup(groupMember);
+            if(!result) return BadRequest(new ApiErrorResponse(400, "Failed to remove member from group."));
 
-            await _groupService.RemoveMemberFromGroup(groupMember);
+            var group = await _groupService.GetGroupByIdAsync(groupId);
+            var groupName = group.Name;
 
             // Get removed member's devices
             var deviceTokens = await _deviceService.GetDeviceTokensForUser(studentId);
@@ -283,7 +342,7 @@ namespace TeamoWeb.API.Controllers
                         "but failed to send notifications to some devices."));
             }
 
-            return Ok("Delete Successfully");
+            return Ok(new ApiErrorResponse(200, "Removed member successfully."));
         }
 
         [InvalidateCache("/groups")]
@@ -301,11 +360,11 @@ namespace TeamoWeb.API.Controllers
                 return NotFound(new ApiErrorResponse(404, "Group Member not found!"));
             }
             groupMember = gmDto.ToEntity(groupMember);
-            await _groupService.UpdateGroupMemberAsync(groupMember);
+            var result = await _groupService.UpdateGroupMemberAsync(groupMember);
+            if(!result) return BadRequest(new ApiErrorResponse(400, "Failed to update group member."));
 
-            groupMember = await _groupService.GetGroupMemberAsync(groupId, studentId);
-
-            var groupName = groupMember.Group.Name;
+            var group = await _groupService.GetGroupByIdAsync(groupId);
+            var groupName = group.Name;
 
             // Get updated member's devices
             var deviceTokens = await _deviceService.GetDeviceTokensForUser(studentId);
@@ -356,6 +415,26 @@ namespace TeamoWeb.API.Controllers
                     { "groupName", groupName },
                     { "groupId", groupId.ToString() },
                     { "status", status }
+                }
+            };
+        }
+        private static FCMessage CreateBanUnbanGroupMessage(List<string> tokens,
+            string groupName, int groupId, string status)
+        {
+            bool isBanned = status == GroupStatus.Banned.ToString().ToLower();
+            return new FCMessage
+            {
+                tokens = tokens,
+                title = $"{(isBanned ? "Unban" : "Ban")} group",
+                body = isBanned
+                        ? $"The group '{groupName}' has been unbanned and is now active again. You can continue using all group features."
+                        : $"The group '{groupName}' has been banned due to policy violations. Please contact the administrator for further assistance.",
+                data = new Dictionary<string, string>
+                {
+                    { "type", $"{(isBanned ? "unbanned" : "banned")}_group" },
+                    { "groupName", groupName },
+                    { "groupId", groupId.ToString() },
+                    { "status", status}
                 }
             };
         }

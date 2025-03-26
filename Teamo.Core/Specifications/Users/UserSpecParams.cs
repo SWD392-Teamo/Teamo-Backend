@@ -11,7 +11,7 @@ namespace Teamo.Core.Specifications.Users
 
         public int? UserId { get; set; }
         public int? MajorId { get; set; }
-        public string UserStatus { get; set; }
+        public string Status { get; set; }
 
         //Sort alphabetically by first names
         public string Sort { get; set; }

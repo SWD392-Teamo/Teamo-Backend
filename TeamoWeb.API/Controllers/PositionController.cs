@@ -32,7 +32,8 @@ namespace TeamoWeb.API.Controllers
 
             var groupPosition = groupPositionDto.ToEntity();
             groupPosition.GroupId = groupId;
-            await _groupService.AddGroupPosition(groupPosition);
+            var result = await _groupService.AddGroupPosition(groupPosition);
+            if(!result) return BadRequest(new ApiErrorResponse(400, "Failed to create group position."));
 
             groupPosition = await _groupService.GetGroupPositionAsync(groupPosition.Id);
             return Ok(groupPosition.ToDto());
@@ -54,7 +55,8 @@ namespace TeamoWeb.API.Controllers
 
             groupPosition = updateDto.ToEntity(groupPosition);
             groupPosition.GroupId = groupId;
-            await _groupService.UpdateGroupPositionAsync(groupPosition);
+            var result = await _groupService.UpdateGroupPositionAsync(groupPosition);
+            if(!result) return BadRequest(new ApiErrorResponse(400, "Failed to update group position."));
 
             groupPosition = await _groupService.GetGroupPositionAsync(positionId);
             return Ok(groupPosition.ToDto());
@@ -74,8 +76,9 @@ namespace TeamoWeb.API.Controllers
                 return NotFound(new ApiErrorResponse(404, "Group position not found."));
             }
 
-            await _groupService.RemoveGroupPositionAsync(groupPosition);
-            return Ok("Deleted successfully");
+            var result = await _groupService.RemoveGroupPositionAsync(groupPosition);
+            if(!result) return BadRequest(new ApiErrorResponse(400, "Failed to delete group postion."));
+            return Ok(new ApiErrorResponse(200, "Deleted group position successfully."));
         }
     }
 }

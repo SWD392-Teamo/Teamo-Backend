@@ -28,6 +28,7 @@ namespace TeamoWeb.API.Extensions
                 Status = group.Status,
                 FieldName = group.Field.Name,
                 SubjectCode = group.Subject.Code,
+                SubjectId = group.SubjectId,
 
                 GroupMembers = group.GroupMembers?
                     .Select(gm => gm.ToDto()).ToList() ?? new List<GroupMemberDto>(),
@@ -180,11 +181,13 @@ namespace TeamoWeb.API.Extensions
         {
             return new GroupMemberDto
             {
+                Id = groupMember.Id,
                 GroupId = groupMember.GroupId,
                 StudentId = groupMember.StudentId,
                 StudentName = groupMember.Student.FirstName + " " + groupMember.Student.LastName,
                 StudentEmail = groupMember.Student.Email,
                 ImgUrl = groupMember.Student.ImgUrl,
+                PositionIds = groupMember.GroupMemberPositions?.Select(p => p.GroupPositionId) ?? [],
                 Positions = groupMember.GroupMemberPositions?.Select(gp => gp.GroupPosition.Name) ?? [],
                 Role = groupMember.Role
             };

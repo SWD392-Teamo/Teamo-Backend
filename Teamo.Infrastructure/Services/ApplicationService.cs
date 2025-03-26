@@ -53,22 +53,6 @@ namespace Teamo.Infrastructure.Services
             return await _unitOfWork.Complete();
         }
 
-        public async Task<int> GetGroupLeaderIdAsync(int groupId)
-        {
-            var groupSpec = new GroupSpecification(groupId);
-            var group = await _unitOfWork.Repository<Group>().GetEntityWithSpec(groupSpec);
-
-            var memberParams = new GroupMemberParams
-            {
-                GroupId = groupId,
-                Role = GroupMemberRole.Leader
-            };
-            var memberSpec = new GroupMemberSpecification(memberParams);
-            var groupLeader = await _unitOfWork.Repository<GroupMember>().GetEntityWithSpec(memberSpec);
-
-            return groupLeader.StudentId;
-        }
-
         public async Task<bool> CheckValidToApply(int groupId, int studentId, int groupPositionId)
         {
             var isValid = true;
@@ -76,11 +60,7 @@ namespace Teamo.Infrastructure.Services
             //Check for group status
             var groupSpec = new GroupSpecification(groupId);
             var group = await _unitOfWork.Repository<Group>().GetEntityWithSpec(groupSpec);
-            if(
-                group == null 
-                || group.Status == GroupStatus.Archived
-                || group.Status == GroupStatus.Full
-            ) isValid = false;
+            if(group == null || group.Status != GroupStatus.Recruiting) isValid = false;
 
             //Check if student is already a member of group
             var memberParams = new GroupMemberParams
@@ -95,10 +75,7 @@ namespace Teamo.Infrastructure.Services
             //Check for position status
             var posSpec = new GroupPositionSpecification(groupPositionId);
             var position = await _unitOfWork.Repository<GroupPosition>().GetEntityWithSpec(posSpec);
-            if(
-                position == null
-                || position.Status == GroupPositionStatus.Closed
-            ) isValid = false;
+            if(position == null || position.Status != GroupPositionStatus.Open) isValid = false;
 
             return isValid;
         }

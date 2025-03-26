@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Teamo.Core.Entities;
 using Teamo.Core.Interfaces.Services;
 using Teamo.Core.Specifications.Fields;
+using Teamo.Core.Specifications.Skills;
 using TeamoWeb.API.Dtos;
 using TeamoWeb.API.Errors;
 using TeamoWeb.API.Extensions;
@@ -25,11 +26,17 @@ namespace TeamoWeb.API.Controllers
         [Authorize]
         public async Task<ActionResult<IReadOnlyList<FieldDto>>> GetFields([FromQuery] FieldParams fieldParams)
         {
-            var fields = await _fieldService.GetFieldsWithSpecAsync(fieldParams);
+            var fields = await _fieldService.GetFieldsAsync(fieldParams);
             var fieldsToDtos = fields.Select(f => f.ToDto()).ToList();
-            var count = await _fieldService.CountAsync(fieldParams);
-            var pagination = new Pagination<Field>(fieldParams.PageIndex,fieldParams.PageSize,count,fields);
-            return Ok(pagination);
+
+            if (fieldParams.IsPaginated)
+            {
+                var count = await _fieldService.CountFieldsAsync(fieldParams);
+                var pagination = new Pagination<FieldDto>(fieldParams.PageIndex, fieldParams.PageSize, count, fieldsToDtos);
+                return Ok(pagination);
+            }
+
+            return Ok(fieldsToDtos);
         }
 
         //Get field by id
@@ -68,7 +75,7 @@ namespace TeamoWeb.API.Controllers
             var field = await _fieldService.GetFieldByIdAsync(id);
             if(field == null) return NotFound(new ApiErrorResponse(404, "Field not found."));
 
-            if(!string.IsNullOrEmpty(fieldDto.Name))
+            if(!string.IsNullOrEmpty(fieldDto.Name) && field.Name != fieldDto.Name)
             {
                 var check = await _fieldService.CheckDuplicateNameField(fieldDto.Name);
                 if(!check) return BadRequest(new ApiErrorResponse(400, "Already exists field with this name."));

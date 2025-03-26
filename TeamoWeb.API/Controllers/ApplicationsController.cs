@@ -6,18 +6,18 @@ using Teamo.Core.Entities.Identity;
 using Teamo.Core.Enums;
 using Teamo.Core.Interfaces.Services;
 using Teamo.Core.Specifications.Applications;
-using Teamo.Infrastructure.Services;
 using TeamoWeb.API.Dtos;
 using TeamoWeb.API.Errors;
 using TeamoWeb.API.Extensions;
 using TeamoWeb.API.RequestHelpers;
 
 namespace TeamoWeb.API.Controllers
-{   
+{
     [Route("api/groups/{groupId}/applications")]
     public class ApplicationsController : BaseApiController
     {
         private readonly IApplicationService _appService;
+        private readonly IGroupService _groupService;
         private readonly INotificationService _notiService;
         private readonly IDeviceService _deviceService;
         private readonly IUserService _userService;
@@ -26,6 +26,7 @@ namespace TeamoWeb.API.Controllers
 
         public ApplicationsController(
             IApplicationService appService, 
+            IGroupService groupService,
             IUserService userService, 
             INotificationService notiService,
             IDeviceService deviceService,
@@ -34,6 +35,7 @@ namespace TeamoWeb.API.Controllers
         )
         {
             _appService = appService;
+            _groupService = groupService;
             _userService = userService;
             _notiService = notiService;
             _deviceService = deviceService;
@@ -43,35 +45,24 @@ namespace TeamoWeb.API.Controllers
 
         // Get application by id
         [Cache(1000)]
-        [HttpGet("{id}")]
+        [HttpGet("/api/applications/{id}")]
         [Authorize(Roles = "Student")]
-        public async Task<ActionResult<ApplicationDto?>> GetGroupApplicationById(int id)
+        public async Task<ActionResult<ApplicationDto?>> GetApplicationById(int id)
         {
             var app = await _appService.GetApplicationByIdAsync(id);
 
             if (app == null) return NotFound(new ApiErrorResponse(404, "Application not found"));
 
+            var user = await _userService.GetUserByClaims(HttpContext.User);
+            if (user == null)
+                return Unauthorized(new ApiErrorResponse(401, "Unauthorized"));
+
             // Check if the student viewing the application is the
             // leader of the group that the application is sent to
-            if (app.Group.CreatedById != User.GetId())
+            // or the student viewing the application is the one sent it
+            var isLeader = await _groupService.CheckGroupLeaderAsync(app.GroupId, user.Id);
+            if (!isLeader && app.StudentId != user.Id)
                 return BadRequest(new ApiErrorResponse(400, "You are not allowed to view this application"));
-
-            return Ok(app.ToDto());
-        }
-
-        // Get application by id
-        [Cache(1000)]
-        [HttpGet("/api/applications/{id}")]
-        [Authorize(Roles = "Student")]
-        public async Task<ActionResult<ApplicationDto?>> GetUserApplicationById(int id)
-        {
-            var app = await _appService.GetApplicationByIdAsync(id);
-            if (app == null) 
-                return NotFound(new ApiErrorResponse(404, "Application not found"));
-
-            // Check if the sender is the one viewing the applications
-            if (app.StudentId != User.GetId()) 
-                return BadRequest(new ApiErrorResponse(400, "You are not this application's sender"));
 
             return Ok(app.ToDto());
         }
@@ -89,8 +80,8 @@ namespace TeamoWeb.API.Controllers
             if (user == null)
                 return Unauthorized(new ApiErrorResponse(401, "Unauthorized"));
 
-            var groupLeaderId = await _appService.GetGroupLeaderIdAsync(groupId);
-            if(user.Id != groupLeaderId) 
+            var isLeader = await _groupService.CheckGroupLeaderAsync(groupId, user.Id);
+            if(!isLeader) 
                 return BadRequest(new ApiErrorResponse(400, "Only group leaders can view applications"));
 
             var appSpec = new ApplicationGroupSpecification(appParams);
@@ -113,8 +104,8 @@ namespace TeamoWeb.API.Controllers
                 return Unauthorized(new ApiErrorResponse(401, "Unauthorized"));
 
             // Check if current user is the leader of corresponding group
-            var groupLeaderId = await _appService.GetGroupLeaderIdAsync(groupId);
-            if(user.Id != groupLeaderId) 
+            var isLeader = await _groupService.CheckGroupLeaderAsync(groupId, user.Id);
+            if(!isLeader) 
                 return BadRequest(new ApiErrorResponse(400, "Only group leaders can review applications."));
             
 
@@ -171,10 +162,12 @@ namespace TeamoWeb.API.Controllers
             app = await _appService.CreateNewApplicationAsync(app);
             if(app == null) return BadRequest(new ApiErrorResponse(400, "Failed to create and send application."));
 
-            var groupLeaderId = await _appService.GetGroupLeaderIdAsync(groupId);
-            
-            // Get group leader's devices
-            var deviceTokens = await _deviceService.GetDeviceTokensForUser(groupLeaderId);
+            var groupMembers = await _groupService.GetAllGroupMembersAsync(groupId);
+            var groupLeaders = groupMembers.Where(gm => gm.Role == GroupMemberRole.Leader);
+            var groupLeadersIds = groupLeaders.Select(g => g.StudentId).ToList();
+
+            // Get all members' devices
+            var deviceTokens = await _deviceService.GetDeviceTokensForSelectedUsers(groupLeadersIds);
 
             if (!deviceTokens.IsNullOrEmpty())
             {
@@ -234,7 +227,7 @@ namespace TeamoWeb.API.Controllers
         }
 
         [InvalidateCache("/applications")]
-        [HttpPost("/api/applications/document")]
+        [HttpPost("/api/applications/documents")]
         [Authorize(Roles = "Student")]
         public async Task<ActionResult> UploadApplicationDocument(IFormFile document)
         {

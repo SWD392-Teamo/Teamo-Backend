@@ -11,6 +11,8 @@ namespace Teamo.Core.Specifications
         private const int MaxPageSize = 30;
         public int PageIndex { get; set; } = 1;
 
+        public bool IsPaginated { get; set; } = true;
+
         private int _pageSize = 5;
         public int PageSize
         {

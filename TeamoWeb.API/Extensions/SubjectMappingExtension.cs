@@ -23,26 +23,24 @@ namespace TeamoWeb.API.Extensions
             };
         }
 
-        public static Subject ToEntity(this SubjectDto subjectDto, Subject? subject = null)
+        public static Subject ToEntity(this SubjectToUpsertDto subjectDto, Subject? subject = null)
         {
             
             //Create subject
             if(subject == null)
             {
+                if (string.IsNullOrEmpty(subjectDto.Code) || string.IsNullOrEmpty(subjectDto.Name))
+                    throw new ArgumentException("All required fields must be provided when creating a new major.");
                 return new Subject{
                     Name = subjectDto.Name,
                     Code = subjectDto.Code,
                     Description = subjectDto.Description,
-                    ImgUrl = subjectDto.ImgUrl,
-                    CreatedDate = subjectDto.CreatedDate,
-                    Status = SubjectStatus.Active
                 };
             }
 
             //Update subject
             subject.Name = string.IsNullOrEmpty(subjectDto.Name) ? subject.Name : subjectDto.Name;
             subject.Description = string.IsNullOrEmpty(subjectDto.Description) ? subject.Description : subjectDto.Description;
-            subject.ImgUrl = string.IsNullOrEmpty(subjectDto.ImgUrl) ? subject.ImgUrl : subjectDto.ImgUrl;
 
             return subject;
         }

@@ -9,7 +9,7 @@ namespace TeamoWeb.API.Dtos
         public string? Name { get; set; }
         public string? Description { get; set; }
         public string? ImgUrl { get; set; }
-        public DateOnly CreatedDate { get; set; } = DateOnly.FromDateTime(DateTime.Now);
+        public DateOnly? CreatedDate { get; set; } 
         public string? Status { get; set; }
     }
 }

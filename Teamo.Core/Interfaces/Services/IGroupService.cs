@@ -7,19 +7,22 @@ namespace Teamo.Core.Interfaces.Services
     public interface IGroupService
     {
         Task<IReadOnlyList<Group>> GetGroupsAsync(ISpecification<Group> spec);
+        Task<int> CountGroupsAsync(ISpecification<Group> spec);
         Task<Group> GetGroupByIdAsync(int id);
         Task<GroupPosition> GetGroupPositionAsync(int positionId);
         Task<GroupMember> GetGroupMemberAsync(int groupId, int studentId);
         Task<IReadOnlyList<GroupMember>> GetAllGroupMembersAsync(int groupId);
-        Task CreateGroupAsync(Group group, int createdUserId);
-        Task AddMemberToGroup(GroupMember groupMember);
-        Task AddGroupPosition(GroupPosition groupPosition);
+        Task<bool> CreateGroupAsync(Group group, int createdUserId);
+        Task<bool> AddMemberToGroup(GroupMember groupMember);
+        Task<bool> AddGroupPosition(GroupPosition groupPosition);
         Task<bool> UpdateGroupAsync(Group group);
-        Task UpdateGroupPositionAsync(GroupPosition groupPosition);
-        Task UpdateGroupMemberAsync(GroupMember groupMember);
-        Task DeleteGroupAsync(Group group);           
-        Task RemoveGroupPositionAsync(GroupPosition groupPosition);      
-        Task RemoveMemberFromGroup(GroupMember groupMember);
+        Task<bool> UpdateGroupPositionAsync(GroupPosition groupPosition);
+        Task<bool> UpdateGroupMemberAsync(GroupMember groupMember);
+        Task<bool> DeleteGroupAsync(Group group);           
+        Task<bool> BanGroupAsync(Group group);
+        Task<bool> UnBanGroupAsync(Group group);
+        Task<bool> RemoveGroupPositionAsync(GroupPosition groupPosition);      
+        Task<bool> RemoveMemberFromGroup(GroupMember groupMember);
         Task<bool> CheckGroupLeaderAsync(int groupId, int studentId);
     }
 }

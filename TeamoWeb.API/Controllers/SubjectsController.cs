@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Teamo.Core.Entities;
 using Teamo.Core.Enums;
 using Teamo.Core.Interfaces.Services;
 using Teamo.Core.Specifications.Subjects;
@@ -55,7 +56,7 @@ namespace TeamoWeb.API.Controllers
         [InvalidateCache("/subjects")]
         [HttpPost]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<SubjectDto>> CreateNewSubject([FromBody] SubjectDto subjectDto)
+        public async Task<ActionResult<SubjectDto>> CreateNewSubject([FromForm] SubjectToUpsertDto subjectDto)
         {
             if(string.IsNullOrEmpty(subjectDto.Name) || string.IsNullOrEmpty(subjectDto.Code))
                 return BadRequest(new ApiErrorResponse(400, "Please input all required fields."));
@@ -64,6 +65,19 @@ namespace TeamoWeb.API.Controllers
             if(!duplicateCode) return BadRequest(new ApiErrorResponse(400, "Subject code must be unique."));
             
             var subject = subjectDto.ToEntity();
+            if(subjectDto.Image != null)
+            {
+                var image = subjectDto.Image;
+                // Upload and get download url
+                var imgUrl = await _uploadService.UploadFileAsync(
+                    image.OpenReadStream(),
+                    image.FileName,
+                    image.ContentType,
+                    _config["Firebase:SubjectImagesUrl"]);
+
+                // Update image url
+                subject.ImgUrl = imgUrl;
+            }
 
             var newSubject = await _subjectService.CreateSubjectAsync(subject);
 
@@ -75,12 +89,25 @@ namespace TeamoWeb.API.Controllers
         [InvalidateCache("/subjects")]
         [HttpPatch("{id}")]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<SubjectDto>> UpdateSubject(int id, [FromBody] SubjectDto subjectDto)
+        public async Task<ActionResult<SubjectDto>> UpdateSubject(int id, [FromForm] SubjectToUpsertDto subjectDto)
         {
             var subject = await _subjectService.GetSubjectByIdAsync(id);
             if(subject == null) return NotFound(new ApiErrorResponse(404, "Subject not found."));
 
             subject = subjectDto.ToEntity(subject);
+            if (subjectDto.Image != null)
+            {
+                var image = subjectDto.Image;
+                // Upload and get download url
+                var imgUrl = await _uploadService.UploadFileAsync(
+                    image.OpenReadStream(),
+                    image.FileName,
+                    image.ContentType,
+                    _config["Firebase:SubjectImagesUrl"]);
+
+                // Update image url
+                subject.ImgUrl = imgUrl;
+            }
 
             var result = await _subjectService.UpdateSubjectAsync(subject);
 
@@ -88,33 +115,6 @@ namespace TeamoWeb.API.Controllers
             else return Ok(subject.ToDto());
         }
 
-        [InvalidateCache("/subjects")]
-        [HttpPost("{id}/image")]
-        [Authorize(Roles = "Admin")]
-        public async Task<ActionResult> UploadSubjectImage(int id, IFormFile image)
-        {
-            // Check if an image was chosen
-            if (image == null) return BadRequest(new ApiErrorResponse(400, "No image found"));
-
-            var subject = await _subjectService.GetSubjectByIdAsync(id);
-            if (subject == null) return NotFound();
-
-            // Upload and get download url
-            var imgUrl = await _uploadService.UploadFileAsync(
-                image.OpenReadStream(),
-                image.FileName,
-                image.ContentType,
-                _config["Firebase:SubjectImagesUrl"]);
-
-            // Update image url
-            subject.ImgUrl = imgUrl;
-
-            var result = await _subjectService.UpdateSubjectAsync(subject);
-
-            if (!result) return BadRequest(new ApiErrorResponse(400, "Failed to upload image."));
-
-            return Ok(new ApiErrorResponse(200, "Image uploaded successfully.", imgUrl));
-        }
 
         //Delete subject, change subject status to inactive
         [InvalidateCache("/subjects")]

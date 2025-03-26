@@ -1,5 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
 using Teamo.Core.Entities;
+using Teamo.Core.Enums;
 using TeamoWeb.API.Dtos;
 
 namespace TeamoWeb.API.Extensions
@@ -19,8 +20,9 @@ namespace TeamoWeb.API.Extensions
                 Content = post.Content,
                 CreatedAt = post.CreatedAt,
                 UpdatedAt = post.UpdatedAt,
-                Privacy = post.Privacy,
                 Status = post.Status,
+                DocumentUrl = post.DocumentUrl,
+                GroupName = post.Group.Name,
             };
         }
 
@@ -33,12 +35,10 @@ namespace TeamoWeb.API.Extensions
                 return new Post
                 {
                     Content = postToUpsertDto.Content,
-                    Privacy = postToUpsertDto.Privacy
                 };
             }
 
             post.Content = string.IsNullOrEmpty(postToUpsertDto.Content) ? post.Content : postToUpsertDto.Content;
-            post.Privacy = postToUpsertDto?.Privacy ?? post.Privacy;
             post.UpdatedAt = DateTime.Now;
             return post;
         }

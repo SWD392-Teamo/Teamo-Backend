@@ -13,6 +13,7 @@ namespace Teamo.Core.Specifications.Posts
         {
             {
                 AddInclude(p => p.Student);
+                AddInclude(p => p.Group);
                 if (isApplyPaging == true)
                 {
                     ApplyPaging(postParams.PageSize * (postParams.PageIndex - 1),
@@ -33,14 +34,27 @@ namespace Teamo.Core.Specifications.Posts
                             break;
                     }
                 }
+                AddOrderByDescending(p => p.CreatedAt);
             }
         }
 
         public PostSpecification(int id)
             : base(p => p.Id == id && p.Status != PostStatus.Deleted)
         {
+            AddInclude(p => p.Student);
+            AddInclude(p => p.Group);
+        }
+
+        public PostSpecification(IEnumerable<int> groupIds, PagingParams? pagingParams = null)
+            : base(x => groupIds.Contains(x.GroupId))
+        {
+            AddInclude(p => p.Student);
+            AddInclude(p => p.Group);
+            AddOrderByDescending(p => p.CreatedAt);
+            if(pagingParams != null)
             {
-                AddInclude(p => p.Student);
+                ApplyPaging(pagingParams.PageSize * (pagingParams.PageIndex - 1),
+                                pagingParams.PageSize);
             }
         }
     } 

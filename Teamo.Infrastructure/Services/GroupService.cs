@@ -17,14 +17,16 @@ namespace Teamo.Infrastructure.Services
             _unitOfWork = unitOfWork;
         }
 
-        public async Task AddGroupPosition(GroupPosition groupPosition)
+        public async Task<bool> AddGroupPosition(GroupPosition groupPosition)
         {
             _unitOfWork.Repository<GroupPosition>().Add(groupPosition);
-            await _unitOfWork.Repository<GroupPosition>().SaveAllAsync();
+            return await _unitOfWork.Complete();
         }
 
-        public async Task AddMemberToGroup(GroupMember groupMember)
+        public async Task<bool> AddMemberToGroup(GroupMember groupMember)
         {
+            var result = true;
+            
             var spec = new GroupMemberSpecification(new GroupMemberParams
             {
                 StudentId = groupMember.StudentId,
@@ -54,16 +56,18 @@ namespace Teamo.Infrastructure.Services
             
             groupMember.Role = GroupMemberRole.Member;
             _unitOfWork.Repository<GroupMember>().Add(groupMember);
-            await _unitOfWork.Repository<GroupMember>().SaveAllAsync();
+            result = await _unitOfWork.Repository<GroupMember>().SaveAllAsync();
 
             // update status of group position
             foreach (var groupPositionId in groupMember.GroupMemberPositions.Select(mp => mp.GroupPositionId))
             {
-                await UpdateGroupPositionStatus(groupPositionId);
+                result = await UpdateGroupPositionStatus(groupPositionId);
+                if(!result) throw new Exception($"Position with ID {groupPositionId} failed to update status.");
             }
+            return result;
         }
 
-        public async Task CreateGroupAsync(Group group, int createdUserId)
+        public async Task<bool> CreateGroupAsync(Group group, int createdUserId)
         {
             // create group
             group.CreatedById = createdUserId;
@@ -79,16 +83,28 @@ namespace Teamo.Infrastructure.Services
             };
             _unitOfWork.Repository<GroupMember>().Add(groupMember);
 
-            await _unitOfWork.Repository<Group>().SaveAllAsync();
+            return await _unitOfWork.Complete();
         }
 
-        public async Task DeleteGroupAsync(Group group)
+        public async Task<bool> DeleteGroupAsync(Group group)
         {
             group.Status = GroupStatus.Deleted;
             _unitOfWork.Repository<Group>().Update(group);
-            await _unitOfWork.Repository<Group>().SaveAllAsync();
+            return await _unitOfWork.Complete();
         }
-        public async Task RemoveGroupPositionAsync(GroupPosition groupPosition)
+        public async Task<bool> BanGroupAsync(Group group)
+        {
+            group.Status = GroupStatus.Banned;
+            _unitOfWork.Repository<Group>().Update(group);
+            return await _unitOfWork.Complete();
+        }
+        public async Task<bool> UnBanGroupAsync(Group group)
+        {
+            group.Status = group.GroupMembers.Count() < group.MaxMember ? GroupStatus.Recruiting : GroupStatus.Full;
+            _unitOfWork.Repository<Group>().Update(group);
+            return await _unitOfWork.Complete();
+        }
+        public async Task<bool> RemoveGroupPositionAsync(GroupPosition groupPosition)
         {
             var groupMemberPositions = await _unitOfWork.Repository<GroupMemberPosition>()
                 .ListAsync(new GroupMemberPositionSpecification(groupPositionId: groupPosition.Id));
@@ -98,23 +114,26 @@ namespace Teamo.Infrastructure.Services
             }
             groupPosition.Status = GroupPositionStatus.Deleted;
             _unitOfWork.Repository<GroupPosition>().Update(groupPosition);
-            await _unitOfWork.Repository<GroupPosition>().SaveAllAsync();
+            return await _unitOfWork.Complete();
         }
 
-        public async Task RemoveMemberFromGroup(GroupMember groupMember)
+        public async Task<bool> RemoveMemberFromGroup(GroupMember groupMember)
         {
+            var result = true;
             var affectedGroupPositionIds = (await _unitOfWork.Repository<GroupMemberPosition>()
-                                            .ListAsync(new GroupMemberPositionSpecification(groupMemberId: groupMember.Id)))
-                                            .Select(mp => mp.GroupPositionId);
+                .ListAsync(new GroupMemberPositionSpecification(groupMemberId: groupMember.Id)))
+                .Select(mp => mp.GroupPositionId);
 
             _unitOfWork.Repository<GroupMember>().Delete(groupMember);
-            await _unitOfWork.Repository<GroupMember>().SaveAllAsync();
+            result = await _unitOfWork.Repository<GroupMember>().SaveAllAsync();
 
             // update status of group position
             foreach (var groupPositionId in affectedGroupPositionIds)
             {
-                await UpdateGroupPositionStatus(groupPositionId);
+                result = await UpdateGroupPositionStatus(groupPositionId);
+                if(!result) throw new Exception($"Position with ID {groupPositionId} failed to update status.");
             }
+            return result;
         }
 
         public async Task<Group> GetGroupByIdAsync(int id)
@@ -150,6 +169,8 @@ namespace Teamo.Infrastructure.Services
 
         public async Task<IReadOnlyList<Group>> GetGroupsAsync(ISpecification<Group> spec)
         {
+            await UpdateGroupStatus();
+
             return await _unitOfWork.Repository<Group>().ListAsync(spec);
         }
 
@@ -160,8 +181,9 @@ namespace Teamo.Infrastructure.Services
             return result;
         }
 
-        public async Task UpdateGroupMemberAsync(GroupMember groupMember)
+        public async Task<bool> UpdateGroupMemberAsync(GroupMember groupMember)
         {
+            var result = true;
             var affectedGroupPositionIds = groupMember.GroupMemberPositions
                 .Select(mp => mp.GroupPositionId)
                 .Concat((await _unitOfWork.Repository<GroupMemberPosition>()
@@ -172,28 +194,32 @@ namespace Teamo.Infrastructure.Services
             
             // update Group Member
             _unitOfWork.Repository<GroupMember>().Update(groupMember);
-            await _unitOfWork.Repository<GroupMember>().SaveAllAsync(); 
+            result = await _unitOfWork.Repository<GroupMember>().SaveAllAsync(); 
             
             // update status of group position
             foreach(var groupPositionId in affectedGroupPositionIds)
             {
-                await UpdateGroupPositionStatus(groupPositionId);
-            }  
+                result = await UpdateGroupPositionStatus(groupPositionId);
+                if(!result) throw new Exception($"Position with ID {groupPositionId} failed to update status.");
+            } 
+
+            return result; 
         }
 
-        public async Task UpdateGroupPositionAsync(GroupPosition groupPosition)
+        public async Task<bool> UpdateGroupPositionAsync(GroupPosition groupPosition)
         {
             // update GroupPosition
             _unitOfWork.Repository<GroupPosition>().Update(groupPosition);
-            await _unitOfWork.Repository<GroupPosition>().SaveAllAsync();
+            return await _unitOfWork.Repository<GroupPosition>().SaveAllAsync();
         }
+
         /// <summary>
         /// Updates the status of a GroupPosition based on the current number of assigned members.
         /// If the number of assigned members reaches the maximum allowed, the status is set to "Closed".
         /// Otherwise, the status remains "Open".
         /// </summary>
         /// <param name="positionId">The ID of the GroupPosition to update.</param>
-        private async Task UpdateGroupPositionStatus(int positionId)
+        private async Task<bool> UpdateGroupPositionStatus(int positionId)
         {
 
             var assignedMemberPositions = await _unitOfWork.Repository<GroupMemberPosition>()
@@ -207,13 +233,35 @@ namespace Teamo.Infrastructure.Services
                                     ? GroupPositionStatus.Closed
                                     : GroupPositionStatus.Open;
 
-            await UpdateGroupPositionAsync(groupPosition);
+            return await UpdateGroupPositionAsync(groupPosition);
         }
 
         public async Task<bool> CheckGroupLeaderAsync(int groupId, int studentId)
         {
             var groupMember = await GetGroupMemberAsync(groupId, studentId);
             return groupMember != null && groupMember.Role == GroupMemberRole.Leader;
+        }
+
+        //Update group status to Archived if semester is over
+        private async Task UpdateGroupStatus()
+        {
+            var spec = new GroupSpecification();
+            var groups = await _unitOfWork.Repository<Group>().ListAsync(spec);
+            foreach (var g in groups)
+            {
+                if(g.Semester.Status == SemesterStatus.Past && g.Status != GroupStatus.Archived)
+                {
+                    g.Status = GroupStatus.Archived;
+                    _unitOfWork.Repository<Group>().Update(g);
+                }
+            }
+
+            await _unitOfWork.Complete();
+        }
+
+        public async Task<int> CountGroupsAsync(ISpecification<Group> spec)
+        {
+            return await _unitOfWork.Repository<Group>().CountAsync(spec);
         }
     }
 }
