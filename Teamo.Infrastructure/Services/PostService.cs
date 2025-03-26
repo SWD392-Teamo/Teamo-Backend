@@ -72,6 +72,7 @@ namespace Teamo.Infrastructure.Services
                 throw new UnauthorizedAccessException("You do not have permission to edit this post.");
             }
             post.UpdatedAt = DateTime.Now;
+            post.Status = PostStatus.Edited;    
             _unitOfWork.Repository<Post>().Update(post);
             await _unitOfWork.Repository<Post>().SaveAllAsync();
             return await GetPostByIdAsync(post.Id);
