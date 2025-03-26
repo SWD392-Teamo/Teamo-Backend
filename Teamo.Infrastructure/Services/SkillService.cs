@@ -78,7 +78,8 @@ namespace Teamo.Infrastructure.Services
             var positionSkillSpec = new GroupPositionSkillBySkillIdSpecification(skill.Id);
             var positionSkill = await _unitOfWork.Repository<GroupPositionSkill>().GetEntityWithSpec(positionSkillSpec);
 
-            if(studentSkill != null || positionSkill != null) return false;
+            if(studentSkill != null || positionSkill != null) 
+                throw new InvalidOperationException("Unable to delete this skill because it is being used in at least one student profile or group position.");
 
             _unitOfWork.Repository<Skill>().Delete(skill);
             return await _unitOfWork.Complete();
