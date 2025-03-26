@@ -232,7 +232,7 @@ namespace TeamoWeb.API.Controllers
                 var status = group.Status.ToString().ToLower();
 
                 // Generate notification contents
-                FCMessage message = CreateDeletedGroupMessage(deviceTokens, group.Name, group.Id, status);
+                FCMessage message = CreateBanUnbanGroupMessage(deviceTokens, group.Name, group.Id, status);
 
                 var notiResult = await _notiService.SendNotificationAsync(message);
                 if (!notiResult)
@@ -266,7 +266,7 @@ namespace TeamoWeb.API.Controllers
                 var status = group.Status.ToString().ToLower();
 
                 // Generate notification contents
-                FCMessage message = CreateDeletedGroupMessage(deviceTokens, group.Name, group.Id, status);
+                FCMessage message = CreateBanUnbanGroupMessage(deviceTokens, group.Name, group.Id, status);
 
                 var notiResult = await _notiService.SendNotificationAsync(message);
                 if (!notiResult)
@@ -415,6 +415,26 @@ namespace TeamoWeb.API.Controllers
                     { "groupName", groupName },
                     { "groupId", groupId.ToString() },
                     { "status", status }
+                }
+            };
+        }
+        private static FCMessage CreateBanUnbanGroupMessage(List<string> tokens,
+            string groupName, int groupId, string status)
+        {
+            bool isBanned = status == GroupStatus.Banned.ToString().ToLower();
+            return new FCMessage
+            {
+                tokens = tokens,
+                title = $"{(isBanned ? "Unban" : "Ban")} group",
+                body = isBanned
+                        ? $"The group '{groupName}' has been unbanned and is now active again. You can continue using all group features."
+                        : $"The group '{groupName}' has been banned due to policy violations. Please contact the administrator for further assistance.",
+                data = new Dictionary<string, string>
+                {
+                    { "type", $"{(isBanned ? "unbanned" : "banned")}_group" },
+                    { "groupName", groupName },
+                    { "groupId", groupId.ToString() },
+                    { "status", status}
                 }
             };
         }
