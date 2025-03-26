@@ -190,7 +190,6 @@ namespace TeamoWeb.API.Controllers
             await _postService.DeletePost(post, user.Id);
             return Ok("Successfully delete this post");
         }
-        [Cache(1000)]
         [HttpGet("/api/posts")]
         [Authorize(Roles = "Student")]
         public async Task<ActionResult<Pagination<PostDto>>> GetTopPosts([FromQuery] PagingParams pagingParams)
