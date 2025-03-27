@@ -10,10 +10,10 @@ using TeamoWeb.API.RequestHelpers;
 namespace TeamoWeb.API.Controllers
 {
     [Route("api/groups/{groupId}/positions")]
-    public class PositionController : BaseApiController
+    public class PositionsController : BaseApiController
     {
         private readonly IGroupService _groupService;
-        public PositionController(IGroupService groupService)
+        public PositionsController(IGroupService groupService)
         {
             _groupService = groupService;
         }
