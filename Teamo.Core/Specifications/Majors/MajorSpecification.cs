@@ -15,6 +15,7 @@ namespace Teamo.Core.Specifications.Majors
             AddInclude(x => x.MajorSubjects);
             ApplyPaging(majorSpecParams.PageSize * (majorSpecParams.PageIndex - 1),
                 majorSpecParams.PageSize);
+            AddOrderByDescending(x => x.CreatedDate);
         }
 
         public MajorSpecification(int id) : base(x => x.Id == id)
