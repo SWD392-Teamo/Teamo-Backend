@@ -46,7 +46,7 @@ namespace Teamo.Core.Specifications.Posts
         }
 
         public PostSpecification(IEnumerable<int> groupIds, PagingParams? pagingParams = null)
-            : base(x => groupIds.Contains(x.GroupId))
+            : base(x => groupIds.Contains(x.GroupId) && x.Status != PostStatus.Deleted)
         {
             AddInclude(p => p.Student);
             AddInclude(p => p.Group);
