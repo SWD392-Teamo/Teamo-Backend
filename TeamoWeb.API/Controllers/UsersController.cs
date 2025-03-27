@@ -81,7 +81,7 @@ namespace TeamoWeb.API.Controllers
             user.Status = UserStatus.Banned;
 
             var result = await _userService.UpdateUserAsync(user);
-            if (!result.Succeeded) BadRequest(new ApiErrorResponse(400, "Failed to unban user."));
+            if (!result.Succeeded) BadRequest(new ApiErrorResponse(400, "Failed to ban user."));
             // Get all members' devices
             var deviceTokens = await _deviceService.GetDeviceTokensForUser(user.Id);
 
@@ -95,7 +95,7 @@ namespace TeamoWeb.API.Controllers
                 var notiResult = await _notiService.SendNotificationAsync(message);
                 if (!notiResult)
                     return Ok(new ApiErrorResponse(200,
-                        "User unbanned successfully, " +
+                        "User banned successfully, " +
                         "but failed to send notifications to some devices."));
             }
 
@@ -114,7 +114,7 @@ namespace TeamoWeb.API.Controllers
             user.Status = UserStatus.Active;
 
             var result = await _userService.UpdateUserAsync(user);
-            if (!result.Succeeded) BadRequest(new ApiErrorResponse(400, "Failed to ban user."));
+            if (!result.Succeeded) BadRequest(new ApiErrorResponse(400, "Failed to unban user."));
 
             // Get all members' devices
             var deviceTokens = await _deviceService.GetDeviceTokensForUser(user.Id);
@@ -129,7 +129,7 @@ namespace TeamoWeb.API.Controllers
                 var notiResult = await _notiService.SendNotificationAsync(message);
                 if (!notiResult)
                     return Ok(new ApiErrorResponse(200,
-                        "User banned successfully, " +
+                        "User unbanned successfully, " +
                         "but failed to send notifications to some devices."));
             }
             
