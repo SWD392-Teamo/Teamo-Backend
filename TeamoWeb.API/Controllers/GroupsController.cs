@@ -425,13 +425,13 @@ namespace TeamoWeb.API.Controllers
             return new FCMessage
             {
                 tokens = tokens,
-                title = $"{(isBanned ? "Unban" : "Ban")} group",
+                title = $"{(isBanned ? "Ban" : "Unban")} group",
                 body = isBanned
-                        ? $"The group '{groupName}' has been unbanned and is now active again. You can continue using all group features."
-                        : $"The group '{groupName}' has been banned due to policy violations. Please contact the administrator for further assistance.",
+                        ? $"The group '{groupName}' has been banned due to policy violations. Please contact the administrator for further assistance."
+                        : $"The group '{groupName}' has been unbanned and is now active again. You can continue using all group features.",
                 data = new Dictionary<string, string>
                 {
-                    { "type", $"{(isBanned ? "unbanned" : "banned")}_group" },
+                    { "type", $"{(isBanned ? "banned" : "unbanned")}_group" },
                     { "groupName", groupName },
                     { "groupId", groupId.ToString() },
                     { "status", status}
