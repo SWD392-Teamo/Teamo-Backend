@@ -15,6 +15,7 @@ namespace Teamo.Core.Specifications.Subjects
         {
             ApplyPaging(subjectParams.PageSize * (subjectParams.PageIndex - 1),
                 subjectParams.PageSize);
+            AddOrderByDescending(x => x.CreatedDate);
         }
         
         public SubjectSpecification(int id) : base(x => x.Id == id)
